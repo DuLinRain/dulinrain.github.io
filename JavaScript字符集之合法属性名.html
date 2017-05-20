@@ -333,7 +333,9 @@ img {
 <p><img src="http://i.imgur.com/9ogah2K.png" /></p>
 <p><strong>竟然获取到了！！！</strong></p>
 <p>但是，<strong>注意！！</strong>，我们并不是用'12e34'字符串获取到的，而是用'1.2e+35'获取到的，这是为什么呢？</p>
-<p>前面我们讲了，当数值作为属性名定义属性时，该属性名被用String(number)或（number）.toString()转换成了字符串。所以，如果想用字符取出属性值来，我们只能用String(number)或（number）.toString()转换出来的字符串去取。</p>
+<p>前面我们讲了，当数值作为属性名定义属性时，该属性名被用String(number)或（number）.toString()转换成了字符串。所以，如果想用字符取出属性值来，我们只能用String(number)或（number）.toString()转换出来的字符串去取。用其它任何形式的字符去取都不会获得预期结果。比如：</p>
+<p><img src="http://i.imgur.com/bWQZktA.png" /></p>
+<p>也就是说，用'1.2e35'去取也去不到。</p>
 <p>那么，是不是只能用定义时的数组obj[12e34]和转换出来的字符串obj['1.2e+35']去取呢？答案是否定的。事实上，采用数值去取时，我们不一定非得用定义时的数值形式去取，我们可以用该数值的任意形式去取。举个栗子：</p>
 <p><img src="http://i.imgur.com/UDa1PD7.png" /></p>
 <h3>四、属性名必须要用引号包裹吗？</h3>
