@@ -1,0 +1,362 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>JavaScript字符集之合法属性名</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+h2{
+text-align:center;
+}
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>JavaScript字符集之合法属性名</h2>
+<h3>一、概述</h3>
+<p>在惯常的思路中，JS属性名可以是任意合法的标识符，比如说：</p>
+<p><img src="http://i.imgur.com/CFt2OJi.png" /></p>
+<p>字符串name作为属性名可以，数值作为属性名不行。
+但是我们仍然可以偶尔看到一些有趣的现象打乱我们的三观，比如：</p>
+<p><img src="http://i.imgur.com/PV6BOD9.png" /></p>
+<p>可以看到，不仅数值可以作为属性名，就连各种保留字都可以用来做为属性名了。这让我们开始思考，到底什么样的属性名才是合法属性名呢？</p>
+<h3>二、JS合法属性名</h3>
+<p>ES的定义说：</p>
+<blockquote>
+<p>The Property Identifier type is used to associate a property name with a Property Descriptor. Values of the Property Identifier type are pairs of the form (name, descriptor), where name is a String and descriptor is a Property Descriptor value.</p>
+</blockquote>
+<p>乍一看，ES定义明明规定，name必须是String类型的，为什么我们上面使用数值却可以呢？实际上，我们在使用数值作为属性名时，该数值被强制使用String(number)或（number）.toString()转换成了字符串。
+也就是说，关于属性名的定义，可以采用如下表述了：</p>
+<blockquote>
+<p>a property name can be either an identifier name (i.e. identifiers + reserved words), a string literal, or a numeric literal.</p>
+</blockquote>
+<p>也就是说，JS的属性名既可以是<strong>标识符名称</strong>（不受保留字限制），也可以是<strong>字符串<strong>，也可以是</strong>数值</strong>。</p>
+<p>根据ES中关于属性名的规定，我们来具体分析JS中合法的属性名：</p>
+<h4>标识符名称</h4>
+<p>由<a href="https://dulinrain.github.io/JavaScript%E5%AD%97%E7%AC%A6%E9%9B%86%E4%B9%8B%E5%90%88%E6%B3%95%E5%8F%98%E9%87%8F%E5%90%8D.html" title="JavaScript字符集之合法变量名">JavaScript字符集之合法变量名</a>这篇文章可知，标识符名称是表示符的超集（父集），所以自然而然，所有标识符也可以用作属性名称。当然，所有的保留字也可以作为属性名。
+注意，标识符名称作为属性名时，并不强制需要用引号包裹。但是在ES3中，标识符名称做属性则是必须要用引号包裹的。</p>
+<h4>字符串</h4>
+<p>字符串可以是合法的字符串，被单引号或双引号包裹。可以是<strong>空字符串</strong>，字符串中也可以<strong>包含引号<strong>或</strong>包含空格</strong>或者<strong>包含转义序列</strong>。
+看一下英文描述：</p>
+<p><img src="http://i.imgur.com/D5ZkqWV.png" /></p>
+<h4>数值</h4>
+<p>数值既可以是十进制（科学/非科学计数都可以），如0, 123, 123., .123, 1.23, 1e23, 1E-23, 1e+23, 12，但不可以是01, +123 or -123，也可以是正则表达式下的16进制，如 0xFFFF, 0X123。</p>
+<p><strong>注意:</strong>10进制在正则表达式下的形式为(0[0-7]+ in regex, e.g. 010, 012, 01)，他们都是合法的数值，但是不允许在严格模式下使用，所以尽量避免使用他们。</p>
+<h3>三、获取属性值</h3>
+<p>那么我们是如何通过属性名获取属性值的呢？</p>
+<p>对于常见的字符作为属性名的情景，我们很方便也很习惯的使用['name']就获取到了，但是对于数值作为属性名的情形，我们俺这种方式可以做到吗？举个栗子：</p>
+<p><img src="http://i.imgur.com/xFI2LIy.png" /></p>
+<p>可以看到，我们用字符串形式的'12e34'是获取不到的。
+有人会说了：你定义的时候是数值12e34，你现在用字符串来获取'12e34'，当然获取不到了，直接用数值就可以获取到了。我们再试试：</p>
+<p><img src="http://i.imgur.com/ODlDehC.png" /></p>
+<p>矮油，还真获取到了。但是我们用字符获取真的获取不到吗？我们再试试：</p>
+<p><img src="http://i.imgur.com/9ogah2K.png" /></p>
+<p><strong>竟然获取到了！！！</strong></p>
+<p>但是，<strong>注意！！</strong>，我们并不是用'12e34'字符串获取到的，而是用'1.2e+35'获取到的，这是为什么呢？</p>
+<p>前面我们讲了，当数值作为属性名定义属性时，该属性名被用String(number)或（number）.toString()转换成了字符串。所以，如果想用字符取出属性值来，我们只能用String(number)或（number）.toString()转换出来的字符串去取。</p>
+<p>那么，是不是只能用定义时的数组obj[12e34]和转换出来的字符串obj['1.2e+35']去取呢？答案是否定的。事实上，采用数值去取时，我们不一定非得用定义时的数值形式去取，我们可以用该数值的任意形式去取。举个栗子：</p>
+<p><img src="http://i.imgur.com/UDa1PD7.png" /></p>
+<h3>四、属性名必须要用引号包裹吗？</h3>
+<p>对于这个问题，前面在介绍标识符名称做属性时已经有过一些介绍。就是说，当标识符名称作为属性值时，只有在ES3情况下必须要用引号包裹，其它情况不需要。</p>
+<p>现在我们做进一步的表述：</p>
+<p><strong>除非属性名称是数值或者是标识符名称，否则你的属性名称都需要用引号包裹。换句话说，只有当属性名称是数值或者标识符名称时，引号才可以省略。</strong></p>
+<p>来看英文描述可能更好理解：</p>
+<blockquote>
+<p>Unless an object key is a numeric literal or a valid identifier name, you need to quote it to avoid a syntax error from being thrown. In other words, <strong>quotes can only be omitted if the property name is a numeric literal or a valid identifier name.</strong> Of course, if the property name is a string literal, it’s already quoted by definition.</p>
+</blockquote>
+<p>下面是一些典型例子：</p>
+<p><img src="http://i.imgur.com/57geAI1.png" /></p>
+<h3>五、获取属性值时，何时可以用点号（.）呢？</h3>
+<p>可能你已经注意到，在前面例子中，获取属性值时，我们都用的是方括号（[]），这是因为，在任何情况下，用方括号获取属性都是最安全的。那么，在平时码代码，特别是当你有其它OPP语言的经历的时候，你会有疑问：我们为什么不用点号（.）呢？我们在什么情况下才可以用点号（.）呢？</p>
+<p><strong>只有当属性名称是合法的标识符名称时，才可以使用点号（.）获取属性，其它任何情况都不允许。</strong></p>
+<p>看一下英文表述可能更好理解：</p>
+<blockquote>
+<p>Dot notation can only be used when the property name is a valid identifier name. It cannot be used for property names that are numeric literals, or for strings that aren’t valid identifier names.</p>
+</blockquote>
+<h3>六、结论</h3>
+<p>本文还算详细的论述了JS的属性名的相关问题，哪些是合法的属性名？如何获取属性名？什么情况下可以用点号（.），什么情况下不可以用。相信在看过本文后，你对JS属性名可以有个更加深入的认识！</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
