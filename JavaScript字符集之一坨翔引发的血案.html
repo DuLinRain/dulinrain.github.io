@@ -1,0 +1,548 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>JavaScript字符集之一坨翔引发的血案</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>JavaScript之一坨<img src="http://i.imgur.com/l10HAE2.png" />引发的血案</h2>
+<h4>Abstract:</h4>
+<p>在ES5及更早的JS版本中，对于Unicode字符的处理存在严重的Bug,这将导致在处理某些Unicode字符（字符范围为\u10000~\u10FFFF）时产生意想不到的问题。<img src="http://i.imgur.com/l10HAE2.png" />的Unicode字符为\u1f4a9,处在上述范围之间，因此，本文主要以字符<img src="http://i.imgur.com/l10HAE2.png" />为例，来解释ES5及之前的JS在处理类式的字符时遇到的问题以及相应的解决方法。</p>
+<h3>1、概述</h3>
+<p>理想情况（或按照人们的预想），JS中，对任意字符计算其长度，其值都应该是1.比如：</p>
+<pre><code>console.log('A'.length) // 1
+</code></pre>
+
+<p>而由于A的Unicode码点（Code Point）为'\u0041'，故</p>
+<pre><code>'\u0041'=='A'  //true
+'\u0041'.length==1  //true
+</code></pre>
+
+<p>这些都没啥问题，包括对于常见的其它字符，照常拿下，But!!!
+当我们对<img src="http://i.imgur.com/l10HAE2.png" />所在范围的字符进行计算长度的时候，效果却大跌眼镜了，比如:</p>
+<p><img src="http://i.imgur.com/pKZmymp.png" /></p>
+<p>根据普遍常识来看，不管这个字符有多丑（臭），它的长度都应该是1才对，但是在控制台中的显示结果却是啪啪啪的打脸啊！这是为什么呢？究其原因是ES5及之前版本的JS在处理Unicode时的Bug导致的。在Unicode中，的码点（Code Point）为\u1f4a9,我们在控制台验证一下：</p>
+<p><img src="http://i.imgur.com/CPupNxi.png" /></p>
+<p>再次被打脸！！这是为什么呢?
+原因是，ES5及之前版本的JS只能有效表示Unicode码点在'\u0000~\uFFFF'之间的字符，而对于超出这个码点范围的字符，Unicode会将其拆分成两个码点表示。的被表示为'\uD83D\uDCA9'。证明如下：</p>
+<p><img src="http://i.imgur.com/l4uBjNI.png" /></p>
+<p>现在，疑惑解开了。正因为JS在处理Unicode时存在的Bug，导致了前面的一系列不同寻常的结果。了解到这些后我们可以看出：</p>
+<pre><code>'\uD83D\uDCA9'.length==2 //true
+</code></pre>
+
+<p>ES5及之前版本的JS的该Bug不仅会导致上述计算长度的问题，还将会导致一系列与字符串操作相关（截取、正则等）的问题。
+下面我们将详细解释该Bug产生的原因、产生的问题以及相关的解决办法。</p>
+<h3>二、Unicode字符集</h3>
+<p>Unicode字符集采用17个维度（像限）表示字符（你没看错，就是17），可表示字符的范围为\u0000~\u10FFFF,共1114111个字符。每个维度（像限）可表示65535个字符。对于第一个像限，其字符范围为\u0000~\uFFFF，其它像限依次类推。每个字符都有其唯一的码点以及相对应的名称标识。第一像限的字符是最重要也是最常见的，通常我们将第一象限的字符称为<strong>BMP(Basic Multilingual Plane)</strong>,其它像限（码点范围：\u010000~\u10FFFF）统称为<strong>补充像限（supplementary planes）<strong>或</strong>星际像限（astral planes）</strong>。星际像限的码点和BMP像限很好区分，星际像限的码点位数必定超过4。</p>
+<h3>三、转义序列</h3>
+<h5>（1）ES5及更低版本JS</h5>
+<p>BMP象限字符的码点的转义序列很好表示，比如对于字符A，其码点为U+0041，相应的Unicode转义序列可表示为\u0041,但是对于星际像限的字符，仍然以为例，其码点U+1f4a9，但是，其转义序列并不能直接用\u1f4a9表示，验证如下：</p>
+<p><img src="http://i.imgur.com/Iu4pHwp.png" /></p>
+<p>对于ES5及更低版本的JS中，星际像限字符的转义序列不能直接表示，必须用一对类式于BMP像限的转义序列一起才能表示。比如，<img src="http://i.imgur.com/l10HAE2.png" />的表示为\uD83D\uDCA9。</p>
+<ul>
+<li>这样的一对称为<strong>Surrogate pairs</strong>。</li>
+<li>其中，前一半转义序列称为<strong>high surrogate</strong> 或 <strong>lead surrogate<strong>，后一半称为</strong>low surrogate</strong>或 <strong>trail surrogate</strong>.</li>
+<li>high surrogate部分的范围<strong>必定</strong>是<strong>0xD800 ~ 0xDBFF<strong>，low surrogate部分的范围必定是</strong>0xDC00 ~ 0xDFFF</strong></li>
+</ul>
+<p>有人开始惆怅了，如果需要使用星际像限的字符并让其正常表示的话，势必需要知道它的Surrogate pairs，怎么样才能知道呢？
+事实上，星际像限的字符码点C(U+1f4a9)和其转义序列Surrogate pairs&lt;H,L&gt;(\uD83D\uDCA9)存在一个相互转换的公式如下：</p>
+<pre><code>C to &lt;H,L&gt;:
+H = Math.floor((C - 0x10000) / 0x400) + 0xD800
+L = (C - 0x10000) % 0x400 + 0xDC00
+&lt;H,L&gt; to C:
+C = (H - 0xD800) * 0x400 + L - 0xDC00 + 0x10000
+</code></pre>
+
+<h4>（2）ES6及更高版本JS</h4>
+<p>在ES6中，对任何像限的字符，Unicode转义序列的表示可以直接使用其码点进行表示，当然，前提条件是使用ES6的语法（u{}）来表示：</p>
+<p><img src="http://i.imgur.com/OFvDRzB.png" /></p>
+<p>注意：必须要使用{},否则达不到预期效果。</p>
+<h3>四、BUGS AND SOLUTIONS</h3>
+<h4>（1）计算字符串长度BUG及SOLUTION</h4>
+<p>BUG示例间概述，这里不再赘述。这里直接介绍BUG的SOLUTION。</p>
+<h6>原始实现方案</h6>
+<p>计算字符（串）长度，可以参考JS中计算字符串字节数的方法来实现，回顾一下，JS中，由于一个中文字符和一个英文字符所占字节数不等，所以在计算字符串字节数的时候常常用正则匹配，将不在英文字符范围内的其它每个字符替换成任意两个英文字符（例如：'aa'），然后计算整个字符的长度即可。同理，在计算字符长度的时候，我们可以用正则匹配的方法，将不在U+0000~U+FFFF码点范围内的字符替换成2个任意BMP像限的字符（例如：'aa'），然后计算整个字符长度。如下：</p>
+<pre><code>var regexAstralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+function countSymbols(string) {
+    return string
+        // Replace every surrogate pair with a BMP symbol.
+        .replace(regexAstralSymbols, '_')
+        // …and *then* get the length.
+        .length;
+}
+结果：
+</code></pre>
+
+<p><img src="http://i.imgur.com/ZFF71MA.png" /></p>
+<p>注意，不要抖机灵，将/[\uD800-\uDBFF][\uDC00-\uDFFF]/g改为/[^\u0000-\uFFFF]/g。因为星际像限的Unicode转义序列是用Surrogate pairs表示的，而不是直接用<strong>原始码点</strong>表示的。</p>
+<h6>ES6实现方案</h6>
+<p>因为ES6实现了对Unicode较好的支持，所以可以通过ES6 Array.form语法将字符分割成数组，再计算数组的方法实现计算字符串的长度：</p>
+<pre><code>function countSymbols(string) {
+    return [...string].length;
+}
+结果同上。
+</code></pre>
+
+<h6>第三方库方案</h6>
+<p>Nodejs下有个 Punycode.js模块，可以实现相同的效果，这里不再赘述。其代码如下：</p>
+<pre><code>function countSymbols(string) {
+    return punycode.ucs2.decode(string).length;
+}
+</code></pre>
+
+<h4>（2）字符串反转BUG及SOLUTION</h4>
+<p>ES5及更早版本的JS存在的Uniocde BUG同样会导致字符串反转操作产生意想不到的结果，比如仍旧以<img src="http://i.imgur.com/l10HAE2.png" />为例。注意：JS中字符串没有原生的reverse方法，但是数组有，所以对于字符串反转，我们常常用一下代码实现：</p>
+<pre><code>// naive solution
+function reverse(string) {
+    return string.split('').reverse().join('');
+}
+</code></pre>
+
+<p>但是，当我们在控制台中测试时，发现对于<img src="http://i.imgur.com/l10HAE2.png" />出了问题：</p>
+<p><img src="http://i.imgur.com/GtjSQJ0.png" /></p>
+<p>问题的原因已做过说明，证明如下：</p>
+<p><img src="http://i.imgur.com/1f3SOy5.png" /></p>
+<h6>原生的解决方案</h6>
+<p>原生的解决方案就是根据正则表达式去匹配，匹配到Surrogate pairs后就反转，然后再进行常规的反转操作即可。相当于对于Surrogate pairs，反转了2次，所以它的顺序并没有变。代码如下：</p>
+<h6>ES6解决方法</h6>
+<p>ES6解决方法和传统的字符串转换方法类式，主要是将字符串转换为数组的过程不再使用split函数，而是使用<strong>Array.from</strong>或<strong>...运算符</strong>实现。如下：</p>
+<pre><code>// slightly better solution that relies on ES6 StringIterator and `Array.from`
+function reverse(string) {
+    return Array.from(string).reverse().join('');
+}
+或
+// slightly better solution that relies on ES6 StringIterator and `Array.from`
+function reverse(string) {
+    return [...string].reverse().join('');
+}
+</code></pre>
+
+<p><img src="http://i.imgur.com/b0FrBI9.png" /></p>
+<h4>（3）码点转字符BUG及SOLUTION</h4>
+<p>在原生的JS中，提供了一个String.fromCharCode方法，允许将讲码点转换为字符，但是这个函数仅仅对BMP像限的字符有效，其它像限则完败。举例如下：</p>
+<p><img src="http://i.imgur.com/V6yUYPX.png" /></p>
+<h6>原始解决方法</h6>
+<p>原始解决方法就是根据的实际转义序列来调用formCharCode转换。<img src="http://i.imgur.com/l10HAE2.png" />的转义序列为\uD83D\uDCA9，故我们可以这样使用formCharCode:</p>
+<p><img src="http://i.imgur.com/cfhd38P.png" /></p>
+<h6>ES6解决方法</h6>
+<p>ES6提供了一个新的方法formCodePoint，能够对任意像限的字符完成和fromCharCode一样的功能:</p>
+<p><img src="http://i.imgur.com/O0P6IgL.png" /></p>
+<h6>代码化的原始解决方法（兼容ES5的polyfill）</h6>
+<p>前一种原始解决方法真正用起来很不方便，这里提供另外一种原始解决方法：</p>
+<p><img src="http://i.imgur.com/vQ1AUZt.png" /></p>
+<p>这种解决方法和原始解决方法思想一致,就是把0x14af9转换成0xD83D和0xDCA9，然后再调用formCharCode方法实现。</p>
+<h6>第三方库方法</h6>
+<pre><code>punycode.ucs2.encode([ 0x1F4A9 ])
+</code></pre>
+
+<h4>（4）字符转码点BUG及SOLUTION</h4>
+<p>在原生的JS中，提供了一个String.charCodeAt方法(和String.fromCharCode功能相反)，允许你将字符转换为码点，但是这个函数仅仅对BMP像限的字符有效，其它像限则完败。举例如下：</p>
+<p><img src="http://i.imgur.com/qOaI5c0.png" /></p>
+<p>得到的结果是55357（0xD83D）。</p>
+<h6>ES6解决方法</h6>
+<p>ES6提供了一个新的方法codePointAt，能够对任意像限的字符完成和charCodeAt一样的功能:</p>
+<p><img src="http://i.imgur.com/efzu3yg.png" /></p>
+<p>得到的结果是128169（0x1a4f9）。</p>
+<h6>代码化原生解决方法（兼容ES5的polyfill）</h6>
+<p>其思想就是对于星际像限的字符，需要调用两次charCodeAt,一次charCodeAt(0)，一次charCodeAt(1)，并做一定的转化。</p>
+<p><img src="http://i.imgur.com/68d8V1t.png" /></p>
+<h4>（5）获取第一个字符方法charAt()的BUG及SOLUTION</h4>
+<p>JS中有一个String.charAt(index)方法，用于获取字符串的第index个字符。但是同样，在面对<img src="http://i.imgur.com/l10HAE2.png" />时完败：</p>
+<h6>ES7解决方法</h6>
+<p>ES7草案中提出了一个at方法，用于解决该问题，但是目前浏览器并未部署ES7。</p>
+<h6>原始解决方法（兼容ES5的polyfill）</h6>
+<pre><code>if (!String.prototype.at) {
+    (function() {
+        'use strict'; // needed to support `apply`/`call` with `undefined`/`null`
+        var defineProperty = (function() {
+            // IE 8 only supports `Object.defineProperty` on DOM elements.
+            try {
+                var object = {};
+                var $defineProperty = Object.defineProperty;
+                var result = $defineProperty(object, object, object) &amp;&amp; $defineProperty;
+            } catch (exception) {}
+            return result;
+        }());
+        var at = function(position) {
+            if (this == null) {
+                throw TypeError();
+            }
+            var string = String(this);
+            var size = string.length;
+            // `ToInteger`
+            var index = position ? Number(position) : 0;
+            if (index != index) { // better `isNaN`
+                index = 0;
+            }
+            // Account for out-of-bounds indices
+            // The odd lower bound is because the ToInteger operation is
+            // going to round `n` to `0` for `-1 &lt; n &lt;= 0`.
+            if (index &lt;= -1 || index &gt;= size) {
+                return '';
+            }
+            // Second half of `ToInteger`
+            index = index | 0;
+            // Get the first code unit and code unit value
+            var cuFirst = string.charCodeAt(index);
+            var cuSecond;
+            var nextIndex = index + 1;
+            var len = 1;
+            if ( // Check if it’s the start of a surrogate pair.
+                cuFirst &gt;= 0xD800 &amp;&amp; cuFirst &lt;= 0xDBFF &amp;&amp; // high surrogate
+                size &gt; nextIndex // there is a next code unit
+            ) {
+                cuSecond = string.charCodeAt(nextIndex);
+                if (cuSecond &gt;= 0xDC00 &amp;&amp; cuSecond &lt;= 0xDFFF) { // low surrogate
+                    len = 2;
+                }
+            }
+            return string.slice(index, index + len);
+        };
+        if (defineProperty) {
+            defineProperty(String.prototype, 'at', {
+                'value': at,
+                'configurable': true,
+                'writable': true
+            });
+        } else {
+            String.prototype.at = at;
+        }
+    }());
+}
+</code></pre>
+
+<h5>（6）遍历字符串</h5>
+<p>某些情况下，我们需要遍历字符串，并对字符串中每个或某个字符进行操作，传统的方法一般都用一个for循环（for var i=0;i&lt;str.length;i++），但是正如前面所述，包含星际像限的字符串在计算长度时会出现BUG，所以，我们是用for循环遍历包含星际像限的字符串时会出现BUG。</p>
+<h6>ES6解决方法</h6>
+<p>ES6中的for...of方法可以完美的搞定这个BUG，没有任何烦恼。</p>
+<h6>原生解决方法（兼容ES5的polyfill）</h6>
+<pre><code>function getSymbols(string) {
+    var index = 0;
+    var length = string.length;
+    var output = [];
+    for (; index &lt; length - 1; ++index) {
+        var charCode = string.charCodeAt(index);
+        if (charCode &gt;= 0xD800 &amp;&amp; charCode &lt;= 0xDBFF) {
+            charCode = string.charCodeAt(index + 1);
+            if (charCode &gt;= 0xDC00 &amp;&amp; charCode &lt;= 0xDFFF) {
+                output.push(string.slice(index, index + 2));
+                ++index;
+                continue;
+            }
+        }
+        output.push(string.charAt(index));
+    }
+    output.push(string.charAt(index));
+    return output;
+}
+</code></pre>
+
+<p><img src="http://i.imgur.com/gNSbPtR.png" /></p>
+<p>该方法的原理其实还是判断是不是星际像限来完成的。当然我们也可以用正则匹配完成：</p>
+<pre><code>var regexCodePoint = 
+/[^\uD800-\uDFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDFFF]/g;
+</code></pre>
+
+<h5>（7）正则匹配BUG及SOLUTION</h5>
+<p>正则表达式中，.可以匹配一个字符，但字符<img src="http://i.imgur.com/l10HAE2.png" />是两个字符，所以在匹配时会遇到问题：</p>
+<p><img src="http://i.imgur.com/XUqfzy5.png" /></p>
+<h6>正则匹配方案</h6>
+<p>我们先来看看如何匹配17个像限的所有字符：</p>
+<p><img src="http://i.imgur.com/nWY2f3a.png" /></p>
+<p>没错！，就是这么复杂。该正则表达式可以分成4个部分，第一部分表示BMP像限的所有字符，第二部分表示星际像限的字符（Surrogate pairs），第三部分表示匹配星际像限丧妻（half Surrogate pairs,丢失前一半）字符，第四部分表示匹配星际像限丧夫（half Surrogate pairs,丢失后一半）字符。
+有个匹配任意字符的正则表达式，当然也可以根据需求写出匹配星际像限特定字符的表达式，这里不再赘述。</p>
+<h6>ES6正则匹配</h6>
+<p>ES6正则匹配时，使用语法u可以简单的实现匹配星际像限的字符：</p>
+<p><img src="http://i.imgur.com/n9TIleW.png" /></p>
+<h3>五、结论</h3>
+<p>ES5及更低版本JS在Unicode处理时存在BUG，本文所列举的相关BUGS仅仅是ES5 Uincode BUGS中沧海一粟，任何与字符串操作相关的函数均可能存在响应BUG，故在应用时需要多加注意！</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
