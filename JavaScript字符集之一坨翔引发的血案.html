@@ -363,8 +363,14 @@ function countSymbols(string) {
 <p>注意，不要抖机灵，将/[\uD800-\uDBFF][\uDC00-\uDFFF]/g改为/[^\u0000-\uFFFF]/g。因为星际像限的Unicode转义序列是用Surrogate pairs表示的，而不是直接用<strong>原始码点</strong>表示的。</p>
 <h6>ES6实现方案</h6>
 <p>因为ES6实现了对Unicode较好的支持，所以可以通过ES6 Array.form语法将字符分割成数组，再计算数组的方法实现计算字符串的长度：</p>
-<pre><code>function countSymbols(string) {
-    return [...string].length;
+<pre><code>function countSymbols(str) {
+    return Array.from(str).length;
+}
+</code></pre>
+
+<p>当然也可以使用...扩展运算符来完成：</p>
+<pre><code>function countSymbols(str) {
+    return [...str].length;
 }
 结果同上。
 </code></pre>
