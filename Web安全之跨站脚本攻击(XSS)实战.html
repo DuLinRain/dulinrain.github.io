@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Web安全之跨站脚本攻击(XSS)实战</title>
+<title>Web安全之跨站脚本攻击(XSS)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 /* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
@@ -315,7 +315,12 @@ img {
 <p><img src="http://i.imgur.com/xQTeJIH.png" /></p>
 <p>随后我们查看云平台的日志，只要有用户访问该页面，它就会拿到该用户的cookie。部分日志如下：</p>
 <p><img src="http://i.imgur.com/Es2By2e.png" /></p>
-<p>获取cookie已经可以算作到了一个很有威胁的地步了，它不仅影响当前网页，可能还会影响整个站点，后续还可以完成更多可怕的事情。</p>
+<p>拿到的Cookie中有一个SESSION_ID字段，我们可以通过这个ID，在不登录的情况下，访问后端需要登录授权的接口，PHP脚本如下：</p>
+<p><img src="http://i.imgur.com/fMjQ3u6.png" /></p>
+<p>得到的结果如下：</p>
+<p><img src="http://i.imgur.com/WCJhXNF.png" /></p>
+<p>我们成功的拿到了某个接口的数据。
+获取cookie已经可以算作到了一个很有威胁的地步了，它不仅影响当前网页，可能还会影响整个站点，后续还可以完成更多可怕的事情。</p>
 <h3>四、结论</h3>
 <p>XSS实际上是前端开发中遇到的一个很普遍很普遍的一个问题，一方面，前端开发人员应该采用有效的防御手段（XSS Filters等）来进行防范，另一方面，由于前端是不可信的，前端是可以被绕过的，所以最终的防御还得依靠后端进行转义、过滤等等行为才能确保Web应用较好的安全性。</p>
 
