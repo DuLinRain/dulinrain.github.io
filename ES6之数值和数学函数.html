@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ES6之数值和数学函数</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之数值和数学函数</h2>
+<h3>一、概述</h3>
+<p>相较于ES5，ES6对数值做了一定的改进，主要体现在一下几点：</p>
+<ol>
+<li>增加了对二进制，八进制的支持。<code>ES5只支持十进制和十六进制表示</code>。</li>
+<li>为全局对象Number增加了一些新的属性。比如说Number.EPSILION。<code>ES5在浮点数比较时存在较大问题</code></li>
+<li>可以判断数值是否超过最大表示范围。<code>JS的合法范围也挺有意思</code></li>
+</ol>
+<h3>二、ES6数值</h3>
+<h4>2.1、新增二进制、八进制支持</h4>
+<p>我们知道，ES5中，只实现了对十进制（直接书写数值）、十六进制的支持（前缀0x或0X），对二进制（前缀0b或0b）、八进制（前缀0o或0O）则不支持。比如：</p>
+<p><img src="http://i.imgur.com/5ASj9GU.png" /></p>
+<p>注意，在某些浏览器下，你可能会看到这样的结果：</p>
+<p><img src="http://i.imgur.com/URdZn1K.png" /></p>
+<p>这是因为这些浏览器已经实施了ES6的结果，为了方便的查看哪些是ES5的，哪些是ES6的，建议在IE浏览器下测试。目前大部分IE浏览器都没有实施ES6。</p>
+<h4>2.2、进制转换</h4>
+<h5>2.2.1、十进制转任意进制（toString）</h5>
+<p>ES5中就已经存在Number.prototype.toString(radix)方法，将十进制转换成任意进制。这个函数在ES6中没有改变。</p>
+<p><img src="http://i.imgur.com/eejwOST.png" /></p>
+<p>注意，如果前面是数字，那么需要加上（）号。</p>
+<h5>2.2.2、任意进制转十进制（parseInt）</h5>
+<p>ES5中就已经存在全局的parseInt(string,radix?)方法用于将string作为radix转换为十进制。在ES6中仍然没有改变。只是parseInt()方法在ES6中<strong>不再是全局方法</strong>，而是作为<strong>Number对象的方法</strong>了。但是你仍然可以以全局方法的形式使用，因为这是兼容的。</p>
+<p>ES5和ES6中的parseInt都<strong>只支持string参数为十进制（直接书写数值）或十六进制（前缀0x或0X）</strong>，而不支持string参数为二进制（前缀0b或0b）和八进制（前缀0o或0O）。这<strong>并不意味</strong>着parseInt不支持二进制和八进制。</p>
+<p><img src="http://i.imgur.com/hye3OZi.png" /></p>
+<h6>parseInt（）的解析规则</h6>
+<p>parseInt的解析规则比较特别。
+一般情况下，parseInt()解析时，当radix小于等于10时，都是碰到string参数的第一个非数字元素时终止。比如：</p>
+<p><img src="http://i.imgur.com/nJSPeuw.png" /></p>
+<p>但是，parseInt对十六进制的解析有着<strong>特殊的支持</strong>。前面说了，parseInt不识别string参数为0b前缀和0O前缀，但是为什么能识别0x前缀呢？因为当parseInt遇到string参数有0x前缀的时候，当radix参数满足以下条件时，会删掉ox前缀：</p>
+<ol>
+<li>radix本身被设置为16</li>
+<li>radix没有设置，或设置为0，则设置radix为16</li>
+</ol>
+<p>当按16进制解析时，如下：</p>
+<p><img src="http://i.imgur.com/7OaRg81.png" /></p>
+<p>实际上是按照这样来解析的：</p>
+<p><img src="http://i.imgur.com/DcxIHWH.png" /></p>
+<p>也就是说，parseInt支持16进制解析只不过是因为它针对0x前缀有一套特殊的解析规则。</p>
+<h4>2.2.3、Number()实现二进制、八进制、十六进制转十进制</h4>
+<p>前面说到，parseInt不识别0b、0o前缀，要想用parseInt将二进制和八进制转为十进制必须先将前面的0b、0o前缀去掉。这样是比较麻烦的。而Number()则可以直接将带前缀的字符串转换成十进制，如下：</p>
+<p><img src="http://i.imgur.com/cstFz8E.png" /></p>
+<h4>2.3、新的静态属性</h4>
+<p>ES6将ES5中与数值有关的四个全局函数：<code>parseInt、parseFloat、isFinite、isNaN</code>都挂在了Number上。它们的使用方法与原来<strong>几乎</strong>完全一样。为什么会说<strong>几乎<strong>呢？因为ES6对</strong>isFinite</strong>和<strong>isNaN</strong>动了动手脚！那就是，他们都不会将参数隐式转换为Number。</p>
+<h5>2.3.1、Number.isFinite(number)</h5>
+<p>在ES5中，isFinite会将参数隐式转换为Number类型，而在ES6中不会。如下：</p>
+<p><img src="http://i.imgur.com/GavCWyD.png" /></p>
+<p>ES5和ES6中的isFinite都会认为Infinity、-Infinity、NaN为false。这个是正常的。</p>
+<p><img src="http://i.imgur.com/7fU3SJi.png" /></p>
+<h5>2.3.2、Number.isNaN(number)</h5>
+<p>在ES5中，isNaN会将参数隐式转换为Number类型，而在ES6中不会。如下：</p>
+<p><img src="http://i.imgur.com/nbhKsxK.png" /></p>
+<p>注意，在任何时候判断一个东西是不是NaN都不能用===号，因为这在遇到NaN===NaN时会导致错误的结果，如下：</p>
+<p><img src="http://i.imgur.com/Ma7JsyT.png" /></p>
+<h4>2.4、新增Number.EPSILON</h4>
+<p>在JS中，处理带小数的十进制的时候舍入误差常常会导致令人惊讶的结果，比如：</p>
+<p><img src="http://i.imgur.com/QINNzjg.png" /></p>
+<p>ES6中，Number.EPSILON是一个非常非常小的数，当两个数之间的差值小于Number.EPSILON时，可以认为这两个数相等。</p>
+<p><img src="http://i.imgur.com/7WgSwDw.png" /></p>
+<h4>2.5、新增Number.isInteger(number)</h4>
+<p>我们都知道，JS中有<strong>只有一种数值类型，那就是浮点型</strong>,不管他们是带不带小数点的。ES6提供了一个Number.isInteger方法用于判断某个number是不是所谓的Integer，也就是是不是不带小数点。</p>
+<p><img src="http://i.imgur.com/q8IMrSX.png" /></p>
+<h4>2.6、新增Number.isSafeInteger(number)、Number.MAX<em>SAFE</em>INTEGER、Number.MIN<em>SAFE</em>INTEGE</h4>
+<p>我们知道，JS中的数值是有范围的，其范围为53位有符号数。也就是说在<img src="http://i.imgur.com/ldzp6oK.png" />范围内的数值都是有效的，超过这个范围的数值为无效数值，对无效数值进行操作将导致异常结果。</p>
+<p>ES6提供了一个Number.isSafeInteger(number)函数用于判断一个数值是否在有效范围之内。还提供了两个静态属性Number.MAX<em>SAFE</em>INTEGER、Number.MIN<em>SAFE</em>INTEGE表示最大值和最小值。</p>
+<p>数值运算时，只有当操作符两边的数值都是有效数值，结果也在有效数值范围内时，结果才是有效的，否则都是无效的。</p>
+<p><img src="http://i.imgur.com/LAVD40X.png" /></p>
+<h3>三、ES6新增数学函数</h3>
+<h4>3.1、Math.sign(x)</h4>
+<p>ES6新增了很多数学函数，Math.sign用于判断数值的符号，正数返回1，负数返回-1，<strong>0返回0，NaN返回NaN,Infinity返回1，-Infinity返回-1</strong>。如下：</p>
+<p><img src="http://i.imgur.com/pDJCpEZ.png" /></p>
+<h4>3.1、Math.trunc(x)</h4>
+<p>Math.trunc(x)用于去掉小数点及其后面的小数部分，返回整数部分。</p>
+<p><img src="http://i.imgur.com/EAghc6r.png" /></p>
+<p>自己实现的话，则可以这样：</p>
+<p><img src="http://i.imgur.com/Krd73UU.png" /></p>
+<h4>3.1、Math.cbrt(x)</h4>
+<p>对x开三次方，没什么好说的</p>
+<h3>四、更高精度的JS数值</h3>
+<p>当我们想要更高精度的数值的话，我们怎么办呢？这里可以使用第三方库<a href="https://github.com/MikeMcl/decimal.js" title="decimal.js">decimal.js</a>来实现。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
