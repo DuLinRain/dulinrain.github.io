@@ -28,7 +28,7 @@
 	   <nav><button>CSS</button><button>DOM</button><button>HTML</button><button>HTTP</button><button>JavaScript</button><button>MySQL</button><button>PHP</button><button>Unicode</button><button>jQuery</button><button>meta</button><button>performance</button><button>security</button></nav>
 	   <ol class="archive filter-active">
 		<li class="show" v-for='article in articles'>
-			<a href={{article.link}} rel="bookmark">
+			<a v-bind:href="article.link" rel="bookmark">
 			<span class='tags'>
 			<b v-for='tag in article.tags'>{{tag}}</b>
 			</span>
