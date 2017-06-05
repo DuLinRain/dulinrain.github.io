@@ -27,14 +27,14 @@
 	   <p>我一生的嗜好,除了写代码混口饭吃之外,就是读书,我一天不读书,就不能够生活.</p>
 	   <nav><button>CSS</button><button>DOM</button><button>HTML</button><button>HTTP</button><button>JavaScript</button><button>MySQL</button><button>PHP</button><button>Unicode</button><button>jQuery</button><button>meta</button><button>performance</button><button>security</button></nav>
 	   <ol class="archive filter-active">
-		<li class="show" v-for='article in articles'>
-			<a v-bind:href="article.link" rel="bookmark">
-			<span class='tags'>
-			<b v-for='tag in article.tags'>{{tag}}</b>
-			</span>
-			{{article.title}}
-			</a>
-		</li>
+  		<li class="show" v-for='article in articles'>
+  			<a v-bind:href="article.link" rel="bookmark">
+  			{{article.title}}
+  			<span class='tags'>
+  			<b v-for='tag in article.tags'>{{tag}}</b>
+  			</span>
+  			</a>
+  		</li>
 	   </ol>
 	  </section>
 	  <footer>© 1991—2017 DuLinRain</footer>
@@ -69,7 +69,7 @@
   			{title:'JavaScript设计模式（行为型）之策略模式',tags:['JavaScript','设计模式'],link:'./JavaScript设计模式（行为型）之策略模式.html'},
   			{title:'JavaScript设计模式（行为型）之承诺模式',tags:['JavaScript','设计模式'],link:'./JavaScript设计模式（行为型）之承诺模式.html'},
   			{title:'ES6之数值和数学函数',tags:['JavaScript','ES6'],link:'./ES6之数值和数学函数.html'},
-
+        {title:'ES6之箭头函数',tags:['JavaScript','ES6'],link:'./ES6之箭头函数.html'}
   		]
   	}
   });
