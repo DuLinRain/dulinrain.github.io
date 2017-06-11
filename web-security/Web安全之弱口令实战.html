@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Web安全之弱口令实战</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>Web安全之弱口令实战</h2>
+<h3>一、概述</h3>
+<p>在安全领域有一个重要的分支叫弱口令，按照百科的解释，弱口令(weak password) 没有严格和准确的定义，通常认为容易被别人（他们有可能对你很了解）猜测到或被破解工具破解的口令均为弱口令。
+比如在一些管理后台，用户名和密码通常都设置为admin或admin123或其它易于猜解的字符，还有些人喜欢用自己的名字作为登录名，自己的生日或其它信息作为密码。这些都属于弱口令。</p>
+<p>最最普遍出现弱口令的地方是某些提供<strong>默认密码或初始密码</strong>的系统里，这类系统在高校的<strong>图书馆系统<strong>、</strong>个人信息系统</strong>里最为常见。这类系统常常提供的登陆用户名为学生学号，初始密码同样为学号或者身份证后六位。系统常常会提示用户，第一次登陆进去之后一定要修改初始密码。但是也有很多用户并未去修改初始密码，这样常常会给黑客带来可乘之机。</p>
+<h3>二、如何挖掘弱口令</h3>
+<p>对于概述中所说的用户名和密码都为学号的弱口令，其实挖掘方法很简单，只需要知道这个学号的学生学号就可以了。如果攻击者就是该学校的学生，那么久不用费什么劲了。如果攻击者事前不知道该学校学生学号，那么如何弄学生学号呢？有一下几种办法：</p>
+<ol>
+<li>1、找个该学校的人问问</li>
+<li>2、从公开的各种获奖名单之类查询</li>
+<li>3、从该学校公开资料查询</li>
+</ol>
+<p>第二种和第三种都有一丁点web安全中另一分支---社会工程学的味道，就是需要搜集大量信息来提取有用信息，但第二种和第三种还是有点区别的，主要体现在：</p>
+<p>第二种往往出现的场合是：该校的某次竞赛获、某活动、或某次考试安排被上传到了公开的互联网上，而这些文件恰好包含学生的学号、身份证号等信息。</p>
+<p>第三种出现的场合是：大部分学校或者单位，他们的学号或者工号都有一定的规范，哪几位代表什么意思，比如，某个单位的学号构成如下：</p>
+<p>ABCDEFGHLY</p>
+<p>其中，前2位用来区分本科、学硕、专硕、博士，中4位用来表示入学年份，后四位代表编号</p>
+<p>那么整个学校所有学生的学号就可以被猜解出来了。如果某系统存在上述用户名和密码都是学号的弱口令漏洞，那么就可以被利用了。</p>
+<p>对于较复杂的弱口令漏洞，则可以利用弱口令字典来尝试，很多自动化渗透工具采用的就是弱口令字典来完成渗透的。</p>
+<h3>三、弱口令实战</h3>
+<p>本文以某高校的教务管理系统存在的一个简单的弱口令为例来讲解弱口令带来的危害。其它复杂的弱口令建议用弱口令字典去尝试。</p>
+<p>在某高校的教务管理系统存在着如下登录入口：</p>
+<p><img src="http://i.imgur.com/8ulHrww.png" /></p>
+<p>我们猜测，该入口可能存在弱口令，并且用户名和初始密码都是学号，那么怎么获取学号呢？我们不是该校学生，也从互联网上没有搜集到相关信息，但是！！！我们在该校自己的网站上找到了一份“学号编制办法”。如下：</p>
+<p><img src="http://i.imgur.com/Mc9SVHu.png" /></p>
+<p>我们按照该学号编制办法可以枚举出所有可能的学生学号，然后可以逐个测试，看能否登录。这里我们随便挑选一个测试：</p>
+<p><img src="http://i.imgur.com/Vx15Ys2.png" /></p>
+<p><img src="http://i.imgur.com/RE8oZDy.png" /></p>
+<p>可以看到，成功的登入进去了，在这个系统里，登入进去后有很多信息，包括密码都是可以修改的，所以危害还是很大的。该漏洞理论上涉及及2006年至今所有未修改初始密码的学生信息，目前该网站已下线。</p>
+<h3>四、结论</h3>
+<p>弱口令没有什么复杂的技术知识，主要在于信息搜集，信息提取，信息猜解。弱口令的防范就是不要用简单易破解的密码，及时修改初始密码，经常更新密码。弱口令的漏洞的挖掘也是非常非常无聊的、成功率很低的，如果做这方面的研究，最好使用自动化渗透测试工具。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
