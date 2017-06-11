@@ -1,0 +1,367 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ES6之Class</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之Class</h2>
+<h3>一、概述</h3>
+<p>在ES5中，常常通过function来模拟其它语言中类的概念，并且通过原型链的方式实现继承。ES6中，为类的创建提供了class语法糖，并且为类的继承提供了extends语法糖。类的定义和类的继承可表示为如下：</p>
+<p><img src="http://i.imgur.com/j16UUBR.jpg" /></p>
+<p>实际上，在底层，class并没有什么新鲜之处，它只是提供了一个更方便的方法来进行类的定义和派生，如果我们用typeof试一试就发现它原形毕露了。如下：</p>
+<p><img src="http://i.imgur.com/mZZTNiN.jpg" /></p>
+<h3>二、ES6 Class本质</h3>
+<h4>2.1、类名不可以被按照函数形式调用</h4>
+<p>由概述中描述可知，ES6中的class本质上仍然是函数，但是ES6中的Class与ES5中的函数的一个重要区别是：<strong>class名不能被按照函数形式调用，而ES5中的类名可以被按照函数的形式被调用</strong>。如下：</p>
+<p><img src="http://i.imgur.com/jSmuQwx.jpg" /></p>
+<h4>2.2、类声明不存在提升</h4>
+<p>我们知道，在ES5中，变量声明<strong>存在</strong>提升，函数声明也<strong>存在<strong>提升，函数表达式</strong>不存在</strong>提升。如下：</p>
+<p><img src="http://i.imgur.com/r5H87u7.jpg" /></p>
+<p>在ES6中，类声明也<strong>不存在</strong>提升。如下：</p>
+<p><img src="http://i.imgur.com/nhi6adh.jpg" /></p>
+<p>类不允许提升的原因在于，类后面可能会存在一个extends语句，该语句可能是任意一个表达式，而这个表达式的值必须在合适的位置被评估（evaluated）,而这个评估过程不允许被提升。</p>
+<p>类不允许提升是不是意味着我们不可能在类定义之前使用类呢？不是的。我们仍然可以在类定义之前使用类，但这个“使用”更多意义上是引用，真正有关类的代码的执行还是必须在类定义之后才可以。来看看下面例子：</p>
+<p><img src="http://i.imgur.com/fWV2bqk.jpg" /></p>
+<h4>2.3、类表达式</h4>
+<p>与函数声明和函数表达式类似，类也存在类声明和类表达式。前面的例子都是类声明，下面看一个类表达式的例子，如下：</p>
+<p><img src="http://i.imgur.com/4vdgo71.jpg" /></p>
+<h3>三、class内部</h3>
+<p>class内部只允许包含方法，不允许包含数据属性（不是指constructor内部用this定义的属性），如果在class内部包含数据属性将被视为“反模式”。</p>
+<h4>3.1、构造方法、静态方法、属性方法</h4>
+<p>一个类中通常包含这三种方法，如下：</p>
+<p><img src="http://i.imgur.com/rhSaSBr.jpg" /></p>
+<p>注意，<strong>定义静态方法的方式就是在成员方法的前面加上&quot;static&quot;字样</strong>。</p>
+<p>它整个内部的实现长这样：</p>
+<p><img src="http://i.imgur.com/xEUu4ea.jpg" /></p>
+<p>其实它和ES5中的实现原理是一样的，主要是实现了下面这几个关系：</p>
+<p><img src="http://i.imgur.com/BQoLxd8.jpg" /></p>
+<h4>3.2、静态数据属性</h4>
+<p>前面定义了构造函数方法、成员方法、静态方法，我们还可以定义静态数据属性，有两种方法：</p>
+<h5>（1）、直接将数据挂在类名上</h5>
+<p><img src="http://i.imgur.com/8jfTEbE.jpg" /></p>
+<h5>（2）、使用静态get方法</h5>
+<p><img src="http://i.imgur.com/EF5xedw.jpg" /></p>
+<h3>3.3、ES6中的getter和setter</h3>
+<p>ES6中的getter和setter与ES5中的用法是一样的，如下：</p>
+<p><img src="http://i.imgur.com/6xhbAan.jpg" /></p>
+<h3>3.4、计算方法名称</h3>
+<p>ES6支持方法的名称是一个计算表达式，你需要把它放在一个方括号内，如下：</p>
+<p><img src="http://i.imgur.com/1cNe5Dg.jpg" /></p>
+<p>ES6中有一些特殊的方法，他们的键为symbol，计算方法名称使得定义这样的方法称为可能。例如，如果一个对象有一个Symbol.iterator方法，那么它就是可遍历的（iterable），意味着可以通过for - of 遍历。</p>
+<p><img src="http://i.imgur.com/NanGViG.jpg" /></p>
+<h3>3.5、Generator方法</h3>
+<p>在普通函数前面加上一个星号（*）就可以定义一个Generator函数，Generator函数在定义键为Symbol.iterator的函数非常有用，如下：</p>
+<p><img src="http://i.imgur.com/rBEmPIB.jpg" /></p>
+<h3>四、派生类（子类）</h3>
+<p>ES6中extends语法糖用来创建派生类，其用法如概述中所述，这里重写如下：</p>
+<p><img src="http://i.imgur.com/j16UUBR.jpg" /></p>
+<p>可以看到里面用到了super函数，需要注意的是，super函数只能在以下两种场合使用：</p>
+<ol>
+<li>用在类的构造方法（constructor）里面，作用是调用父类的构造函数</li>
+<li>用在类或者对象字面量的方法（该方法带不带static无所谓）里面，作用是调用父类的属性或方法</li>
+</ol>
+<h4>4.1、子类的原型是父类</h4>
+<p>子类的原型是父类，如下：</p>
+<pre><code>Object.getPrototypeOf(ColorPoint)===Point
+true
+</code></pre>
+
+<p>这意味着静态方法也是可以继承的，如下：</p>
+<p><img src="http://i.imgur.com/iHIF1dL.jpg" /></p>
+<p>你也可以在派生类中通过super调用静态方法：</p>
+<p><img src="http://i.imgur.com/ukM5J36.jpg" /></p>
+<p>注意，在普通函数中调用静态函数会报错哦，这点和C++很相似呢，如下：</p>
+<p><img src="http://i.imgur.com/1DOvVMj.jpg" /></p>
+<h4>4.1、调用父类的构造函数</h4>
+<p>未完待续。。。。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
