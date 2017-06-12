@@ -359,7 +359,54 @@ true
 <p><img src="http://i.imgur.com/ukM5J36.jpg" /></p>
 <p>注意，在普通函数中调用静态函数会报错哦，这点和C++很相似呢，如下：</p>
 <p><img src="http://i.imgur.com/1DOvVMj.jpg" /></p>
-<h4>4.1、调用父类的构造函数</h4>
+<h4>4.1、调用父类的constructor</h4>
+<p>在子类中，你<strong>必须</strong>先调用super()，然后才可以使用this。否则将报错。如下：</p>
+<p><img src="http://i.imgur.com/JrzDSml.jpg" /></p>
+<p>在派生类中，如果定义了constructor，但是在constructor里面没有调用super也会报错。如下：</p>
+<p><img src="http://i.imgur.com/HXwzIA2.jpg" /></p>
+<p>在派生类中，不定义constructor，也就是采用默认的constructor，那么不调用super是可以的，具体原因稍后解释。如下：</p>
+<p><img src="http://i.imgur.com/WaLQ5oY.jpg" /></p>
+<p>也就是说，派生类中，只要有显式的constructor，就必须先调用super。</p>
+<h4>4.2、覆盖constructor的结果</h4>
+<p>你可以通过返回一个对象覆盖constructor的返回结果。如果你覆盖constructor的结果，那么你在constructor中调不调用super就无所谓了。如下：</p>
+<p><img src="http://i.imgur.com/7Wp3lDR.jpg" /></p>
+<h4>4.3、默认构造函数</h4>
+<p>如果你没有显示提供constructor，那么类将会有默认的constructor。但是对于基类和派生类，它们默认的constructor是不一样的。如下：</p>
+<p><img src="http://i.imgur.com/j6UNItL.jpg" /></p>
+<p>可以看到，派生类的默认constructor里面调用了super，这也就解释了为什么在4.1中省略constructor之后，虽然没调用super，也不报错。</p>
+<h4>4.4、从内建（原生）构造函数继承</h4>
+<p>我们知道，虽然ES5也可以从内建构造函数继承，但是却有很多限制，准确的说，没有多大效果，甚至存在bug。在ES6中，你可以得到完全的继承效果。如下：</p>
+<p><img src="http://i.imgur.com/GiUM9f2.jpg" /></p>
+<p><img src="http://i.imgur.com/KLRbWK3.jpg" /></p>
+<p>至于为什么ES5中会存在毛病，我们稍后解释。</p>
+<h3>五、详解类</h3>
+<p>官方文档中关于类语法的详细定义如下：</p>
+<p>上面有两点值得注意的地方：</p>
+<ol>
+<li>extends后面可以跟任意的表达式</li>
+<li>方法与方法之间是可以加分号（;）的，当然也可以不加</li>
+</ol>
+<h4>5.1、多重检查</h4>
+<ol>
+<li>constructor只能用作普通函数的名字（前面加上static是可以的），不可以用做getter、setter、generator.</li>
+<li>类不允许当做函数调用</li>
+<li>原型方法不能被当做构造函数</li>
+</ol>
+<p><img src="http://i.imgur.com/QfbMCy8.jpg" /></p>
+<p><img src="http://i.imgur.com/CXz7F0s.jpg" /></p>
+<p><img src="http://i.imgur.com/O6XgbdK.jpg" /></p>
+<p><img src="http://i.imgur.com/ThTEE1l.jpg" /></p>
+<p><img src="http://i.imgur.com/m4ABEZ7.jpg" /></p>
+<h4>5.2、属性特征</h4>
+<p>对于某个类Foo,的属性有如下特征：</p>
+<ol>
+<li>静态方法（Foo.*）都是可写的（writable）、可配置的（configurable）、不可枚举（not enumerable）。可写意味着可以动态补丁(dynamic patching)</li>
+<li>构造函数以及构造函数原型对象拥有不变的联系：</br>Foo.prototype是不可写的、不可配置、不可枚举的</br>Foo.prototype.constructor是不可写的、不可配置、不可枚举的</li>
+<li>原型方法Foo.prototype.* 是可写的（writable）、可配置的（configurable）、不可枚举（not enumerable）的。</li>
+</ol>
+<p>注意，对象字面量中定义的方法是可以枚举的。如下：</p>
+<p><img src="http://i.imgur.com/2mDd4hm.jpg" /></p>
+<h3>六、派生类详解</h3>
 <p>未完待续。。。。</p>
 
 </body>
