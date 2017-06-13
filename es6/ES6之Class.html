@@ -407,7 +407,78 @@ true
 <p>注意，对象字面量中定义的方法是可以枚举的。如下：</p>
 <p><img src="http://i.imgur.com/2mDd4hm.jpg" /></p>
 <h3>六、派生类详解</h3>
-<p>未完待续。。。。</p>
+<p>同样以最初的例子详细讲解派生类的内容，复写如下：</p>
+<p><img src="http://i.imgur.com/wrRAKNu.jpg" /></p>
+<p>其得到的结构如下：</p>
+<p><img src="http://i.imgur.com/h4eI1e4.png" /></p>
+<p>注意，<strong>静态方法也被继承了</strong>。</p>
+<h4>6.1、原型链</h4>
+<p>它的内部仍然是按原型链来实现的，具体内部原理如下：</p>
+<p><img src="http://i.imgur.com/1foIsyu.jpg" /></p>
+<p>这个其实主要实现了下面几个东西：</p>
+<p><img src="http://i.imgur.com/Cb0auTl.jpg" /></p>
+<p>主要包括左边的原型链和右边的原型链。左边的原型链是的静态属性得以被继承下来。</p>
+<h4>6.2、分配和初始化实例</h4>
+<p>ES6中，构造函数之前的数据流与ES5中的经典模式有所不同。</p>
+<p>ES6中，基类的this在进入构造函数之前就有了，它是通过调用<code>Object.create(类名.prototype)</code>的方式实现的。如下：</p>
+<p><img src="http://i.imgur.com/21P16hY.jpg" /></p>
+<p>为了避免将类名硬编码在其中，我们常常使用<code>new.target</code>代替。如下：</p>
+<p><img src="http://i.imgur.com/fjBkVyC.jpg" /></p>
+<p>而派生类中，this最开始是处于未初始化状态（uninitialized），只有在constructor中调用了super之后，this才被指定。如下：</p>
+<p><img src="http://i.imgur.com/ZdX1LkU.jpg" /></p>
+<p>ES6和ES5中实例对象是在不同的位置被创建的：</p>
+<ol>
+<li>在ES6中，它创建于基类的构造函数，处于constructor调用链的末端</li>
+<li>在ES5中，它创建于new操作符的位置，处于constructor调用链的首端</li>
+</ol>
+<p>前面的代码有使用了ES6中的两处新特性：</p>
+<ol>
+<li><code>new.target</code>是所有函数都拥有的隐含参数。它之于构造函数调用而言就相当于this之于方法调用（It is to constructor calls what this is to method calls）。</br>
+  （1）、如果一个构造函数被直接通过new调用，那么new.target的值就是那个构造函数。比如代码（B）处，其实new.target指向ColorPoint</br>
+  （2）、如果一个构造函数是通过super来调用的，那么它的值是执行这次调用的那个constructor的new.target。比如代码（A）处，new.target指向Point</br>
+  （3）、在普通函数调用中，new.target的值是undefined。这意味着，你可以使用new.target来判断某个函数是被普通调用还是被new调用
+  （4）、在箭头函数中，new.target指向它外围的非箭头函数的new.target</br></li>
+<li>Reflect.construct让你可以通过最后一个参数指定new.target来调用constructor。</li>
+</ol>
+<h4>6.3、安全检查</h4>
+<ol>
+<li>this在派生类中最开始是未被初始化的。这就意味着在调用super之前尝试使用this都将会抛出错误</li>
+<li>一旦this被初始化，再次调用super将会抛出错误。这意味着你不允许多次调用super</li>
+<li>如果一个cinstructor返回值不明显（无return语句），那么默认return this。如果this未被初始化，那么将会抛出错误。则可以防止你忘了调用super</li>
+<li>如果一个constructor明确的返回了非对象(non-object)或者null、undefined，那么仍然会返回this</li>
+<li>如果一个constructor明显的返回了一个对象，那么将把这个对象作为结果。这时，this有没有初始化都无所谓了。</li>
+</ol>
+<h4>6.4、extends 语句</h4>
+<p>让我们来看看extends语句如何影响class被设置。extends语句可以是任意表达式，但表达式的值必须是可构建的（constructable）（可以通过new调用）。虽然null也是不可构建的，但是尽管如此，null却是可以作为extends表达式返回值得，这是一个特例。</p>
+<p>我们看看几种场景：</p>
+<p><img src="http://i.imgur.com/rW8I7VR.jpg" /></p>
+<p><strong>注意</strong>，只有基类和直接从Object派生的效果是一模一样的，但是它们其实是有一些细微的差别的。
+只有基类时，它是基类，this实例是有构造函数自身指定的（this = Object.create(new.target.prototype)）。而从Object派生的话，它是派生类，this是通过基类Object搞到的。</p>
+<p>前面说了extends后面的返回值也可以是null，这是一个特例，我们看看它长什么样：</p>
+<p><img src="http://i.imgur.com/AufY9lz.jpg" /></p>
+<p>尽管这样定义是不会报错的，但是这样定义的类是无法使用的，只要生成实例就会报错。如下：</p>
+<p><img src="http://i.imgur.com/S2Mgq3Z.jpg" /></p>
+<h3>七、为什么再ES5中不能从内建构造函数中派生出类？</h3>
+<p>前面讲了，从内建构造函数（比如Array）中派生出自己的类，使用起来会达不到效果，如下：</p>
+<p><img src="http://i.imgur.com/GiUM9f2.jpg" /></p>
+<p>这是因为从从内建的构造函数中派生自己的类的话存在两个障碍（坑）：
+1. 初始化。<code>Array.call(this,len)</code>这句话中的<code>this</code>被完全忽略了。这就意味着，你不能够用Array去设置由MyArray产生的实例。
+2. 分派。由Array生成的实例对象是exotic（特异的）的（exotic这个词是ES标准中用来描述一些特殊对象的，这些特殊对象有着普通对象没有的属性。比如Array对象拥有length属性，这个属性可以跟踪和影响Array元素的操作，exotic对象可以通过构造函数创建，但是不允许建一个普通对象转换为exotic对象）。很不幸，这就是<code>Array.call(this,len)</code>正在干的事，它尝试着把普通对象this（由MyArray创建）转换为exotic对象（Array）。</p>
+<p>ES6是可以从内建构造函数派生子类的，如下：</p>
+<p><img src="http://i.imgur.com/KLRbWK3.jpg" /></p>
+<p>因为ES6成功的规避了上面两个障碍。如下：</p>
+<ol>
+<li>分配。ES6的分配发生在基类，这意味着Array可以分配一个exotic对象，这中间不存在从普通对象到exotic对象的转换。</li>
+<li>初始化。ES6中初始化仍然发生在基类，派生类拿到的this仍然是直接从基类拿到的，而不是把自己的this传过去让基类转换。</li>
+</ol>
+<h3>八、关于super</h3>
+<h4>8.1、哪些地方可以使用super</h4>
+<ol>
+<li>super只能用在<strong>对象字面量</strong>或者<strong>类定义</strong>里面的方法中（方法可以是静态的也可以不是）。</li>
+<li>super不能用在函数定义（function declaration）、函数表达式（function expression）以及生成器函数（generator function）中。</li>
+</ol>
+<h4>8.2、如果一个方法里面调了super,那么这个方法将不能被移除</h4>
+<p>如果一个方法里面调了super,那么这个方法将不能被移除，因为他里面的内部属性[[HomeObject]]绑定在创建它的对象。如果你尝试将它赋给另外一个东西，它将仍然指向原来的[[HomeObject]]</p>
 
 </body>
 </html>
