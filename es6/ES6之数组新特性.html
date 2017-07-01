@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ES6之数组新特性</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之数组新特性</h2>
+<h3>一、概述</h3>
+<h4>1.1、新增静态方法</h4>
+<p>ES6新增了两个静态方法from和of，其签名分别如下</p>
+<ol>
+<li>Array.from(arrayLike, mapFun?, thisArgs ?)</li>
+<li>Array.of(...items)</li>
+</ol>
+<h4>1.2、新增原型方法</h4>
+<h5>（1）迭代方法</h5>
+<ol>
+<li>Array.prototype.keys()</li>
+<li>Array.prototype.valus()</li>
+<li>Array.prototype.entries()</li>
+</ol>
+<h4>（2）元素查找方法</h4>
+<ol>
+<li>Array.prototype.find(predicate, thisArg?)</li>
+<li>Array.prototype.findIndex(predicate, thisArg?)</li>
+</ol>
+<h4>（3）其它方法</h4>
+<ol>
+<li>Array.prototype.copyWithin(target, start, end=this.length) 扩增数组</li>
+<li>Array.protetype.fill(value, start=0, end=this.length)</li>
+</ol>
+<h3>二、新增静态方法</h3>
+<p>Array新增了两个静态方法Array.from 和 Array.of</p>
+<h4>2.1、Array.from(arrayLike, mapFun?, thisArgs ?)</h4>
+<p>Array.from()的基本功能是将两种类型的对象转换成数组：</p>
+<ol>
+<li><strong>类数组（Array-Like Object）</strong>。类数组拥有length属性和元素。argumens以及DOM操作结果document.getElementsByClassName()都是类数组。这对于我们将这种类型的数组转换成普通数组非常有帮助，我们不再需要使用传统的slice来操作了</li>
+<li><strong>可迭代对象（iterable object）</strong>。可迭代对象的元素可以一个一个获取，Array本身是可迭代的，ES6中很多都是可迭代的，包括Map和Set</li>
+</ol>
+<h5>2.1.1 使用Array.from的map函数</h5>
+<p>Array.from的第二个参数可以让我们完成map类似功能，下面两个例子是等效的：</p>
+<pre><code>let names = Array.prototype.slice.call(arguments).map(x =&gt; x*2)//传统方式
+let names = Array.from(arguments, x =&gt; x*2)//ES6方式
+</code></pre>
+
+<h5>2.1.2 空洞的处理</h5>
+<p>Array.from会将空洞视为undefined,也就是说Array.from并不会略过空洞。如下：</p>
+<p><img src="http://i.imgur.com/xDdkNQb.png" /></p>
+<p>这也就意味着，我们可以结合mapFun参数来实现创建数组并初始化（类似于fill的工作）：</p>
+<p><img src="http://i.imgur.com/1K2yCvn.png" /></p>
+<h4>2.1.3 Array子类中的from</h4>
+<p>静态方法是可以继承的，这也就意味着，Array的子类也会继承父类的from方法。假如你从Array派生出了你自己的MyArray类，那么你仍然可以调用from方法将类数组转换为MyArray实例类型。</p>
+<h4>2.1、Array.of(...items)</h4>
+<p>Array.of(item0, item1.....),创建一个数组，元素是item0, item1.。。。</p>
+<p>同样Array.of也会被派生类继承</p>
+<h3>三、新增原型方法</h3>
+<h4>3.1、数组迭代方法</h4>
+<ol>
+<li>Array.prototype.keys()，返回键iterator</li>
+<li>Array.prototype.valus()，返回值iterator</li>
+<li>Array.prototype.entries()，返回键值对iterator</li>
+</ol>
+<p><strong>注意</strong>：这三个方法返回的<strong>不是数组</strong>（PHP MySQLI中也有类似东西，但它们是数组）。
+这可能咋看起来不太方便，但是，要想得到数组，有N多简单的方法啊：</p>
+<p><img src="http://i.imgur.com/HjzwhmQ.png" />
+<img src="http://i.imgur.com/c5pjkdt.png" /></p>
+<p>有人可能会说，我在for迭代的时候既想拿到value又想拿到索引index咋办？方法就是对arr.entries()进行迭代：</p>
+<pre><code>for (let {value, index} of [1,2,3].entries()) {
+  ....
+}
+</code></pre>
+
+<h4>3.2、数组查找方法</h4>
+<h5>Array.prototype.find(predicate(value, index, array), thisArg?)</h5>
+<p>find方法的第一个参数是一个函数，可以自定义匹配方法。当第一次匹配打就返回所匹配到的元素，也就是说是非贪婪的。如果没有匹配到，返回undefined</p>
+<p><img src="http://i.imgur.com/pi5QfrT.png" /></p>
+<h5>Array.prototype.findIndex(predicate(value, index, array), thisArg?)</h5>
+<p>同上，区别是返回索引，如果没有匹配到则返回-1</p>
+<p><img src="http://i.imgur.com/zlsHo2X.png" /></p>
+<h5>为什么有了indexOf还需要findIndex？</h5>
+<p>这是由于以下2个原因：</p>
+<ol>
+<li>IndexOf不支持自定义匹配函数</li>
+<li>IndexOf找不到NaN。在面试的时候经常会遇到数组去重，不考虑new Set()去重法，传统方法常常需要用到indexOf，但是indexOf由于采用===判断，会认为NaN!==NaN,导致在数组中有多个NaN时，去重比较麻烦。而findIndex是可以找到NaN的，因为我们可以自定义用is判断。</li>
+</ol>
+<p><img src="http://i.imgur.com/yvny4Zc.png" /></p>
+<p>findIndexOf会将空洞视为undefined</p>
+<p><img src="http://i.imgur.com/8lMJDF8.png" /></p>
+<h3>四、其它方法</h3>
+<h4>4.1、数组扩增方法</h4>
+<p>Array.prototype.copyWithin(target, start, end=this.length)</p>
+<p>将[start,end)范围的数组拷贝出来，然后从target位置开始填充，执行的是先拷贝，后填充：
+<img src="http://i.imgur.com/lDRuqAr.png" /></p>
+<h4>4.2、数组填充方法</h4>
+<p>Array.protetype.fill(value, start=0, end=this.length)</p>
+<p>一个有用的地方是创建数组并初始化：</p>
+<p><img src="http://i.imgur.com/HrK6kdK.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
