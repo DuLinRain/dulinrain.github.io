@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ES6之字符串新特性</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之字符串新特性</h2>
+<h3>一、概述</h3>
+<h4>1.1、新增方法</h4>
+<p>ES6字符串新增了几个方法startsWith()，endsWith(),includes(),repeat()。</p>
+<p><img src="http://i.imgur.com/ICz8mot.png" /></p>
+<h4>1.2、新增模板字面量（template literal）</h4>
+<p>ES6新增了一种新的字面量：模板字面量。支持用美元符和花括号实现内插，也支持多行文本。</p>
+<p><img src="http://i.imgur.com/CfYgLI1.png" /></p>
+<p><img src="http://i.imgur.com/d8ZuBlB.png" /></p>
+<h3>二、Unicode码点（code point）转义</h3>
+<p>ES6中，你可以指定任意码点，即使这些码点处于星际像限，关于Unicode码点相关知识，参考文章<a href="https://dulinrain.github.io/basic-javascript/JavaScript%E5%AD%97%E7%AC%A6%E9%9B%86%E4%B9%8B%E4%B8%80%E5%9D%A8%E7%BF%94%E5%BC%95%E5%8F%91%E7%9A%84%E8%A1%80%E6%A1%88.html" title="JavaScript之一坨翔引发的血案">JavaScript之一坨翔引发的血案</a></p>
+<p>对于星际像限的码点，ES5需要两个码元来表示，ES6直接使用码点就可以了：</p>
+<p><img src="http://i.imgur.com/JJYJP7m.png" /></p>
+<p>用法稍有区别，就是需要将码点用花括号括起来</p>
+<h3>三、字符串内插、多行字符串以及原始字符串字面量（raw string literal）</h3>
+<p>字符串内插和多行字符串就不赘述了，照搬前面的例子：</p>
+<p><img src="http://i.imgur.com/CfYgLI1.png" /></p>
+<p><img src="http://i.imgur.com/d8ZuBlB.png" /></p>
+<p>如果将模板字符串前面加上标签String.raw，那么字符串中的反斜线将不再有特殊意义，他们将会被转义。比如'\n'将不会导致换行。如下：</p>
+<p><img src="http://i.imgur.com/JGFlQbm.png" /></p>
+<h3>四、字符串迭代</h3>
+<h4>4.1、支持迭代</h4>
+<p>字符串也是可以迭代的，这意味着你可以使用for..of..去遍历，这也意味着你也可以使用扩展运算符将字符串转为数组。如下：</p>
+<p><img src="http://i.imgur.com/F98UkvT.png" /></p>
+<h4>4.2、支持Unicode码点迭代</h4>
+<p>迭代的时候会沿着码点的边界去分割，所以对于星际像限的字符，它是可以分割正确的。如下：</p>
+<p><img src="http://i.imgur.com/yf3Syz0.png" /></p>
+<h4>4.3、计算字符串长度</h4>
+<p>尽管支持Unicode码点格式，但并不意味着它能正确的计算出字符串的长度：</p>
+<p><img src="http://i.imgur.com/rse9Er8.png" /></p>
+<p>但因为可迭代，意味着可按码点边界正确分割，所以我们可以将它用扩展运算符转换成数组，再计算长度：</p>
+<p><img src="http://i.imgur.com/7wEXxVq.png" /></p>
+<h4>4.4、字符串反转</h4>
+<p>同样可利用可迭代这个特定实现非BMP像限（星际像限）的字符串反转：</p>
+<p><img src="http://i.imgur.com/QaawkH5.png" /></p>
+<h3>五、码点的数值</h3>
+<p>codePointAt(index)可以得到一个码点的数值，与之相反的是fromCodePoint。如下：</p>
+<p><img src="http://i.imgur.com/72Mwg27.png" /></p>
+<h3>六、检查是否包含某元素，重复某个字符串</h3>
+<p>这些在概述中都已经说过，没什么好说的了，需要注意的是startsWith,endsWith,inclueds都是带s的。</p>
+<h3>七、所有新的API</h3>
+<p><img src="http://i.imgur.com/GA26AK9.png" /></p>
+<p><img src="http://i.imgur.com/uKbTZ3q.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
