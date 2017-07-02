@@ -298,10 +298,10 @@ img {
 <p>Map用来存储键值对，Map的键可以是任意类型，这一点比JSON还是强大的：</p>
 <p><img src="http://i.imgur.com/2JGMjFc.png" /></p>
 <p>可以使用拥有[key,value]键值对的数组或者其它可迭代的东西来新建map对象。</p>
-<h4>1.2、Set</h4>
-<p>Set是包含独一无二的元素的集合，它的一个最明显的用处就是数组去重：</p>
-<p><img src="http://i.imgur.com/fU0IZmt.png" /></p>
-<p>它的牛逼之处就在于它能去重NaN和undefined</p>
+<h4>1.2、WeakMap</h4>
+<p>WeakMap不会阻止它的键被垃圾回收，这意味着可以将私有数据与对象关联，而不必担心内存泄露。也就是说可以将this作为WeakMap的键，数据作为值来构造私有数据。如下：</p>
+<p><img src="http://i.imgur.com/AJmvrJi.png" /></p>
+<p>当然WeakMap与Map还有其他区别</p>
 <h3>二、Map</h3>
 <p>JavaScript是一个强大的库，但是可惜的是缺乏一个进行值与值映射的数据结构。ES5中可以使用对象来实现，但是这种方法实际上是对对象的滥用。ES6中的Map可以使用任意值作为键。</p>
 <h4>2.1、基本操作</h4>
@@ -395,6 +395,20 @@ weakmap/key pair value can only be observed or affected by someone who has both 
 <p><img src="http://i.imgur.com/AJmvrJi.png" /></p>
 <p>WeakMap所拥有的API有下面几个：</p>
 <p><img src="http://i.imgur.com/bgUnykU.png" /></p>
+<h3>四、思考</h3>
+<h4>4.1、为什么Map的属性是size而不是length?</h4>
+<p>这是因为length一般用在可以被索引（就像数组一样）的序列中的，而size一般用在无序的数据集中的</p>
+<h4>4.2、为什么在Map中 key的比较不允许让用户可配置？</h4>
+<p>要是可配置当然好，但是由于方案实施起来太过复杂，现在已经被搁置了</p>
+<h4>4.3、当我从集合中取一个值时，取不到的时候如何提供一个默认值？</h4>
+<p>Map和Set本身不支持，但是我们可以用||来实现</p>
+<h4>4.4、什么时候我需要用Map，什么时候需要用Object？</h4>
+<p>如果你的key不是字符串，那么你只能用Map，因为Map的key可以是任意类型
+如果key就是字符串，那么推荐这样选择：</p>
+<ol>
+<li>如果key是固定的，那么选择Object</li>
+<li>如果key是变量，那么推荐Map</li>
+</ol>
 
 </body>
 </html>
