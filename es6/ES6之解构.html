@@ -1,0 +1,412 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ES6之解构</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之解构（destruction）</h2>
+<h3>一、概述</h3>
+<p>ES6支持解构，能够很方便的从数据仓库中提取数据。解构让你使用某种模式从数据仓库中提取数据。如下：</p>
+<p><img src="http://i.imgur.com/d9dg1VL.png" /></p>
+<p>f和l并不需要再次声明，因为前面已经有个let了。当然了你也可以解构数组。</p>
+<p>通常，解构可以用在下面四种场合：</p>
+<ol>
+<li>
+<p>变量声明</br></p>
+<p>let [x] = ['a'];
+var [x] = ['a'];
+const [x] = ['a'];</p>
+</li>
+<li>
+<p>赋值</p>
+<p>[x] = ['a']</p>
+</li>
+<li>
+<p>函数参数定义</p>
+<p>function f([x]){...}
+f(['a'])</p>
+</li>
+</ol>
+<p>4.for循环</p>
+<pre><code>for(let [k,v] of arr.entries)
+</code></pre>
+
+<h3>二、模式</h3>
+<h4>2.1、解构模式</h4>
+<p>对于解构，等号左边的解构模式通常被称作“解构目标（destrucuring target）”，右边的数据通常被称为“解构源（destructuring source）”</p>
+<p>解构模式通常分为三种：
+1. 赋值目标（assignment target）。通常用在变量声明和函数参数定义
+2. 对象模式（object pattern）。比如：{first: &lt;<pattern>&gt;, last: &lt;<pattern>&gt;}
+3. 数组模式（array patterm）。比如：[&lt;<pattern>&gt;, &lt;<pattern>&gt;]</p>
+<p>这意味着，解构是可以嵌套使用到任意深度的。如下：</p>
+<p><img src="http://i.imgur.com/Fl4PHs6.png" /></p>
+<h4>2.2、只提取需要的额值</h4>
+<p><img src="http://i.imgur.com/Wi6hTI5.png" /></p>
+<h3>三、模式是如何获取到数据的呢？</h3>
+<h4>3.1、对象模式隐式转换解构源为对象</h4>
+<p>对象模式在进行解构时，首先会将解构源隐式转换为对象,然后再进行解构，这意味着，对于下面的东西也是可以的：</p>
+<p><img src="http://i.imgur.com/4MYAEeo.png" /></p>
+<p>这就是由于隐式转换的结果，对于解构源是字符的（如'22'），将其转换为对象后的结果如下：</p>
+<p><img src="http://i.imgur.com/1xoEKq4.png" /></p>
+<p>因为它有length属性，所以是可以解构出来的，等效于下面这个：</p>
+<p><img src="http://i.imgur.com/0U6r12G.png" /></p>
+<p>对于解构源是数值的，道理是一样的，如下：</p>
+<p><img src="http://i.imgur.com/9pRjyVe.png" /></p>
+<h4>3.2、解构失败</h4>
+<p>前面所举的例子，隐式转换为对象是用的Object(), 但事实上，其内部隐式转换并不是用的Object，而是用的ToObject，Object()转换任意类型都不会失败，而ToObject()在遇到<code>undefined</code>和<code>null</code>时会失败。如下：</p>
+<p><img src="http://i.imgur.com/2lvWPEC.png" /></p>
+<p>所以，如果解构源是undefined的话，解构将会失败（因为内部用的是ToObject，而ToObject会失败）。如下：</p>
+<p><img src="http://i.imgur.com/QaX0xYz.png" /></p>
+<p>上面的例子根本不回去尝试获取prop属性，因为在将解构源转换成对象这一步就失败了。</p>
+<h4>3.3、数组模式利用迭代</h4>
+<p>数组模式解构时，使用迭代器去解构源获取数据，也就是说，你可以解构任何可以迭代的数据。比如说，字符串是可以迭代的，如下：</p>
+<p><img src="http://i.imgur.com/hreSJJ4.png" /></p>
+<p>需要注意的是，对字符串迭代，返回的是Unicode码点（21bits）而不是码元(16bits)。比如说：</p>
+<p><img src="http://i.imgur.com/7CydtqH.png" /></p>
+<h4>3.4、数组模式解构失败</h4>
+<p>因为数组模式解构的依据是迭代，只要解构源能够迭代，那么就可以解构成功，数组模式在解构源是<strong>{}，undefined,null</strong>时会导致解构失败。</p>
+<h4>四、没有匹配</h4>
+<p>如果没有匹配到，那么将会赋值undefined,如下：</p>
+<p><img src="http://i.imgur.com/hSRvS2l.png" /></p>
+<h4>4.1、默认值</h4>
+<p>可以给解构模式设置默认值，这样在没有匹配的时候将会使用默认值。如下：</p>
+<p><img src="http://i.imgur.com/txaMiG7.png" /></p>
+<h4>4.2、触发默认值得实质</h4>
+<p>默认值的触发实际上是由undefined触发的。可以从以下例子看出：</p>
+<p><img src="http://i.imgur.com/t4wviCe.png" /></p>
+<p>默认值只有在有需求的时候才会被触发，也就是说在没有匹配或者匹配打undefined时才会触发。否则，默认值的计算不会发生，或者说算都不会算（有些情况下默认值是一个函数或者表达式）。</p>
+<h4>4.3、更复杂的结构</h4>
+<p><img src="http://i.imgur.com/Dv9DITt.png" /></p>
+<h3>五、更多对象模式特性</h3>
+<h4>5.1、属性值速记</h4>
+<p>如果属性值是通过一个变量来提供的，而这个变量的名字和这个属性名字一样，那么这个属性是可以被省略的。如下两个是等效的：</p>
+<p><img src="http://i.imgur.com/m2AZUyr.png" />
+<img src="http://i.imgur.com/Ppr9Ulx.png" /></p>
+<h4>5.2、计算属性</h4>
+<p>计算属性也可以作为key来被解构，如下：</p>
+<p><img src="http://i.imgur.com/TKusBhr.png" /></p>
+<p>这意味着，可以解构键是symbol的对象，如下：</p>
+<p><img src="http://i.imgur.com/YQqkZjp.png" /></p>
+<h3>六、更多数组模式解构</h3>
+<h4>6.1、省略</h4>
+<p>可以通过数组的空语法去提取想要的那个值。如下：</p>
+<p><img src="http://i.imgur.com/xXIwr2R.png" /></p>
+<h4>6.2、剩余运算符</h4>
+<p>剩余运算符用来将一个数组的剩余元素提取到另外一个数组，剩余运算符只能用在数组模式的最后一个部分。如下：</p>
+<p><img src="http://i.imgur.com/qDfbIYR.png" /></p>
+<p>剩余运算符如果匹配不到不会返回undefined,而会返回一个空数组[]。如下：</p>
+<p><img src="http://i.imgur.com/ZT25OdY.png" /></p>
+<p>剩余运算符的操作数不一定非要是一个变量，它也可以是一个模式。如下：</p>
+<p><img src="http://i.imgur.com/Uso62CM.png" /></p>
+<p>PS:扩展运算符和剩余运算符非常相似，但是，扩展运算符用在函数调用以及数组字面量中，不用在解构模式中。</p>
+<h4>6.3、解构不仅仅可以用于变量</h4>
+<p>解构不仅仅可以用于变量赋值，还可以用在下面这种场合：</p>
+<p><img src="http://i.imgur.com/P08fF8q.png" /></p>
+<h3>七、解构陷阱</h3>
+<p>在使用解构赋值时，有几个非常容易掉进去的陷阱：</p>
+<ol>
+<li>声明语句不允许使用花括号{}开头</li>
+<li>在解构的时候，你可以声明变量或者给变量赋值，但是不能同时指向上述两个行为</li>
+</ol>
+<h4>7.1、statement不能使用花括号{}开头</h4>
+<p>这是为什么呢？因为代码块是以花括号{}作为开头和结束的，所以在使用解构的时候可能就会遇到悲剧了，正确的办法是给整体加个圆括号（）：</p>
+<p><img src="http://i.imgur.com/zK7wUlS.png" /></p>
+<h4>7.2、解构时，不能同时声明和赋值</h4>
+<p>当我们解构一个东西时，它的源中的所有变量都是声明过的，你不能边声明，边赋值：</p>
+<p><img src="http://i.imgur.com/VSQWZYN.png" /></p>
+<p>上面这个例子在解构时，f是已经声明过的，b是没有声明过的，在解构的时候，给f赋值的同时，也在声明b。会报重复声明f的错误。</p>
+<p>解决的办法就是统一先声明：</p>
+<p><img src="http://i.imgur.com/uNhccAA.png" /></p>
+<p>或统一放到解构时</p>
+<p><img src="http://i.imgur.com/gz5oIcx.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
