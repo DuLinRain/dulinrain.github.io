@@ -1,0 +1,476 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>JavaScript基础知识之间相关函数详解</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>JavaScript基础知识之间相关函数详解</h2>
+<h4>详解setTimeout()、setInterval()新特性、this以及相关的polyfill</h4>
+<h3>一、概述</h3>
+<p>当setTimeout()、setInterval()的第一个参数是匿名函数时，我们如何给回调函数传递参数？</br>
+setTimeout()、setInterval()中的this到底指代的是什么？</br>
+为什么实际的延迟时间会超过我们指定的delay?</br>
+这篇文章将会为我们一一解答。</p>
+<h3>二、setTimeout新的语法</h3>
+<p>语法：</p>
+<p><img src="http://i.imgur.com/VzcSI6C.png" /></p>
+<p>参数说明：</p>
+<p>第一个参数可以是一个回调函数名称，也可以是一段代码。</br>
+第二个参数是一个延迟时间，如果没有指定，则自动设置为0，意味着“立即执行”或尽快执行。</br>
+后面的参数为可选参数，是<strong>传递给回调函数的</strong>，<strong>IE9及更低版本<strong>浏览器</strong>不支持</strong>后面加参数。</p>
+<p>我们知道，当传递给SetTimeout的第一个参数是函数名的时候，我们是可以给它传递参数的。比如：</p>
+<pre><code>function A(x){
+  console.log(x);
+}
+setTimeout(A(1),10);//1
+</code></pre>
+
+<p>但是，当第一个参数是一个匿名函数时，如果浏览器不支持第一种语法，我们是没办法给它传递参数的，如下：</p>
+<pre><code>setTimeout(function(args){
+  //do somrthing
+},10);
+</code></pre>
+
+<p>我们是没有办法给这个匿名函数传递参数，那么为了让不支持第一种语法的浏览器也支持参数传递，我们该怎么办呢？</p>
+<h3>三、让低版本支持传参的Polyfill</h3>
+<h4>3.1、前面说了，要让IE9以及更低版本的浏览器支持参数传递，可以写一个polyfill来实现，如下：</h4>
+<p><img src="http://i.imgur.com/dHDY2vr.png" /></p>
+<h4>3.2、使用JavaScript条件注释</h4>
+<p>如果只想针对IE，那么可以使用JavaScript条件注释，如下：</p>
+<pre><code>/*@cc_on
+  // conditional IE &lt; 9 only fix
+  @if (@_jscript_version &lt;= 9)
+  (function(f){
+     window.setTimeout = f(window.setTimeout);
+     window.setInterval = f(window.setInterval);
+  })(function(f){return function(c,t){vara=[].slice.call(arguments,2);return
+     f(function(){c instanceof Function?c.apply(this,a):eval(c)},t)}});
+  @end
+@*/
+</code></pre>
+
+<h4>3.3、使用HTML条建注释</h4>
+<p>或者使用HTML条件注释，如下：</p>
+<pre><code>&lt;!--[if lte IE 9]&gt;&lt;script&gt;
+(function(f){
+window.setTimeout=f(window.setTimeout);
+window.setInterval=f(window.setInterval);
+})(function(f){return function(c,t){
+var a=[].slice.call(arguments,2);return f(function(){
+    c instanceof Function?c.apply(this,a):eval(c)},t)}
+});
+&lt;/script&gt;&lt;![endif]--&gt;
+</code></pre>
+
+<h4>3.4、this问题</h4>
+<h4>解决方法：</h4>
+<h5>3.4.2、使用匿名函数包裹（wrapper）</h5>
+<p>可以使用匿名函数：</p>
+<pre><code>setTimeout(function() {//匿名函数
+ myFunc('one', 'two', 'three'); //参数传递
+}, 1000);
+</code></pre>
+
+<h5>3.4.3、使用箭头函数</h5>
+<p>和上面原理类似</p>
+<pre><code>setTimeout(() =&gt; { 
+    myFunc('one', 'two', 'three'); 
+}, 1000);
+</code></pre>
+
+<h5>3.4.4、使用bind函数绑定</h5>
+<pre><code>setTimeout(function(arg1){
+    //do something
+}.bind(undefined, 10), 1000);
+</code></pre>
+
+<h3>四、setInterval新的语法</h3>
+<p>语法：</p>
+<p><img src="http://i.imgur.com/76ATQWY.png" /></p>
+<p>第一个参数可以是一个回调函数名称，也可以是一段代码。</br>
+第二个参数是必选参数，这个与setTimeout不同，delay一个延迟时间，<strong>如果指定的小于10，则自动设置为10</strong>。但这并不意味着会以10ms为间隔执行</br>
+后面的参数为可选参数，是<strong>传递给回调函数的<strong>，</strong>IE9及更低版本</strong>浏览器<strong>不支持</strong>后面加参数。</p>
+<p>我们知道，当传递给setInterval的第一个参数是函数名的时候，我们是可以给它传递参数的。比如：</p>
+<pre><code>function A(x){
+  console.log(x);
+}
+setInterval(A(1),10);//1
+</code></pre>
+
+<p>但是，当第一个参数是一个匿名函数时，如果浏览器不支持第一种语法，我们是没办法给它传递参数的，如下：</p>
+<pre><code>setInterval(function(args){
+  //do somrthing
+},10);
+</code></pre>
+
+<p>我们是没有办法给这个匿名函数传递参数，那么为了让不支持第一种语法的浏览器也支持参数传递，我们该怎么办呢？</p>
+<h3>五、让低版本支持的polyfill</h3>
+<h4>5.1、前面说了，要让IE9以及更低版本的浏览器支持参数传递，可以写一个polyfill来实现，如下：</h4>
+<p><img src="http://i.imgur.com/90DznmE.png" /></p>
+<h3>六、setTimeout和setIntervalthis问题</h3>
+<h5>6.1、this问题</h5>
+<p>setTimeout和setInterval中的this是存在问题的，如下：</p>
+<pre><code>myArray = ['zero', 'one', 'two'];
+myArray.myMethod = function (sProperty) {
+    alert(arguments.length &gt; 0 ? this[sProperty] : this);
+};
+
+myArray.myMethod(); // prints &quot;zero,one,two&quot;
+myArray.myMethod(1); // prints &quot;one&quot;
+</code></pre>
+
+<p>但是，如果在setTimeout和setInterval中调用，则会出现一些问题，如下：</p>
+<pre><code>setTimeout(myArray.myMethod, 1000); // prints &quot;[object Window]&quot; after 1 second
+setTimeout(myArray.myMethod, 1500, '1'); // prints &quot;undefined&quot; after 1.5 seconds
+</code></pre>
+
+<p>myArray.myMethod被传递给setTimeout函数，当myArray.myMethod被调用时，它的this<strong>没有被设定</strong>，所以this默认指向了window。有人想到了call,apply等，想着是不是可以给它传一个东西让this指向它呢？答案是不行。如下：</p>
+<pre><code>setTimeout.call(myArray, myArray.myMethod, 2000); 
+// error: &quot;NS_ERROR_XPC_BAD_OP_ON_WN_PROTO: 
+//Illegal operation on WrappedNative prototype object&quot;
+setTimeout.call(myArray, myArray.myMethod, 2500, 2); // same error
+</code></pre>
+
+<h4>6.2、this问题的解决方法</h4>
+<h5>6.2.1、用匿名函数包裹</h5>
+<p>可以用一个匿名函数包裹，然后在匿名函数里面调用</p>
+<pre><code>setTimeout(function(){myArray.myMethod()}, 2000); 
+// prints &quot;zero,one,two&quot; after 2 seconds
+setTimeout(function(){myArray.myMethod('1')}, 2500); 
+// prints &quot;one&quot; after 2.5 seconds
+</code></pre>
+
+<h5>6.2.2、使用箭头函数包裹</h5>
+<pre><code>setTimeout(() =&gt; {myArray.myMethod()}, 2000); 
+// prints &quot;zero,one,two&quot; after 2 seconds
+setTimeout(() =&gt; {myArray.myMethod('1')}, 2500); 
+// prints &quot;one&quot; after 2.5 seconds
+</code></pre>
+
+<h5>6.2.3、重写这两个函数polyfill</h5>
+<p>也可以类似于传参的polyfill那样,重写这两个函数，让他们既可以接受多个参数，也可以通过 Function.prototype.call传递正确的this。比如：</p>
+<p><img src="http://i.imgur.com/qMN3jAg.png" /></p>
+<p>这样可以用Function.prototype.call传递正确的this调用，比如：</p>
+<p><img src="http://i.imgur.com/JY6qP4i.png" /></p>
+<p>用bind也是可以的，比如：</p>
+<p><img src="http://i.imgur.com/jdyRQhd.png" /></p>
+<p>但是注意，我们仍然不可以这样直接调用，如下</p>
+<p><img src="http://i.imgur.com/RFpyPUt.png" /></p>
+<h3>七、为什么会比指定的延时更长？</h3>
+<p>有时候，指定一个较小的延时，实际回调函数的调用时间比指定的延时时间长，这是为什么呢？有很多原因，但是最主要的原因是浏览器在实施setTimeout/setInterval的时候做了一定的限制：</p>
+<ol>
+<li>在HTML5之前的版本，最小限制是15.6ms（也有说是10ms）</li>
+<li>在HTML5版本，最小限制是4ms</li>
+<li>以上只是针对活动标签，对于非活动标签页，不同浏览器时间限制不同，有1000ms、10000ms等</li>
+<li>在有些浏览器中，如果非活动标签页存在audio，那么该页面的时间将不受第3条限制。</li>
+</ol>
+<h3>八、为什么是15.6ms或4ms?</h3>
+<p>这是根据硬件每秒钟可以响应的中断数来算的。</p>
+<ol>
+<li>在HTML5之前的版本，认为（或默认）计算机每秒钟可以响应64个中断，所以1000ms/64=15.6ms。</li>
+<li>而在HTML5中，认为（或默认）计算机每秒钟可以响应250个中断，所以1000ms/250=4ms。</li>
+<li>而对于10ms的解释，暂时不清楚。</li>
+</ol>
+<h3>九、setTimeout(callback,0)、setInterval(callback,0)</h3>
+<p>前面说了，setInterval必须指定第二个参数，如果第二个参数delay小于10则强制置成10.
+setTimeout可以不指定第二个参数，如果不指定delay，则默认设置为0，表示立即执行或“尽快执行”。为什么说是“尽快执行”呢？因为实际上这里的“立即执行”是有水分的，或者说是指立即执行“把callback加入到事件队列”这么个事。只有当队列前面的都执行完了，才可以执行它。</p>
+<p>看看英文解释：</p>
+<blockquote>
+<p>This is because even though setTimeout was called with a delay of zero, it's placed on a queue and scheduled to run at the next opportunity; not immediately. Currently-executing code must complete before functions on the queue are executed, thus the resulting execution order may not be as expected.</p>
+</blockquote>
+<p>看个例子：</p>
+<p><img src="http://i.imgur.com/15QrzzQ.png" /></p>
+<h3>十、总结</h3>
+<p><img src="http://i.imgur.com/ulxjkBs.png" /></p>
+<p>详见：<a href="http://www.cnblogs.com/yuqingfamily/p/5816560.html" title="http://www.cnblogs.com/yuqingfamily/p/5816560.html">谈谈setTimeout的作用域以及this的指向问题</a></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
