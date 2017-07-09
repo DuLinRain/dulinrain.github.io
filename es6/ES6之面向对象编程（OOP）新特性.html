@@ -1,0 +1,521 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ES6之面向对象编程（OOP）新特性</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之面向对象编程（OOP）新特性</h2>
+<h3>一、概述</h3>
+<p>Class是ES6中最主要的面向对象编程新特性，除此之外，对象字面量以及一些实体方法也拥有面向对象新特性。</p>
+<h4>1.1、方法定义</h4>
+<p>ES5在对象字面量中定义方法通常采用如下语法：</p>
+<pre><code>let obj = {
+  myMethod: function(){
+    .....
+  }
+}
+</code></pre>
+
+<p>在ES6中可以采用这种方法：</p>
+<pre><code>let obj = {
+  myMethod(){
+    .....
+  }
+}
+</code></pre>
+
+<p>是不是简单方便很多？</p>
+<h4>1.2、属性值速记</h4>
+<p>传统方法：</p>
+<pre><code>let first = 'lin'
+let last = 'yu'
+let obj = {
+  first: first,
+  last: last
+}
+</code></pre>
+
+<p>ES6中，当属性字和属性名一样时，可以采用速记法：</p>
+<pre><code>let obj = {first, last}
+</code></pre>
+
+<h4>1.3、计算属性作为key</h4>
+<p>计算属性作为key不仅适用于属性的定义，同样适用于方法的定义：</p>
+<p><img src="http://i.imgur.com/0zOIBpT.png" /></p>
+<h4>1.4、Object上的新方法</h4>
+<p>Object上新增的最重要的方法是assign方法。传统上在JS领域这个方法被称为extend，与extend的工作相反，Object.assign只考虑自有属性，不考虑继承而来的属性：</p>
+<p><img src="http://i.imgur.com/B3y527u.png" /></p>
+<h3>二、对象字面量中新特性</h3>
+<h4>2.1、方法定义</h4>
+<p>在ES5中，对象字面量中的方法其实就是一个属性，只不过这个属性的值是一个function:</p>
+<pre><code>let obj = {
+  myMethod: function(){
+    .....
+  }
+}
+</code></pre>
+
+<p>在ES6中，对象字面量中的方法仍然是值为function的属性，但是有一个更紧凑的写法：</p>
+<pre><code>let obj = {
+  myMethod(){
+    .....
+  }
+}
+</code></pre>
+
+<p>getter和setter仍然起作用，就像它们在ES5中一样（注意它们的语法和方法定义非常像）。</p>
+<p><img src="http://i.imgur.com/6KG34W7.png" /></p>
+<p>对于属性值是generator的属性，也存在着一种精简的定义方法：</p>
+<pre><code>let obj = {
+  * myGenerator() {
+   ...
+    }
+}
+</code></pre>
+
+<p>等效于：</p>
+<pre><code>let obj = {
+  * myGenerator: function() {
+   ...
+    }
+}
+</code></pre>
+
+<h4>2.2、属性值速记</h4>
+<p>如果作为属性值得变量的名称和属性key的名字一样，那么你可以省略属性key。如下：</p>
+<pre><code>let first = 'lin'
+let last = 'yu'
+let obj = {
+  first: first,
+  last: last
+}
+</code></pre>
+
+<p>等效于：</p>
+<pre><code>let obj = {first, last}
+</code></pre>
+
+<p>这个与结构的结合也非常好：</p>
+<pre><code>let {first, last} = {first: 'lin', last: 'yu'}
+</code></pre>
+
+<h4>2.3、计算属性作为key</h4>
+<p>记住，当你设置某个属性值得时候有两种方法用于指定key：</p>
+<ol>
+<li>通过固定名。 obj.foo = 123</li>
+<li>通过表达式。 obj.['f'+'oo'] = 123</li>
+</ol>
+<p>但是在ES5对象字面量中，你只能使用第一种方法定义一个属性。ES6提供了方法2来定义属性：</p>
+<p><img src="http://i.imgur.com/0zOIBpT.png" /></p>
+<p>因为方法不过就是属性值是function的属性，所以计算属性也可以用来定义方法。</p>
+<p>计算属性key用的最广泛的地方是symbol。你可以定义一个公共的symbol，然后将它作为key,因为symbol是独一无二的，所以这个属性也将是独一无二的。一个特别显著的例子是Symbol.iterator。如果一个方法拥有Symbol.iterator键，那么它就是可迭代的，这个方法必须返回一个迭代器，这个迭代器用来构建类似for...of之类的循环用于迭代对象。</p>
+<p>下面是一个例子：</p>
+<p><img src="http://i.imgur.com/Kx7NfU0.png" /></p>
+<p>这里用Symbol.iterator作为键定义了一个generator,为什么要定义为generator呢？因为generator的返回值还是generator对象，而generator本身就是一个用于产生数据（data production）的迭代器</p>
+<h3>三、Object上的新方法</h3>
+<h4>3.1、Object.assign(target, source1, source2,....)</h4>
+<p>Object.assing方法将N个source合并到target对象。该方法通过两个步骤来修改target:</p>
+<ol>
+<li>将所有后面source的可枚举自有属性（非继承）拷贝出来</li>
+<li>将这些属性添加到target上</li>
+</ol>
+<p>让我们仔细看看Object.assign()是如何工作的：</p>
+<ol>
+<li>支持string和Symbol作为key。Object.assign()同时支持string和Symbol作为key</li>
+<li>只拷贝可枚举自有属性。Object.assign()将忽略继承而来的属性以及不可枚举属性</li>
+<li>通过赋值（assignment）来完成拷贝。target中的属性是通过赋值（内部属性[[put]]）创建的。这意味着，如果target本身有（不管是自身的还是继承的）setter，那些setter在赋值的时候将会被调用。另外一种定义属性的方法是define，该方法永远创建一个新的只有属性，永远不会调用setter。在ES6里面本来有个提案是将define作为Object.assign()的实现，但是该草案被回绝了。</li>
+<li>如果一个方法使用了super,那么你将无法移动该方法。如果一个方法使用了super，那么该方法中将会有一个内部属性[[HomeObject]]将它绑定到创建它的对象，如果你通过Object.assign移动它，它将会仍然指向最初的对象。</li>
+</ol>
+<h4>3.1.1、Object.assign的使用案例——给this增加属性</h4>
+<p>你可以在构造函数中通过Object.assign为this对象增加属性：</p>
+<pre><code>class A{
+    constructor(x,y){
+        Object.assign(this,{x, y})
+    }   
+}
+</code></pre>
+
+<h4>3.1.2、Object.assign的使用案例——给对象属性提供默认值</h4>
+<p>Object.assign也可以用来给对象属性提供默认值：</p>
+<pre><code>const DEFAULTS = {
+    level: 0,
+    form: 'html'
+}
+function processContent(options){
+    Object.assign({}, DEFAULTS, options) //（A）
+}
+</code></pre>
+
+<p>在A行中，我们创建了一个新的空对象{}，然后将DEFAULTS拷贝给它，然后将options拷贝过去覆盖上一步的默认值。</p>
+<h4>3.1.3、Object.assign的使用案例——给对象增加方法</h4>
+<p>另一种使用情况是给对象增加方法：</p>
+<pre><code>Object.assign(someClass.prototype, {
+    methodA() {
+        ...
+    },
+    methodB() {
+        ...
+    }
+})
+</code></pre>
+
+<p>这个相较于下面这个版本简单多了：</p>
+<pre><code>someClass.prototype.methodA = function(){
+    ...
+}
+someClass.prototype.methodB = function(){
+    ...
+}
+</code></pre>
+
+<h4>3.1.4、Object.assign的使用案例——克隆对象</h4>
+<p>Object.assign的一个用法是快速的克隆对象：</p>
+<pre><code>Object.assign（{}， orgobj）
+</code></pre>
+
+<p><strong>注意，</strong>这种克隆方法只会克隆orgobj的可枚举自有属性，对于继承而来的属性以及不可枚举属性是克隆不出来的，也就是说它不会维持原型链，这种克隆方法常常被称为<strong>“浅复制”或“脏复制”</strong></p>
+<p>那么，要想实现<strong>深复制</strong>怎么办呢？</p>
+<p>我们需要结合Object.create()和Object.assing()来实现：</p>
+<ol>
+<li>首先用Object.getPrototypeOf()拿到原型对象</li>
+<li>其次用Object.create()实现继承</li>
+<li>然后将自有可枚举属性拷贝到上一步得到的对象上</li>
+</ol>
+<p><img src="http://i.imgur.com/nvpy8no.png" /></p>
+<h4>3.2、Object.getOwnProtetypeSymbol(obj)</h4>
+<p>Object.getOwnProtetypeSymbol(obj)获取所有key为Symbol的属性，它是Object.getOwnPrototypeNames(obj)的补充（Object.getOwnPrototypeNames(obj)只能获取key为string的属性）</p>
+<h4>3.3、Object.is(obj1,obj2)</h4>
+<p>提供了一个比===更为精确的方法用于判断两个值是否相等，实际上就是实现了NaN===NaN以及+0===-0的判断。</p>
+<p><strong>注意[]仍然不等于[],{}仍然不能于{}，两个长得一样的数组和对象还是不会被认为相等。</strong></p>
+<h4>3.4、Object.setPrototypeOf(obj,proto)</h4>
+<p>Object.setPrototypeOf(obj,prpto)用来将obj的原型设置为proto。其实这个方法实现的就是ES5中的一个非标准但又被很多浏览器引擎支持的方法：<code>obj.__proto__ = proto</code>。ES5中推荐的设置原型的方法仍然是在创建对象的时候，这远比先创建一个对象obj，再设置proto快很多：</p>
+<pre><code>let obj = Object.create(proto)
+</code></pre>
+
+<p>什么意思呢？也就是说<code>let obj = Object.create(proto)</code>创建了一个obj对象，并且指定了它的原型：</p>
+<pre><code>let obj ={}
+obj.__proto__ = proto
+</code></pre>
+
+<h3>四、ES6中对属性key的迭代</h3>
+<p>ES6中属性的key既可以是string,也可以是symbol。现在你有5种方法可以获取一个属性的key:</p>
+<ol>
+<li>Object.keys(obj): Array<string>。枚举所有key为string的可枚举自有属性</li>
+<li>Object.getOwnPrototypeNames(obj): Array<string>。枚举所有key为string的自有属性。（也就是说还可以枚举不可枚举属性？）</li>
+<li>Object.getOwnPrototypeSymbols(obj): Array<string>。枚举所有key为symbol的自有属性。（也就是说还可以枚举不可枚举属性？）</li>
+<li>Object.ownKeys(obj): Array&lt;string|symbol&gt;。枚举所有属性，不管key是string还是symbol。（也就是说还可以枚举不可枚举属性？）</li>
+<li>Reflect.enumerate(obj): Iterator。枚举所有key为string的可枚举属性</li>
+</ol>
+<h4>4.1、属性的key的迭代顺序</h4>
+<p>所有的迭代方法都按如下顺序迭代：</p>
+<ol>
+<li>首先迭代数组索引，按数值排序</li>
+<li>其次迭代key为string的属性，按照他们创建的顺序</li>
+<li>最后是symbol，按照他们创建的顺序</li>
+</ol>
+<p>注意，ES标准对string索引的定义如下：如果一个数值（索引）转换成unsigned int然后再转换回去之后，该数值的string和转换前数值的string没有任何变化，那么它就是string索引。什么意思呢？</p>
+<p>我们知道数值是可以作为对象的key的，这是因为实际上它在里面被视为了string。比如：</p>
+<pre><code>let obj = {
+    0: 100
+}
+</code></pre>
+
+<p>按照上面关于string索引的定义，因为0转为无符号整数是0，再转回去仍然是0，所以他其实被认为是string,也就是真正的key变成了‘0’。</p>
+<p><img src="http://i.imgur.com/6uSbi0r.png" /></p>
+<p>那有人会说，那么-123是string索引key还是数值呢？当然是string。因为首先索引是指大于等于0的值，另外按照负数值作为key去定义属性是非法的：</p>
+<p><img src="http://i.imgur.com/XlPYAj1.png" /></p>
+<p>我们回到遍历顺序的主题：</p>
+<p><img src="http://i.imgur.com/O8AV9On.png" /></p>
+<h4>4.2、为什么我们要规定key的返回顺序呢？</h4>
+<p><img src="http://i.imgur.com/AA4mk0R.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
