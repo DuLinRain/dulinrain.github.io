@@ -1,0 +1,542 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ES6之参数处理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之参数处理</h2>
+<p>ES6对参数处理做了很大的改进，它现在支持参数默认值，剩余参数（可变参数）以及解构</p>
+<h3>一、概述</h3>
+<h4>1.1、默认参数</h4>
+<p><img src="http://i.imgur.com/vfvF18L.png" /></p>
+<h4>1.2、剩余参数</h4>
+<p><img src="http://i.imgur.com/9fBgdDP.png" /></p>
+<h4>1.3、基于解构的命名参数</h4>
+<p><img src="http://i.imgur.com/Z7etDsE.png" /></p>
+<h4>1.4、扩展（展开运算符）</h4>
+<p>在<strong>函数调用</strong>或者<strong>构造函数调用</strong>时，展开运算符用于将可迭代的变量转换成arguments使用：</p>
+<p><img src="http://i.imgur.com/dfhwR6b.png" /></p>
+<p>在数组字面量中，展开运算符可用于将可迭代变量转化为数组元素：</p>
+<p><img src="http://i.imgur.com/Mc47oIn.png" /></p>
+<h3>二、参数处理之解构</h3>
+<p>ES6在处理参数时，等效于用形参解构实参。也就是说，下面这个函数调用：</p>
+<p><img src="http://i.imgur.com/LT79aIM.png" /></p>
+<h3>三、参数默认值</h3>
+<h4>3.1、参数默认值</h4>
+<p>ES6允许你给参数指定默认值：</p>
+<pre><code>function test (x, y=0){
+    return [x, y]
+}
+</code></pre>
+
+<p>如果省略掉第二个参数，那么它将触发默认值：</p>
+<p><img src="http://i.imgur.com/H6bJrBK.png" /></p>
+<p><strong>注意</strong>:undefined也将触发默认值（这也是解构的原理）：</p>
+<p><img src="http://i.imgur.com/dnGtk1j.png" /></p>
+<p>默认值只有在真正需要的时候才会被计算，也就是说在被undefined触发后才会使用/执行默认值（或表达式）：</p>
+<p><img src="http://i.imgur.com/OS9KFwN.png" /></p>
+<h4>3.2、为什么undeifned会触发默认值？</h4>
+<p>现在来看“为什么undefined会被认为参数缺失或者是对象/数组的某个部分缺失”的答案不是很明显。其实，这样做的理由是这允许你将默认值得定义进行推迟。让我们看看下面两个例子：</p>
+<p>在第一个例子（来源：Rick Waldron在2012-07-24的TC39会议上的笔记）里，我们不需要在setOption()中定义默认值，我们可以将它推迟到setLevel():</p>
+<p><img src="http://i.imgur.com/co69FI0.png" /></p>
+<p>下面一个例子中。square不需要定义默认值x，他可以将x的默认值定义推迟到multiply中：</p>
+<p><img src="http://i.imgur.com/FRg0cZ3.png" /></p>
+<p>默认值进一步巩固了这样一个事实：undefined意味着某个东西缺失，而null意味着意味着空。</p>
+<h4>3.3、在默认参数中引用其他参数</h4>
+<p>你可以在默认参数定义时，指定其它的参数，当然你必须指定已经定义过的，也就是说只能引用你左边的参数，否则报错：</p>
+<p><img src="http://i.imgur.com/Hz0z971.png" /></p>
+<h4>3.4、在默认参数中引用函数内部变量</h4>
+<p>默认参数存在于它们自己的作用域，该作用域介于函数外部作用域以及函数作用域。也就是说在默认参数作用域只能拿到外部作用域的东西，拿不到函数内部作用域的东西。也就意味着，<strong>不能</strong>在默认参数中引用函数内部变量，可以在默认参数中引用函数外部变量：</p>
+<p><img src="http://i.imgur.com/YbSqH9t.png" /></p>
+<p>在上面的例子中，如果外部没有x，那么test被调用时，如果默认值被触发，那么将会报错：</p>
+<p><img src="http://i.imgur.com/Xylw8wB.png" /></p>
+<p>这个限制最让你吃惊的时候是如果默认值是闭包的场景：</p>
+<p><img src="http://i.imgur.com/yYPv7oZ.png" /></p>
+<p>想知道为什么情况会是这个样子，可以先看看下面这种实现，下面这种实现与上面基本相同：</p>
+<p><img src="http://i.imgur.com/aTisKoC.png" /></p>
+<p>在（A）行最后花括号开始的作用域里面，你只能获取在该作用域声明的变量或者在该作用域外围作用域声明的变量。因此，B行是获取不到C行开始的作用域中的变量的。</p>
+<h3>四、剩余参数</h3>
+<h4>4.1、剩余参数</h4>
+<p>将剩余运算符（...）放在最后一个形参的前面意味着它将会以<strong>数组的形式</strong>接收剩下的所有实参。如果没有剩余的参数，那么剩余参数将会是空数组[]。如下：</p>
+<p><img src="http://i.imgur.com/EdgaZi2.png" /></p>
+<p>注意：展开运算符（...）和剩余运算符非常相似，但是它经常用在函数调用以及数组字面量（不包括解构模式）。</p>
+<pre><code>函数调用：
+Math.max(...[1,2,3,4])
+数组字面量：
+[1,...[2,3],4]
+</code></pre>
+
+<h4>4.2、不再需要arguments变量</h4>
+<p>剩余参数完全可以替代Javascript中臭名昭著的arguments变量，它们还有一个优势就是它始终是数组（arguments是类数组）。</p>
+<p><img src="http://i.imgur.com/oaTL0Nd.png" /></p>
+<h4>4.3、结合解构以及获取解构出来的值</h4>
+<p>arguments的一个有趣的特性是，你可以同时有普通的参数，以及包含所有参数的类数组arguments。在ES6中，你可以通过结合解构得到同样的效果，虽然代码稍微多了一行，但是看起来更清晰明了：</p>
+<p><img src="http://i.imgur.com/D2AY4PV.png" /></p>
+<p>这个同样适用于命名参数：</p>
+<pre><code>function test(options = {}){
+  let {a, b} = options
+  ......
+}
+</code></pre>
+
+<h4>4.4、arguments是可迭代的</h4>
+<p>ES6中仍然可以使用arguments，arguments也是可迭代的，这意味着它实现了Symbol.iterator接口，也就意味着可以使用展开运算符：</p>
+<p><img src="http://i.imgur.com/gp43E6I.png" /></p>
+<h3>五、模拟命名参数</h3>
+<p>当你调用一个函数或者方法的时候，你需要映射实参到形参，有两种普遍的形式来干这个事儿：</p>
+<ol>
+<li>按位置映射。第一个实参映射给第一个形参，第二个实参映射给第二个形参，以此类推。</li>
+<li>命名参数使用名字来完成映射。名字是与函数定义时的形参相关联并且与函数调用时的实参的标签相对应，调用者不必关心参数的传递顺序。</li>
+</ol>
+<p>命名参数有两个主要的优点：</p>
+<ol>
+<li>它们在函数调用时对参数进行描述</li>
+<li>它们对于可选参数工作的很好。</li>
+</ol>
+<p>下面先介绍命名参数的优点，然后介绍如何在js中通过对象字面量来模拟。</p>
+<h4>5.1、命名参数作为描述</h4>
+<p>当函数的参数有很多个的时候，很容易让人迷惑到底哪个参数代表什么意思。比如下面这个函数调用：</p>
+<pre><code>test(1,20,2)
+</code></pre>
+
+<p>python语言支持命名参数，它的调用方式如下：</p>
+<pre><code>test(start=1, end=20, step=2)
+</code></pre>
+
+<h4>5.2、可选命名参数</h4>
+<p>可选固定位置参数只可以省略最后的参数，也就是说如果后一个参数没有省略，那么前面也不允许有省略的参数。</p>
+<p>但是，如果支持命名参数，那么任意位置的参数都是可以省略的，比如python语法支持如下：</p>
+<pre><code>test(start=1)
+test(end=20, step=3)
+......
+</code></pre>
+
+<h4>5.3、在JS中模拟命名参数</h4>
+<p>JS不想python等语言那样支持原生的命名参数，但是它有一种非常优雅的方式用对象字面量来实现命名参数：</p>
+<pre><code>test({start: 1, end: 20, step: 2})
+</code></pre>
+
+<p>这个函数接收一个对象，该对象拥有start,end,step三个属性，你可以省略它们中的任意：</p>
+<pre><code>test({start: 1, end: 20, step: 2})
+test({end: 20, step: 2})
+test({end: 20})
+test()
+</code></pre>
+
+<p>在ES5中，test的实现通常长下面这个样子：</p>
+<pre><code>function test(options){
+  options = options || {}
+  var start = options.start || 0
+  var end = options.end || 20
+  var step = options.step || 2
+}
+</code></pre>
+
+<p>在ES6中就不用这么麻烦了，你可以使用解构：</p>
+<pre><code>function test({start = 1, end = 20, step = 2}){
+  .......
+}
+</code></pre>
+
+<p>如果调用test时没有传递任何参数，那么将会得到错误的结果：</p>
+<p><img src="http://i.imgur.com/E9JOK7m.png" /></p>
+<p>有人说，不是说undefiend会触发解构默认值吗?为什么这里报错了？上面这个解构实际上是下面这个样子：</p>
+<pre><code>{start = 1, end = 20, step = 2} = undefined
+</code></pre>
+
+<p>这肯定是不会导致正确的结构的，就不会触发默认值，合理的写法如下：</p>
+<pre><code>{start = 1, end = 20, step = 2} = {}
+</code></pre>
+
+<p>也就是说，在调用test的时候，传递一个空对象参数{}就可以了：</p>
+<p><img src="http://i.imgur.com/QtlX3Re.png" /></p>
+<p>但是这样实际上是传递了参数，与我们的初衷相违背。正确的方法是改变函数的定义如下：</p>
+<p><img src="http://i.imgur.com/xEu3fUu.png" /></p>
+<p>也就是说，undefined触发了下面这个解构：</p>
+<pre><code>{start = 1, end = 20, step = 2} = {}
+</code></pre>
+
+<p>这下不就OK了。</p>
+<p>你也可以将固定位置参数与命名参数混用，这种情况下习惯上将命名参数放在最后一个参数：</p>
+<pre><code>test(param1,{start = 1, end = 20, step = 2} = {})
+</code></pre>
+
+<p>原则上js引擎可以对这些情况进行优化，这样不会有中间变量产生。因为不管是函数调用时的对象字面量还是函数定义时的对象字面量都是静态的。</p>
+<h3>六、参数处理中解构的例子</h3>
+<h4>6.1、箭头函数中单个参数时的括号</h4>
+<p>下面的例子将偶尔用到箭头函数，对于箭头函数参数要不要括号是一个问题，比较好的方法是：如果参数只有一个，并且这个参数是标识符，那么可以省略参数外边的括号。比如下面的:</p>
+<pre><code>[1,2,3].map(x =&gt; x*2)
+</code></pre>
+
+<p>但是下面的参数虽然只有一个，但是他是一个数组字面量，不是标识符：</p>
+<pre><code>[[1,2], [3,4]].map([a,b] =&gt; a+b)
+</code></pre>
+
+<p>或者如果参数有默认值，也不能省略括号：</p>
+<pre><code>[1,undefined, 2].map((x='yes') =&gt; x)
+</code></pre>
+
+<h4>6.2、forEach（）以及解构</h4>
+<p>在ES6中，你可能更常用for...of进行遍历，但是forEach结合解构也会带来很多遍历：</p>
+<p><strong>例子1：解构嵌套数组为数组(数组元素为数组的数组)</strong></p>
+<p><img src="http://i.imgur.com/N2rHGsL.png" /></p>
+<p><strong>例子2：解构数组元素为对象的数组</strong></p>
+<p><img src="http://i.imgur.com/9riryuc.png" /></p>
+<h4>6.3、对Map使用map函数</h4>
+<p>这个在Map章节已经作了介绍，就不在赘述了。</p>
+<h4>6.4、处理返回结果是数组的场景</h4>
+<p><img src="http://i.imgur.com/KwfDeQG.png" /></p>
+<h3>七、编码风格</h3>
+<p>这一节讲解一些技巧用于带有描述的参数，它们也有缺点，会让代码看起来很乱。</p>
+<h4>7.1、可选参数</h4>
+<p>通常可以给一个参数设置默认值undefined，让它作为一个可选参数：</p>
+<pre><code>function test（x, optionaparam=undfined）{
+    ...
+}
+</code></pre>
+
+<h4>7.2、必须参数</h4>
+<p>ES5中确保某个参数必须提供是非常笨拙的：</p>
+<p><img src="http://i.imgur.com/8WzeE4B.png" /></p>
+<p>在ES6中，你可以使用默认参数值来比较简洁的实现：</p>
+<p><img src="http://i.imgur.com/gL90qif.png" /></p>
+<h4>7.3、限制参数最大数量</h4>
+<p>有三种方法用来限制参数最大数量，第一种方法是获取所有的实参，然后判断参数个数，如果超过则报错：</p>
+<p><img src="http://i.imgur.com/rpxqWmP.png" /></p>
+<p>第二种方法是使用剩余参数，如果有剩余参数，那么报错：</p>
+<p><img src="http://i.imgur.com/guC5BS9.png" /></p>
+<p>第三种方法是给第三个参数提供一个默认值，该默认值是唯一的Symbol，这样只要有第三个参数就都会给它重新赋值：</p>
+<p><img src="http://i.imgur.com/rtYQh5p.png" /></p>
+<h3>八、展开运算符（...）</h3>
+<h4>8.1、函数调用以及方法调用中的展开运算符</h4>
+<p>展开运算符与剩余运算符长得一模一样，但是它们正好相反：</p>
+<ol>
+<li>剩余运算符用来提取数组中的数据，用于剩余参数以及解构</li>
+<li>展开运算用于在函数调用时将数组转换为参数，也用于将数组转换为数组字面量中的元素</li>
+</ol>
+<p>比如，Math.max可以接受任意个参数，但是不能接收数组，用展开运算符就可以做到：</p>
+<pre><code>Math.max(...[1,2,3])
+</code></pre>
+
+<p>与剩余运算符不同，展开运算符可用在任意位置，不限定为最后参数：</p>
+<pre><code>Math.max(1，2，...[1,2,3]，3，4，5)
+</code></pre>
+
+<p>另一个用法是push:</p>
+<pre><code>arr1.push(...[1,2,3,4])
+</code></pre>
+
+<h4>8.2、构造函数中的展开运算符</h4>
+<pre><code>new Date(...[2017,07,07])
+</code></pre>
+
+<h4>8.3、展开为数组</h4>
+<pre><code>[1,2,...[1,2,3,4],5,6]
+得到
+[1,2,1,2,3,4,5,6]
+</code></pre>
+
+<p>则可以很方便的用来实现连接数组：</p>
+<pre><code>[...[1,2,3],...[4,5,6],...[7,8,9]]
+得到
+[1,2,3,4,5,6,7,8,9]
+</code></pre>
+
+<h4>8.4、将可迭代的对象或者类数组转换为数组</h4>
+<p><img src="http://i.imgur.com/jUdjdus.png" /></p>
+<p>你自己实现的可迭代对象也可以解构成数组：</p>
+<p><img src="http://i.imgur.com/kTj0DZq.png" /></p>
+<p>注意，就和for...of一样，...只可用于可迭代的东西。大多数比较重要的对象都是可迭代的，比如数组，Map,Set，arguments,大多数DOM节点也是可迭代的。</p>
+<p>如果你遇到了不可迭代的类数组，那么你可以使用from将它转换成数组：</p>
+<p><img src="http://i.imgur.com/FRDXXHC.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

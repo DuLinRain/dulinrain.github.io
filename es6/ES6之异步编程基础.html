@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ES6之异步编程基础</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之异步编程（背景）</h2>
+<p>本章主要讲述ES6异步编程的基础，它为下一章的Promise提供一个背景知识。</p>
+<h3>一、JavaScript调用栈</h3>
+<p>当一个函数f调用另外一个函数g的时候，g需要知道当它结束它的任务的时候返回到哪里去，这样的信息一般都是通过栈来管理的，被称为调用栈（call stack）</p>
+<pre><code>function h(z){
+  console.log(new Error().stack) //(A)
+}
+function g(y){
+  h(y + 1) //(B)
+}
+function f(x){
+  g(x + 1) //(C)
+}
+f(3);// (D)
+</code></pre>
+
+<ol>
+<li>初始化的时候,调用栈是空的。当程序在（D）调用f(3)之后，全局作用域（global scope）被压入栈。此时，调用栈内容如下：</li>
+<li>当程序在（C）处调用g(x+1)的时候，g函数执行时所在的作用域（即f）被压入栈。</li>
+<li>当程序在（B）处调用h(x+1)的时候，h函数执行时所在的作用域（即g）被压入栈。</li>
+</ol>
+<p>当在A处打印输出此时此刻的调用栈时，如下：</p>
+<p><img src="http://i.imgur.com/SBn77dq.png" /></p>
+<p>也就是说入栈过程可以描述如下：</p>
+<p><img src="http://i.imgur.com/FM6ZFqm.png" /></p>
+<p>接下来，当每一个函数执行完毕返回后，栈顶的内容都会执行一次出栈操作，当f执行完后，我们又回到了最初始的状态，当整个代码退出的时候，栈中的元素被清空。</p>
+<h3>二、浏览器事件循环</h3>
+<p>简单而言，每个浏览器的tab都运行在一个单独的进程中，如下：</p>
+<p><img src="http://i.imgur.com/gVFBATu.png" /></p>
+<p>在不考虑WebWorkers的情况下，js单线程运行，所以一个Tab对应一个事件循环（ browsing context event loop），实际上web workers对应的事件循环叫<code>worker event loop</code>，这里不讨论。该事件循环通过任务队列来执行与浏览器相关的任务，比如说：</p>
+<ol>
+<li>解析HTML</li>
+<li>执行JS代码</li>
+<li>对用户的交互行为作出反应</li>
+<li>处理异步请求结果</li>
+</ol>
+<p>2-4都是通过浏览器内建的引擎来执行js代码，当代码运行结束时，它们也就结束了。这样队列中的下一个任务就可以被执行了。下面这张图描述了这个过程：</p>
+<p>事件循环被一些其它的过程（用户输入、定时器等）所包围，这些过程通过向任务队列中增加任务来与事件循环交互。</p>
+<h4>2.1、定时器</h4>
+<p>浏览器拥有定时器setTimeout,当定时时间达到后会向任务队列中增加任务。它的签名如下：</p>
+<pre><code>setTimeout(callback, ms)
+</code></pre>
+
+<p>当ms到达后，callback会加入到任务队列。需要注意的是，ms只是意味着在ms到达时，callback会加入到任务队列，但是并不意味着它在ms到达时候会被执行，有可能它过一会儿才能被执行，尤其是当事件循环被阻塞的时候。</p>
+<p>当把ms设置成0的时候，其实也只是意味着callback被立即加入到了任务队列，并不意味着callback会被立即执行。实际上，由于浏览器有最小时间限制，即使设置成0，浏览器仍然会将它设置成浏览器支持的最小时间，通常可能是4ms或者15ms。</p>
+<h4>2.2、显示DOM变化</h4>
+<p>对大多数DOM变化而言（尤其是涉及到重新布局（重绘）的场景），这个重绘也不是立即发生的。仍然是作为一个任务加入到任务队列。当然也有一些能加快频率的方法，比如requestAnimationFrame</p>
+<h4>2.3、运行到完成语义（run-to-completion semantic）</h4>
+<p>JavaScript有着所谓的运行到完成语义，当前任务一定是在下一个任务开始之前结束。这意味着每个任务拥有对当前状态的完全掌控能力，不需要担心某个状态被同时改变。让我们看看下面这个例子：</p>
+<pre><code>setTimeout(function(){// (A)
+  console.log('second')
+},0)
+console.log('first')// (B)
+first
+second
+</code></pre>
+
+<p>上面这个例子表示（A）处的函数被立即加入到任务队列，但是并不意味着它会立即执行，必须要等到当前任务队列中的任务完成后才会执行。而(B)处的任务正好处在当前的任务队列之中。</p>
+<h4>2.4、阻塞事件循环</h4>
+<p>每个tab都有一个事件循环（这一点其实有争议，事实上“每个tab拥有一个事件循环”还是“所有tab共用一个事件循环”取决于浏览器的实现以及浏览器的工作模式，对于chrome而言，这两种都支持，取决于其工作模式选的是哪一种，具体可搜索“single process”）。这意味着所有的用户交互行为或者计算工作都在一个事件循环中处理，也就意味着，如果某个计算工作的计算量特别大的话，整个事件循环将被阻塞，当阻塞发生时，所有的其它操作，比如说用户交互，都得不到响应，表现为“凝固（freeze）”状态。
+下面这个例子证明了这一点：</p>
+<p><img src="http://i.imgur.com/ToNCbj0.png" /></p>
+<p>当click被触发后，它会阻塞5秒，在这5秒中，时间循环被阻塞，没法再次点击click按钮</p>
+<h4>2.5、避免阻塞</h4>
+<p>可以有以下两种方式避免阻塞：</p>
+<ol>
+<li>不要在主线程中处理很大计算量的工作，比如你可以使用web workers将它们放在子线程中去完成</li>
+<li>不要同步的等待任务的返回结果，采用异步的方式实现</li>
+</ol>
+<h3>三、异步接收返回结果</h3>
+<p>有两种常见的模式用来异步接收结果：<strong>事件</strong>和<strong>回调</strong>。</p>
+<h4>3.1、用事件异步接收结果</h4>
+<h5>3.1.1、用事件异步接收结果</h5>
+<p>在这种模式下，你通常需要为每次请求创建一个对象，然后给它注册成功的以及失败的回调函数，下面的AJAX请求就是这么回事：</p>
+<p><img src="http://i.imgur.com/iYT4AAq.png" /></p>
+<p><strong>注意</strong>：最后一行并不意味着请求被立即发送，它也只是意味着你将该任务加入了任务队列而已。这也就意味着，你可以在注册成功/失败事件之前就调用send（但是一定要在open之后）。这也得归功于JavaScript的运行到完成语义（run-to-completion semantic）。</p>
+<h5>3.1.2、隐式请求</h5>
+<p>浏览器的indexDB API有着奇特的事件处理方式：</p>
+<p><img src="http://i.imgur.com/J6ggkpl.png" /></p>
+<p>这里你创建了一个indexDB对象之后就可以注册成功/失败事件处理函数，你并不需要显示的将请求加入到任务队列（类似于AJAX的send），事实上这个工作是在当前任务完成后自动进行的。这也就意味着你可以（也必须）在调用完open之后再注册成功/失败事件响应。</p>
+<p>如果你习惯了多线程编程语言，那么你会觉得这样的请求处理方式很奇怪，好像他们容易出现竞争条件，但是，同样归功于运行到完成语义（run-to-completion semantic），它们可以安全的工作。</p>
+<h5>3.1.3、事件不适用于接收单个结果</h5>
+<p>事件适用于多次接收返回的结果，如果你只需要接收一次返回结果，那么更好的方法是采用回调。</p>
+<h4>3.2、用回调接收异步返回结果</h4>
+<p>如果你使用回调接收异步返回结果，那么你需要将回调函数作为最后一个参数传递给异步函数/方法调用。
+下面是一个node.js的例子，异步读取文件：</p>
+<p><img src="http://i.imgur.com/p5cqtPi.png" /></p>
+<p>如果读取成功，那么成功的返回结果就在text里面，如果失败，那么回调函数将会受到Error的实例error, 上面这个例子如果以经典的函数式编程来实现的话应该长这个样子：</p>
+<p><img src="http://i.imgur.com/JSROOUw.png" /></p>
+<h4>3.3、连续传递模式</h4>
+<p>回调函数方式（尤其是上面例子那种函数式编程方式也被称为连续传递模式（CPS，Continuation-passing style）），因为下一个步骤作为一个参数被显式的传递过去。这可以更好的控制函数在什么时候调用以及什么事情会发生。下面这个例子讲述了CPS：</p>
+<p><img src="http://i.imgur.com/NmQvCk0.png" /></p>
+<p>这个其实也可以用任务队列来解释：</p>
+<p><img src="http://i.imgur.com/zNMebeU.png" /></p>
+<p>对于每一个步骤，程序的控制流继续存在于回调函数中，这将导致函数嵌套，有时候被称为“回调地狱”。
+然而，我们是可以避免回调地狱的，这得归功于Javascript函数声明具有“提升”特性。这意味着我么可以先调用，然后再声明，这里声明时将函数声明在外面，不再嵌套。如下：</p>
+<p><img src="http://i.imgur.com/XJK36dw.png" /></p>
+<h4>3.4、在CPS中撰写代码</h4>
+<p>在普通的JS，我们通常像这样组合代码片段：</p>
+<ol>
+<li>将它们一个接一个放置</li>
+<li>Array方法。比如map,filter,forEach</li>
+<li>循环，比如for while</li>
+</ol>
+<p>异步编程模块Async.js让你在CPS模式中做类似的事情，同时有着node.js类似的callback。也就是说既可使用回调，又能避免深层次嵌套。
+下面是一个例子：</p>
+<p><img src="http://i.imgur.com/20Brwuz.png" /></p>
+<h4>3.5、支持者与反对者</h4>
+<p>使用回调将导致极其特别的编程方式：CPS。CPS的<strong>最大优势是它的机制非常容易理解</strong>，但是它仍然有很多缺点：</p>
+<ol>
+<li>错误处理变得更为复杂。现在错误将有两种形式被报告，一种是通过callback，另外一种是通过抛异常（exception）。你需要小心翼翼的结合二者。</li>
+<li>不优雅的语法。在同步函数中，输入和输出通常有着明确的区分（参数代表输入，函数结果或返回值代表输出），但是在使用callback的异步函数里面，这个是非常混乱的，返回结果也作为了参数。</li>
+<li>组合代码将更加复杂。因为我们所关心的输出是作为参数出现的，因此，代码组合起来更为复杂。</li>
+</ol>
+<p>Node.js里面的callback也有三个缺点：</p>
+<ol>
+<li>用if语句来处理error增加了代码的累赘</li>
+<li>重用错误处理非常难</li>
+<li>提供一个默认的错误处理也是非常难。一个默认的错误处理在你做一个函数调用后不想写自己的错误处理的时候很有用，他也可以用在没有指定错误处理的函数调用中。</li>
+</ol>
+<h3>四、向前看</h3>
+<p>下一章讲述Promise以及ES6 Promise API. promise在本质上比callback更为复杂，它们吸收了callback的大多数优点，然后摒弃了很多缺点，尤其是上面提到的那些缺点。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
