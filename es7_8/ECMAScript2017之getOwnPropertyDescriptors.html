@@ -1,0 +1,367 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ECMAScript2017之getOwnPropertyDescriptors</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ECMAScript2017之getOwnPropertyDescriptors</h2>
+<p>本章将讲述由<code>Jordan Harband</code>和<code>Andrea Giammarchi</code>提交的ECMAScript2017新特性——Object.getOwnPropertyDescriptors()</p>
+<h3>一、概述</h3>
+<p>Object.getOwnPropertyDescriptors(obj)以对象的形式返回obj对象所有自有属性（包括字符属性和Symbol属性）的属性描述。如下：</p>
+<p><img src="http://i.imgur.com/VOlAeVk.png" /></p>
+<h3>二、Object.getOwnPropertyDescriptors()</h3>
+<p>Object.getOwnPropertyDescriptors()接收一个对象作为参数，然后以对象的形式返回obj对象所有属性的属性描述：</p>
+<blockquote>
+<p>对于obj的每一个自有属性，该方法给它的返回结果对象添加一个属性，属性名就是obj的那个属性，属性值就是obj的那个属性的描述符</p>
+</blockquote>
+<p>属性描述符描述了该属性的一些信息（它的值，它的可读、可写、可枚举、可配置等信息）。下面是个例子，和概述例子一样：</p>
+<p><img src="http://i.imgur.com/VOlAeVk.png" /></p>
+<p>其实Object.getOwnPropertyDescriptors()的实现很简单，就是遍历对象的属性然后调用之前就有的函数Object.getOwnPropertyDescriptor，需要注意的是要遍历所有自有属性：</p>
+<p><img src="http://i.imgur.com/AYpYdPi.png" /></p>
+<h3>三、Object.getOwnPropertyDescriptors()使用场合</h3>
+<h4>3.1、场合1：复制对象属性</h4>
+<p>在ES6中提供了一个复制对象属性的方法Object.assign()。但是这个对象仅仅只是调用get和set操作来复制对象属性，所完成的不过是一下操作：</p>
+<pre><code>const value = source[key]
+target[key] = value
+</code></pre>
+
+<p>这意味着它没法正确的复制非默认属性（getters、setters、non-writable属性等等），下面的例子说明了这一点：</p>
+<p><img src="http://i.imgur.com/EqStIUA.png" /></p>
+<p>assign之后的失败结果：</p>
+<p><img src="http://i.imgur.com/tfC6f7F.png" /></p>
+<p>可以看到assign并没有实现正确的复制（原属性的getter和setter都没复制过来）。</p>
+<p>幸运的是，我们可以结合Object.definedProperties和Object.getOwnPropertyDescriptors()来实现预期的结果：</p>
+<p><img src="http://i.imgur.com/wuGDDBu.png" /></p>
+<h4>3.2、场合2：克隆对象</h4>
+<p>浅克隆就和复制对象属性一个道理，所以Object.getOwnPropertyDescriptors()非常适合用来做浅克隆。
+现在我们使用Object.create()，并给他两个参数：</p>
+<ul>
+<li>第一个参数是对象的原型</li>
+<li>第二个可选参数是对象的属性吗，描述符集合，他是用Object.getOwnPropertyDescriptors()得到的</li>
+</ul>
+<p><img src="http://i.imgur.com/P9FyKnU.png" /></p>
+<p><img src="http://i.imgur.com/y8th51I.png" /></p>
+<h4>3.3、跨平台地指定对象字面量的任意原型</h4>
+<p>使用对象字面量创建具有任意原型对象的语法最好的方法是使用特殊属性<code>__proto__</code>：</p>
+<pre><code>let obj = {
+    __proto__: prot,//这里prot表示某个原型对象
+    foo: 123
+}
+</code></pre>
+
+<p>但是<code>__proto__</code>只有某些浏览器（比如Chrome）支持,一种普遍的变通方案是用Object.create()方法：</p>
+<pre><code>const obj = Object.create(prot)//这里prot表示某个原型对象
+obj.foo = 123
+</code></pre>
+
+<p>这是因为<code>A = Object.create(B)</code>实现的就是<code>A.__proto__ = B</code>这么一个功能。</p>
+<p>你也可以结合Object.getOwnPropertyDescriptors()：</p>
+<pre><code>const obj = Object.create(prot,
+    Object.getOwnPropertyDescriptors({
+        foo: 123
+    })
+)//这里prot表示某个原型对象
+</code></pre>
+
+<p>另外一种变通方法是使用assign():</p>
+<pre><code>const obj = Object.assign(
+    object.create(prot),
+    {
+        foo: 123
+    }
+)//这里prot表示某个原型对象
+</code></pre>
+
+<h3>四、陷阱</h3>
+<p>对象A的某个方法B中使用了super方法的话，该方法(B)将与其home对象（对象A存储在其中）牢固连接。目前没有办法将方法B复制或移动到其它的对象。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
