@@ -1,0 +1,534 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ECMAScript2017之共享内存和原子</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ECMAScript2017之共享内存和原子</h2>
+<p>本章将讲述由Lars T. Hansen提出的ECMAScript 2017的新功能——共享内存和原子。它引入了一个新的构造函数SharedArrayBuffer和具有辅助函数的命名空间对象Atomics。本章将介绍其细节。</p>
+<h3>一、并行性（parallelism） vs 并发性（concurrency）</h3>
+<p>在我们开始之前，让我们来澄清两个相似但不同的术语：“并行”和“并发”。存在许多对于它俩的定义，我像下面这样使用它们：</p>
+<ul>
+<li>并行（并行 vs 串行）：同时执行多个任务</li>
+<li>并发（并发 vs 顺序）：在重复的时间段（而不是一个接一个）执行几个任务。</li>
+</ul>
+<p>两者密切相关，但不一样：</p>
+<ul>
+<li>并行但不并发：单指令，多数据（SIMD）。多次计算并行发生，但在任何给定的时刻只执行一个任务（指令）。</li>
+<li>并发但不并行：通过单核CPU上的时间分配进行多任务处理。</li>
+</ul>
+<p>但是，很难准确地使用这些术语，这就是为什么互换它们通常也没有什么大问题。</p>
+<h4>1.1、并行模式</h4>
+<p>有两种并行模式：</p>
+<ul>
+<li>数据并行性：同一段代码并行执行多次。实例对同一数据集的不同元素进行操作。例如：MapReduce是一种数据并行编程模型。</li>
+<li>任务并行性：并行执行不同的代码段。示例：web workers(web多线程)和Unix子进程模型</li>
+</ul>
+<h3>二、JavaScript并行的发展历史</h3>
+<p><strong>（1）</strong>JavaScript在单线程中执行。某些任务可以异步执行：浏览器通常会在单独的线程中运行这些任务，然后通过回调将其结果返回到单个线程中。</p>
+<p><strong>（2）</strong>web Workers给JavaScript带来了多线程，它们是重量级的进程。每一个worker都有它自己的全局环境，默认情况下，任何东西都不共享。worker与worker（或子worker与父worker）之间的通信不断演进：</p>
+<ul>
+<li>起初，你只能发送和接收字符串。</li>
+<li>然后，引入了结构化克隆：可以发送和接收数据副本。结构化克隆适用于大多数数据（JSON数据，类型数组，正则表达式，Blob对象，ImageData对象等）。它甚至可以正确处理对象之间的循环引用。但是，不能克隆error对象，function对象和DOM节点。</li>
+<li>workers之间传递数据。当接收方收到数据后，发送方失去其访问权限。</li>
+</ul>
+<p><strong>（3）</strong>在GPU（非常适合并行计算）上做WebGL计算：这是一个hack，它像下面这样工作：</p>
+<ul>
+<li>输入：您的数据被转换为图像（逐个像素）。</li>
+<li>处理：OpenGL像素着色器可以在GPU上执行任意计算。您的像素着色器会转换输入图像。</li>
+<li>输出：图像。你可以将它转换成其它数据类型</li>
+</ul>
+<p><strong>（4）</strong>SIMD（低级数据并行性）：通过ECMAScript提案SIMD.js.支持。 它允许您同时对多个整数或浮点执行操作（如加法和平方根操作）。</p>
+<p><strong>（4）</strong>PJS（代号River Trail）：这个最终被遗弃的项目的计划是将高级别的数据并行（想象一下map-reduce）转换为JavaScript。 但是，开发人员和引擎执行者的兴趣还不够。 没有实现，开发人员就不能尝试这个API，因为它不能被polyfill。在2015-01-05，Lars T. Hansen宣布将从Firefox中删除实验性实施。</p>
+<h4>2.1、下一步：SharedArrayBuffer</h4>
+<p>下一步是什么？ 对于低级并行性，方向相当明确：尽可能地支持SIMD和GPU。然而，对于高层次的并行性，方向并不明朗，尤其是在PJS失败之后。</p>
+<p>需要尝试许多不同的实时方法，以了解如何最好地将高级别并行性提供给JavaScript。遵循可扩展网络宣言的原则，“共享内存和原子”（也叫作“Shared Array Buffers”）的提案应运而生。它提供可用于实现更高级别构造的低级原语。</p>
+<h3>三、Shared Array Buffers</h3>
+<p>Shared Array Buffers是用于实现更高级别并发的原始构建块。它允许你在工作者线程和主线程之间共享SharedArrayBuffer，这种共享有两个好处：</p>
+<ul>
+<li>你可以更快地在工作者线程之间共享数据</li>
+<li>工作者线程之间的协作将会更简单、更快速（相较postMessage）</li>
+</ul>
+<h4>3.1、创建和发送一个Shared Array Buffers</h4>
+<p><img src="http://i.imgur.com/TZRt8hE.png" /></p>
+<p>创建一个Shared Array Buffers的方式与创建普通Array Buffer相同：通过调用构造函数并以字节（A）指定缓冲区的大小。与工作者线程共享的是缓冲区，对于自己本地使用的话，通常将Shared Array Buffers用Typed Arrays （B）包装起来。</p>
+<p><strong>警告：</strong>克隆共享阵列缓冲区是正确的共享方式，但是一些引擎仍然会实现旧版本的API，并要求您进行传输：</p>
+<pre><code>worker.postMessage({sharedBuffer}, [sharedBuffer]); // transfer (deprecated)
+</code></pre>
+
+<p>在API的最终版本中，传输Shared Array Buffers意味着您将失去对访它的访问权。</p>
+<h4>3.2、接收Shared Array Buffers</h4>
+<p>工作者线程的实现类似如下：</p>
+<p><img src="http://i.imgur.com/2ysH3g0.png" /></p>
+<p>我们首先提取发送给我们的Shared Array Buffers，然后将其包装在Typed Arrays（行A）中，以便我们可以在本地使用它。</p>
+<h3>四、原子：安全的访问共享数据</h3>
+<h4>4.1问题：优化使得代码在工作者线程之间无法预测</h4>
+<p>在单线程中，编译器的优化可能破坏多线程代码。</p>
+<p>以下列代码为例：</p>
+<pre><code>while (sharedArray[0] === 123) ;
+</code></pre>
+
+<p>在单个线程中，当循环运行时，sharedArray [0]的值不会更改。因此，代码可以优化如下：</p>
+<pre><code>const tmp = sharedArray[0];
+while (tmp === 123) ;
+</code></pre>
+
+<p>但是，在多线程中，此优化会阻止我们使用此模式来等待另一个线程所做的更改。</p>
+<p>另一个例子是以下代码：</p>
+<pre><code>// main.js
+sharedArray[1] = 11;
+sharedArray[2] = 22;
+</code></pre>
+
+<p>在单线程中，您可以重新排列这些写入操作的顺序，因为在这两次写入操作之间没有读取它们内容的操作。对于多线程，只要您期望以特定顺序完成写入操作，就会遇到麻烦：</p>
+<pre><code>// worker.js
+while (sharedArray[2] !== 22) ;
+console.log(sharedArray[1]); // 0 or 11
+</code></pre>
+
+<p>这些优化使得实际上不可能同步多个工作者线程在同一个Shared Array Buffers上的行为。</p>
+<h4>4.2、解决方案：原子</h4>
+<p>该提案提供了全局变量Atomics，其方法有三个主要用例：</p>
+<h5>4.2.1、案例： 同步</h5>
+<p>Atomics可以用来与其他工作者线程进行同步。 例如，以下两个操作可以让您读取和写入数据，并且不会被编译器重新排列：</p>
+<ul>
+<li>Atomics.load(ta : TypedArray<T>, index) : T</li>
+<li>Atomics.store(ta : TypedArray<T>, index, value : T) : T</li>
+</ul>
+<p>这个想法是使用普通操作来读取和写入大部分数据，而Atomics操作（加载，存储等）用来确保读写安全。通常，您需要自定义同步机制，例如锁，其实现是基于Atomics的。</p>
+<p>这是一个非常简单的例子，感谢Atomics（我省略了设置sharedArray）：</p>
+<pre><code>// main.js
+console.log('notifying...');
+Atomics.store(sharedArray, 0, 123);
+
+// worker.js
+while (Atomics.load(sharedArray, 0) !== 123) ;
+console.log('notified');
+</code></pre>
+
+<h5>4.2.2、用例：等待通知</h5>
+<p>使用while循环来等待通知不是很有效率，这就是为什么Atomics有操作帮助：</p>
+<ul>
+<li>Atomics.wait（ta：Int32Array，index，value，timeout）。在ta [index]处等待通知，但只有当ta [index]为值时才起作用。</li>
+<li>Atomics.wake（ta：Int32Array，index，count）。唤醒在ta [index]处等待的工作者线程。</li>
+</ul>
+<h5>4.2.3、用例：原子操作</h5>
+<p>有几个Atomics操作用于执行算术运算，并且在执行此操作时不能中断，这有助于同步。例如：</p>
+<ul>
+<li>Atomics.add（ta：TypedArray <T>，index，value）：T</li>
+</ul>
+<p>大致来说，此操作执行：</p>
+<pre><code>ta [index] + = value;
+</code></pre>
+
+<h5>4.2.3、问题：破坏值</h5>
+<p>共享内存的一个有问题是破坏的值（垃圾）：当读取时，您可能会看到一个中间值，该值既不是新值写入内存之前的值，也不是新值。</p>
+<p>规范中的“无撕裂读取”表示，当且仅当以下情况下，没有撕裂：</p>
+<ul>
+<li>读写都通过Typed Arrays (而不是 DataViews)进行。</li>
+<li>两个Typed Arrays与它们的Shared Array Buffers对齐：sharedArray.byteOffset％sharedArray.BYTES<em>PER</em>ELEMENT === 0</li>
+<li>两个Typed Arrays的每个元素的字节数相同。</li>
+</ul>
+<p>换句话说，每当通过以下方式访问相同的Shared Array Buffers时，会出现破坏值的问题：</p>
+<ul>
+<li>一个或多个DateView</li>
+<li>一个或多个未对齐的Typed Arrays</li>
+<li>具有不同元素大小的Typed Arrays</li>
+</ul>
+<p>为避免这些情况下的破坏值，请使用Atomics或同步。</p>
+<h3>五、使用Shared Array Buffers</h3>
+<h4>5.1、Shared Array Buffer和JavaScript的运行到完成（run-to-completion）语义</h4>
+<p>JavaScript具有所谓的运行到完成语义：每个函数都可以直到完成为止也不会被另一个线程中断。函数成为了事务，可以执行完整的算法，而任何人都不能看到他们操作的数据的中间状态。</p>
+<p>Shared Array Buffer可以中断运行到完成（RTC）：函数正在处理的数据可以在函数运行时由另一个线程更改。但是，是否允许这样的事情发生完全由程序控制：如果不使用Shared Array Buffer，则是安全的。</p>
+<p>这与异步功能如何违反RTC类似。在那里，您可以通过await关键字阻止函数操作。</p>
+<h5>5.2、Shared Array Buffer和asm.js 和 WebAssembly</h5>
+<p>共享阵列缓冲区使emscripten可以将pthreads编译成asm.js.引用emscripten文档页面说明<a href="https://kripken.github.io/emscripten-site/docs/porting/pthreads.html">emscripten文档页面说明</a>：</p>
+<blockquote>
+<p>[Shared Array Buffer允许] Emscripten应用程序共享工作者线程之间的主内存堆。这与低级原子和futex支持的原语一起使Emscripten能够实现对Pthreads（POSIX线程）API的支持。</p>
+</blockquote>
+<p>也就是说，您可以将多线程C和C ++代码编译为asm.js.</p>
+<p>讨论如何最好地将多线程引入WebAssembly正在<a href="https://github.com/WebAssembly/design/issues/104">进行中</a>。鉴于web workers相对而言偏重量级，WebAssembly可能会引入轻量级线程。您可以看到线程在WebAssembly的<a href="http://webassembly.org/docs/future-features/">未来路线图上</a>。</p>
+<h5>5.3、共享整型以外的数据</h5>
+<p>目前，只能使用整数（最多32位长）的数组。这意味着共享其他类型数据的唯一方式是将其编码为整数。可能有助于包括的工具：</p>
+<ul>
+<li><a href="https://encoding.spec.whatwg.org/#api">TextEncoder和TextDecoder</a>：前者将字符串转换为Uint8Array的实例。后者则相反。</li>
+<li><a href="https://github.com/madmurphy/stringview.js">stringview.js</a>：将字符串作为字符数组处理的库。使用阵列缓冲区</li>
+<li><a href="https://github.com/lars-t-hansen/flatjs">FlatJS</a>：通过在扁平化内存（ArrayBuffer和SharedArrayBuffer）中存储复杂数据结构（结构体，类和数组）的方式来增强JavaScript。JavaScript + FlatJS被编译成纯JavaScript。支持JavaScript方言（TypeScript等）。</li>
+<li><a href="https://dump.01alchemist.com/2016/12/31/future-webhpc-parallel-programming-with-javascript-the-new-era-about-to-begin/">TurboScript</a>：是一种用于快速并行编程的JavaScript方言。它编译为asm.js和WebAssembly。</li>
+</ul>
+<p>最终，可能会有更多的更高级别的共享数据机制。有一个实验将继续弄明白这些机制应该如何更合理。</p>
+<h5>5.4、使用Shared Array Buffer的代码多快？</h5>
+<p>Lars T. Hansen编写了Mandelbrot算法的两个实现（如他的文章“<a href="https://hacks.mozilla.org/2016/05/a-taste-of-javascripts-new-parallel-primitives/">A Taste of JavaScript's New Parallel Primitives</a>”中所述，您可以在线尝试）：串行版本和使用多个工作者线程的并行版本。 对于最多4个工作者线程（处理器核心个数），加速几乎线性地提高，从每秒6.9帧（1个工作者线程）到每秒25.4帧（4个工作者线程）。更多的工作者线程带来了更多的性能改进，但适中更好。</p>
+<p><a href="https://github.com/lars-t-hansen">Hansen</a>指出，加速令人印象深刻，但是并行代码的代价更为复杂。</p>
+<h3>六、示例</h3>
+<p>我们来看一个更全面的例子。它的代码在GitHub上，在<a href="https://github.com/rauschma/shared-array-buffer-demo"> shared-array-buffer-demo</a>中。 你可以在线运行它<a href="https://rauschma.github.io/shared-array-buffer-demo/">repository shared-array-buffer-demo</a>。</p>
+<h4>6.1使用共享锁</h4>
+<p>在主线程中，我们设置好共享内存以便它编码一个关闭锁并将其发送给一个工作者线程（A行）。 用户点击后，我们打开锁（B行）。</p>
+<p><img src="http://i.imgur.com/nMdmiho.png" /></p>
+<p>在工作者线程中，我们设置了一个本地版本的锁（其状态通过Shared Array Buffer与主线程共享）。 在B行中，我们一直等待知道锁被解开。在行A和C中，我们发送文本到主线程，它显示在我们的页面上（在以前的代码片段中未显示它是如何做到的）。 也就是说，我们在这两行中使用的self.postMessage（）非常类似于console.log（）。</p>
+<p><img src="http://i.imgur.com/T8EOZ3r.png" /></p>
+<p>值得注意的是，等待B行的锁导致整个工作者线程被停止。这是真正的阻塞，JavaScript直到现在还不存在（等待异步函数是一个近似）。</p>
+<h4>6.2、实现共享锁</h4>
+<p>接下来，我们将看看Lars T. Hansen实现的一个ES6版本、基于SharedArrayBuffer的Lock。
+在本节中，我们需要以下（以及其他）Atomics功能：</p>
+<ul>
+<li>Atomics.compareExchange（ta：TypedArray <T>，index，expectedValue，replacementValue）：T</li>
+</ul>
+<p>如果ta[index]处的值为我们期待的值，则将其替换为替代值。返回索引的前一个（或未更改）的元素。</p>
+<p>从几个常量和构造函数开始实现：</p>
+<p><img src="http://i.imgur.com/rxlwUxu.png" /></p>
+<p>构造函数主要将其参数存储在实例属性中。</p>
+<p>锁定方法如下:</p>
+<p><img src="http://i.imgur.com/CRSP68s.png" /></p>
+<p>在A行中，如果当前值为UNLOCKED，则将锁更改为LOCKED<em>NO</em>WAITERS。 如果锁已经被锁定（在这种情况下，compareExchange（）没有改变任何东西），我们将进入then代码块。</p>
+<p>在B行（在do-while循环内），我们检查锁是否与waiters锁定或未锁定。鉴于我们将要等待，如果当前值为LOCKED<em>NO</em>WAITERS，则compareExchange（）也将切换到LOCKED<em>POSSIBLE</em>WAITERS。</p>
+<p>在C行中，如果锁值为LOCKED<em>POSSIBLE</em>WAITERS，我们就等待。 最后一个参数Number.POSITIVE_INFINITY意味着等待永不超时。</p>
+<p>当醒来后，如果我们没有解锁，我们会继续循环。 如果锁为UNLOCKED，则compareExchange（）也会切换到LOCKED<em>POSSIBLE</em>WAITERS。 我们使用LOCKED<em>POSSIBLE<em>WAITERS而不是LOCKED</em>NO</em>WAITERS，因为我们需要在unlock（）临时将其设置为UNLOCKED并唤醒我们后恢复该值。</p>
+<p>解锁方法如下：</p>
+<p><img src="http://i.imgur.com/bLI0WQZ.png" /></p>
+<p>在行A中，v0得到iab[stateIdx]在从中减去1之前的值。减法表示我们从LOCKED<em>NO</em>WAITERS到UNLOCKED，从LOCKED<em>POSSIBLE</em>WAITERS到LOCKED。</p>
+<p>如果该值以前是LOCKED<em>NO</em>WAITERS，那么它现在是UNLOCKED，一切都很好（没有人醒来）。</p>
+<p>否则，该值为LOCKED<em>POSSIBLE</em>WAITERS或UNLOCKED。 在前一种情况下，我们现在解锁，并且必须唤醒某人（通常会再次锁住）。 在后一种情况下，我们必须修正由减法创建的非法值，并且wake（）根本不做任何事情。</p>
+<h4>6.3、例子总结</h4>
+<p>以上给出了一个基于SharedArrayBuffer的锁的工作原理。 请记住，多线程代码是非常难写的，因为事情可以随时改变。 例子：lock.js是基于一个记录Linux内核的futex实现的文件。 该文件的标题是“<a href="http://www.akkadia.org/drepper/futex.pdf">Futex很棘手</a>”（PDF）。</p>
+<p>如果要更深入地使用Shared Array Buffers进行并行编程，请查看<a href="https://github.com/lars-t-hansen/parlib-simple/blob/master/src/synchronic.js">synchronizeic.js</a>和它所基于的PDF<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4195.pdf">PDF</a>文档。</p>
+<h3>七、共享内存和原子有关的API</h3>
+<h4>7.1、SharedArrayBuffer</h4>
+<h5>构造函数</h5>
+<ul>
+<li>new SharedArrayBuffer(length)。创建一个length个字节的缓冲区</li>
+</ul>
+<h5>静态属性</h5>
+<ul>
+<li>get SharedArrayBuffer[Symbol.species]。默认返回this,可通过控制slice的返回值复写</li>
+</ul>
+<h5>实例属性</h5>
+<ul>
+<li>get SharedArrayBuffer.prototype.byteLength()。返回缓冲区字节数</li>
+<li>SharedArrayBuffer.prototype.slice(start, end)。返回原始缓冲区的某一片</li>
+</ul>
+<h4>7.2、原子</h4>
+<p>原子函数的操作数必须是Typed Array（Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array or Uint32Array）的实例，该实例必须包裹着SharedArrayBuffer。</p>
+<p>所有的函数都原子的执行，store操作的顺序是固定的，不能被编译器或CPU改变。</p>
+<h5>7.2.1 Loading and storing</h5>
+<ul>
+<li>Atomics.load(ta : TypedArray<T>, index) : T。读取和返回ta[index]</li>
+<li>Atomics.store(ta : TypedArray<T>, index, value : T) : T。写入一个值到ta[index]并返回写入的值</li>
+<li>Atomics.exchange(ta : TypedArray<T>, index, value : T) : T。设置ta[index]处的值，并返回设置前的值</li>
+<li>Atomics.compareExchange(ta : TypedArray<T>, index, expectedValue, replacementValue) : T。如果ta[index]处的值是期待的值，则用替代值替换它。如果原始值是期待值，则返回替换的值，否则返回原始值。</li>
+</ul>
+<h5>7.2.2 简单修改 Typed Array 元素</h5>
+<p>下面的每一个函数都会改变 Typed Array指定索引位置的元素。它对提供一个参数，对元素施加一种操作，然后写入结果。它返回原始值。</p>
+<ul>
+<li>Atomics.add(ta : TypedArray<T>, index, value) : T。执行 ta[index] += value 并返回 ta[index]处的原始值.</li>
+<li>Atomics.sub(ta : TypedArray<T>, index, value) : T。执行 ta[index] -= value 并返回 ta[index]处的原始值.</li>
+<li>Atomics.and(ta : TypedArray<T>, index, value) : T。执行 ta[index] &amp;= value 并返回 ta[index]处的原始值.</li>
+<li>Atomics.or(ta : TypedArray<T>, index, value) : T。执行 ta[index] |= value 并返回 ta[index]处的原始值.</li>
+<li>Atomics.xor(ta : TypedArray<T>, index, value) : T。执行 ta[index] ^= value 并返回 ta[index]处的原始值.</li>
+</ul>
+<h5>7.2.3、等待和唤醒</h5>
+<p>等待和唤醒操作需要参数ta是一个Int32Array的实例.</p>
+<ul>
+<li>Atomics.wait(ta: Int32Array, index, value, timeout=Number.POSITIVE_INFINITY) : ('not-equal' | 'ok' | 'timed-out')。如果ta[index]当前值不是一个数值，返回'not-equal'。否则休眠直到通过 Atomics.wake()唤醒或者超时。前一种情况返回ok，后一种情况返回毫秒数'timed-out', 该函数的助记符是“wait if ta[index] is value”.</li>
+<li>Atomics.wake(ta : Int32Array, index, count)。唤醒在ta[index]处的工作者线程.</li>
+</ul>
+<h5>7.2.4、杂项</h5>
+<ul>
+<li>Atomics.isLockFree（大小）
+如果没有锁定，可以操作具有给定大小（以字节为单位）的操作数，这个函数可以让您询问JavaScript引擎。 这可以通知算法是否要依赖内置的基元（compareExchange（）等）或使用自己的锁。 Atomics.isLockFree（4）总是返回true，因为这是所有当前相关的支持。</li>
+</ul>
+<h3>八、常见问题</h3>
+<h4>8.1、浏览器支持情况如何？</h4>
+<p>目前而言某些浏览器通过如下方式支持：</p>
+<p><img src="http://i.imgur.com/wRTmCOE.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

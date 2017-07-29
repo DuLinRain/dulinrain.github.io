@@ -1,0 +1,614 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ECMAScript2017之异步函数（async function）</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ECMAScript2017之异步函数（async function）</h2>
+<p>本章将讲述由Brian Terlson提出的ECMAScript2017新特性——异步函数（async function）。</p>
+<h3>一、概述</h3>
+<h4>1.1、变体</h4>
+<p>存在下面几种异步函数（async function）的变体，注意<code>async</code>关键字无处不在：</p>
+<ol>
+<li>异步函数声明：<code>async function foo () {}</code></li>
+<li>异步函数表达式： <code>const foo = async function () {}</code></li>
+<li>异步方法定义： <code>let obj = { async foo () {} }</code></li>
+<li>异步箭头函数： <code>const foo = async () =&gt; {}</code></li>
+</ol>
+<h4>1.2、异步函数总是返回promise</h4>
+<p>通过return来fullfill异步函数的promise：</p>
+<p><img src="http://i.imgur.com/nV0LZzE.png" /></p>
+<p>通过throw来reject异步函数的promise:</p>
+<p><img src="http://i.imgur.com/0Vl8fcz.png" /></p>
+<h4>1.3、通过await处理异步函数返回的结果和错误</h4>
+<p>操作符await只能用在异步函数里面，它等待它的操作数（某promise）被设置：</p>
+<ul>
+<li>如果该promise被fullfilled，那么await得到的是fullfilled的结果</li>
+<li>如果该promise被rejected，那么await抛出rejected的结果</li>
+</ul>
+<h5>处理单个异步函数的返回结果</h5>
+<p><img src="http://i.imgur.com/6a8GkCa.png" /></p>
+<h5>依次处理多个异步函数的返回结果</h5>
+<p><img src="http://i.imgur.com/jQ97gV5.png" /></p>
+<p>上述代码等效于下面：</p>
+<p><img src="http://i.imgur.com/tDBo4Rg.png" /></p>
+<h5>并行处理多个异步函数的返回结果</h5>
+<p><img src="http://i.imgur.com/NAhI0CI.png" /></p>
+<p>上述代码等价于：</p>
+<p><img src="http://i.imgur.com/RdW4Kgv.png" /></p>
+<h5>处理错误</h5>
+<p><img src="http://i.imgur.com/mq83V0A.png" /></p>
+<p>上述代码等价于：</p>
+<p><img src="http://i.imgur.com/rax7yNX.png" /></p>
+<h3>二、理解异步函数</h3>
+<p>在我解释异步函数（async function）之前，我需要先解释一下如何将Promise和Generator结合来以同步式的代码书写形式实现异步操作。</p>
+<p>对于那些需要得到一次性异步计算结果的函数，ES6提供的Promise大受欢迎。一个典型的例子是客户端的Fetch API。它是除XMLHttpRequest方法之外的另外一种获取资源的方式。它的基本用法如下：</p>
+<p><img src="http://i.imgur.com/EjnWZxB.png" /></p>
+<h4>2.1、通过Generator书写异步代码</h4>
+<p>co是一个使用Promise和Genrator让编程者可以使用同步式的代码风格来实现异步代码的库，它的基本使用例子如下：</p>
+<p><img src="http://i.imgur.com/9gMLY44.png" /></p>
+<p>每当回调函数（实示例中的Generator函数）产生一个Promise给co时，回调函数都被暂停。一旦Promise被设定，co将恢复回调函数。如果Promise被fullfilled，yeild输出fillfilled的值，如果Promise被rejected,yeild将抛出rejected返回的错误。除此之外，co将回调函数返回的结果promise化（类似于then所做的事情）：</p>
+<h4>2.2、通过异步函数书写异步代码</h4>
+<p>异步函数（async function）基本上就是为co所做事情量身打造的语法：</p>
+<p><img src="http://i.imgur.com/Ud4hYZB.png" /></p>
+<p>异步函数的内部实现和Generator很像。</p>
+<h4>2.3、异步函数同步启动，异步设定</h4>
+<p>下面是异步函数是如何被执行的：</p>
+<ol>
+<li>异步函数的返回结果总是Promise.这个Promise在开始执行异步函数的时候就被创建。</li>
+<li>函数体被执行。执行可以被return 或 throw永久性的结束。或者被await暂时性的结束。在后面这种情况下，函数体的执行可以在随后继续。</li>
+<li>该promise被返回。</li>
+</ol>
+<p>当执行函数体的时候，return x将会用x值resolve该promise,而throw err将会用err值reject该promise。“异步函数被设定”这个通知是异步的。换句话说，只有在then和catch都只有在当前代码执行完成后才会执行（也就是被异步通知）。</p>
+<p>下面的代码解释了上面所讲的,注意输出顺序：</p>
+<p><img src="http://i.imgur.com/rA4N4Nx.png" /></p>
+<p>下面讲解一下输出顺序：</p>
+<ol>
+<li>A行。异步函数同步启动。它的promise是通过return给resolved的</li>
+<li>C行。执行继续</li>
+<li>B行。“promise被resolved”这个消息是异步的，只有收到了这个消息then才会执行</li>
+</ol>
+<h4>2.4、返回的promise没有被包裹</h4>
+<p>resolved一个promise是一个标准的操作，通过return来resolve一个promise(比如叫p),这意味着：</p>
+<ol>
+<li>直接return一个非promise值的话将会使用该值resolve该promise(即p)</li>
+<li>如果return一个promise的话意味着p将拷贝那个promise的状态，也就是说不会将这个返回的promise作为值resolve p，而是会拿它的状态给自己使用。</li>
+</ol>
+<p>因此，你可以返回一个promise,这个promise不会被另一个promise包裹,下面两个结果是一样的：</p>
+<p><img src="http://i.imgur.com/xqrY2q0.png" /></p>
+<hr />
+<p><img src="http://i.imgur.com/f97SZrU.png" /></p>
+<p>有趣的是，返回一个rejected的promise将导致异步函数被rejected(正常情况下，我们是用throw来rejected外面的异步函数)：</p>
+<p><img src="http://i.imgur.com/lQp8Fv0.png" /></p>
+<hr />
+<p><img src="http://i.imgur.com/zxHoFqH.png" /></p>
+<p>这与Promise解决方案的工作机制是一致的：它允许你不使用await转发另一个异步计算的结果，不论它是fullfilled还是rejected.</p>
+<pre><code>async function asyncFunc() {
+    return anotherAsyncFunc();
+}
+</code></pre>
+
+<p>上面的代码和下面的基本上一样，但是比下面代码更有效率，因为下面的代码使用await将promise unrapped(提取成功的值或失败的error)然后又用return将提取的值warp成promise了。</p>
+<pre><code>async function asyncFunc() {
+    return await anotherAsyncFunc();
+}
+</code></pre>
+
+<h3>三、使用await的技巧</h3>
+<h4>3.1、不要忘记使用await</h4>
+<p>一个非常容易犯的错误是在异步函数里调用另外一个异步函数的时候忘记使用await：</p>
+<pre><code>async function asyncFunc() {
+    const value = otherAsyncFunc(); // missing `await`!
+    ···
+}
+</code></pre>
+
+<p>在这个例子里面value将会是一个promise,这通常不是你想要的结果。await在异步函数没有返回值的时候也有重要的意义。它的promise被用作信号告诉调用者里面的异步函数已经结束了。比如：</p>
+<pre><code>async function foo() {
+    await step1(); // (A)
+    ···
+}
+</code></pre>
+
+<p>(A)处的await可以确保只有当step1执行结束之后，foo才能得到该通知。</p>
+<h4>3.2、当你只是想启动异步函数，但是不关心它啥时候结束的时候，可以不使用await</h4>
+<p>有些时候，我们只是想触发异步函数，但是不关心它啥时候结束，下面是一个例子：</p>
+<pre><code>async function asyncFunc() {
+    const writer = openFile('someFile.txt');
+    writer.write('hello'); // don’t wait
+    writer.write('world'); // don’t wait
+    await writer.close(); // wait for file to close
+}
+</code></pre>
+
+<p>这里我们并不关心单个的write啥时候结束，它们只需要保证按顺序执行就可以了。最后一行的await确保只有当文件被成功关闭之后asyncFunc函数才被fullfilled。</p>
+<p>考虑到返回的promise不会被promise化，你也可以直接返回writer.close()：</p>
+<pre><code>async function asyncFunc() {
+    const writer = openFile('someFile.txt');
+    writer.write('hello');
+    writer.write('world');
+    return writer.close();
+}
+</code></pre>
+
+<p>两种版本都有各自的支持者和反对者。前面一种await版本可能更好理解。</p>
+<h4>3.3、await是串行的，Promise.all是并行的</h4>
+<p>下面这个例子进行了两个异步函数调用，asyncFunc1() 和 asyncFunc2().</p>
+<pre><code>async function foo() {
+    const result1 = await asyncFunc1();
+    const result2 = await asyncFunc2();
+}
+</code></pre>
+
+<p>但是它俩是串行的，如果并行的执行它们可以加快执行速度，你可以使用Promise.all做到：</p>
+<pre><code>async function foo() {
+    const [result1, result2] = await Promise.all([
+        asyncFunc1(),
+        asyncFunc2(),
+    ]);
+}
+</code></pre>
+
+<p>我们现在不需要await两个promise,只需要await有两个元素的Promise数组。</p>
+<h3>四、异步函数和回调</h3>
+<p>异步函数的一个限制是它只会影响它直接外围的异步函数。因此，异步函数不能再回调函数中await，然而回调函数本身可以是一个异步函数，这个我们稍后会看到。这使得基于回调的实体函数和方法难以使用。这方面的例子包括数组方法map和forEach</p>
+<h4>4.1、Array.prototype.map()</h4>
+<p>让我们先看看Array.prototype.map()。在下面的例子中，我们想下载数组中的URL链接的文件并且以数组的形式返回结果。</p>
+<pre><code>async function downloadContent(urls) {
+    return urls.map(url =&gt; {
+        // Wrong syntax!
+        const content = await httpGet(url);
+        return content;
+    });
+}
+</code></pre>
+
+<p>上面会存在语法错误，因为在普通的函数（包括普通箭头函数）中是不能够使用await的，只有在异步函数（async function）中才可以使用await。但是如果我们使用异步箭头函数呢？</p>
+<pre><code>async function downloadContent(urls) {
+    return urls.map(async (url) =&gt; {
+        const content = await httpGet(url);
+        return content;
+    });
+}
+</code></pre>
+
+<p>语法上是没错误了，但是上述代码存在两个问题：</p>
+<ol>
+<li>返回结果将是promise组成的数组，而不是普通的数值或字符串等等</li>
+<li>当map结束时，map里的回调函数所做的工作并没有结束。因为await只是暂停它直接外围的异步箭头函数并且httpGet(url)的resolved是异步的。这意味着直到downloadContent完成你才能使用await去等待。</li>
+</ol>
+<p>我们可以通过Promise.all解决上述两个问题。用Promise.all将两个Promise组成的数组转换成一个promise，这个promise包含两个的fullfilled的值：</p>
+<pre><code>async function downloadContent(urls) {
+    const promiseArray = urls.map(async (url) =&gt; {
+        const content = await httpGet(url);
+        return content;
+    });
+    return await Promise.all(promiseArray);
+}
+</code></pre>
+
+<p>map的回调函数并不对httpGet做太多事，它只是传递它。因此，这里我们没有必要再用异步箭头函数，普通箭头函数就OK了：</p>
+<pre><code>async function downloadContent(urls) {
+    const promiseArray = urls.map(
+        url =&gt; httpGet(url));
+    return await Promise.all(promiseArray);
+}
+</code></pre>
+
+<p>现在我们还可以做小小的改进。这个异步函数有点低调，它先用await将Promise.all返回的promise  unwrap, 然后又将unwrap后的结果用return wrap为promise。也就是说先反promise化，又promise化。考虑到return并不会将promise再promise化，我们可以不用await，直接return。</p>
+<pre><code>async function downloadContent(urls) {
+    const promiseArray = urls.map(
+        url =&gt; httpGet(url));
+    return Promise.all(promiseArray);
+}
+</code></pre>
+
+<h4>4.2、 Array.prototype.forEach()</h4>
+<p>让我们用forEach来输出多个URL指向的文件内容：</p>
+<pre><code>async function logContent(urls) {
+    urls.forEach(url =&gt; {
+        // Wrong syntax
+        const content = await httpGet(url);
+        console.log(content);
+    });
+}
+</code></pre>
+
+<p>同样，这段代码将报语法错误，因为你不能在普通箭头函数中使用await.让我们使用异步箭头函数：</p>
+<pre><code>async function logContent(urls) {
+    urls.forEach(async url =&gt; {
+        const content = await httpGet(url);
+        console.log(content);
+    });
+    // Not finished here
+}
+</code></pre>
+
+<p>这个确实能工作，但是有个警告：httpGet返回的peomise将会被异步的resolved，这意味着当forEach返回时，回调还没有结束。因此，你不能在logContent末尾await。</p>
+<p>如果上面的结果不是你想要的，你可以改用for...of：</p>
+<pre><code>async function logContent(urls) {
+    for (const url of urls) {
+        const content = await httpGet(url);
+        console.log(content);
+    }
+}
+</code></pre>
+
+<p>现在，当for...of结束时，所有的promise都resolved了。但是，这会导致httpGet被串行地调用。当第一个httpGet调用结束后，才会进行第二个调用。如果你想他们并行的调用，你必须使用Promise.all：</p>
+<pre><code>async function logContent(urls) {
+    await Promise.all(urls.map(
+        async url =&gt; {
+            const content = await httpGet(url);
+            console.log(content);            
+        }));
+}
+</code></pre>
+
+<p>map()用来创建由promise组成的数组，我们并不关心他们fullfilled的结果，我们只等待所有promise都被fullfilled了。这意味着在logContent函数末尾他们都已经结束了。我们也可以只返回Promise.all()，但此时函数的结果将是undefined组成的数组。</p>
+<p>测试一下：</p>
+<p><img src="http://i.imgur.com/dKTKRRU.png" /></p>
+<p>return的话返回undefined组成的数组：</p>
+<p><img src="http://i.imgur.com/kHr80FR.png" /></p>
+<h3>五、异步函数使用技巧</h3>
+<h4>5.1、理解你的异步函数</h4>
+<p>异步函数的基础是Promise，这就是为什么理解Promise对于理解异步函数具有至关重要的作用。尤其是当需要连接一些不是基于Promise的异步函数的老代码的时候，你常常别无选择只能直接使用Promise.</p>
+<p>比如说，下面是一个基于Promised版本的XMLHttpRequest：</p>
+<p><img src="http://i.imgur.com/Za0s4tc.png" /></p>
+<p>XMLHttpRequest的API是基于回调的，通过异步函数来promise化它意味着你需要fullfilled或者rejected我们在回调函数中返回的Promise, 那是不可能的，因为在异步函数中你只能使用return和throw来fullfilled和resolve一个promise。但是你又没法在回调函数中返回一个函数的结果，throw也有类似的限制。</p>
+<p>因此，异步函数普遍的编程风格是这样的：</p>
+<ul>
+<li>直接使用Promises构建异步原语。</li>
+<li>通过异步函数使用这些原语。</li>
+</ul>
+<h4>5.2、立即调用异步箭头函数表达式</h4>
+<p>有时候，如果你可以在模块或者脚本的开始使用await，那是挺好的。可惜的是，await只能在异步函数中使用，所以你可以有几个选择。你可以创建一个异步函数main，然后立刻调用它：</p>
+<pre><code>async function main() {
+    console.log(await asyncFunction());
+}
+main();
+</code></pre>
+
+<p>或者是你可以使用立即调用异步箭头函数表达式：</p>
+<pre><code>(async function () {
+    console.log(await asyncFunction());
+})();
+</code></pre>
+
+<p>另一种是立即调用异步箭头函数：</p>
+<pre><code>(async () =&gt; {
+    console.log(await asyncFunction());
+})();
+</code></pre>
+
+<h4>5.3、异步函数的单元测试</h4>
+<p>下面的代码使用mocha测试框架来对异步函数 asyncFunc1() 和 asyncFunc2()进行单元测试:</p>
+<pre><code>import assert from 'assert';
+
+// Bug: the following test always succeeds
+test('Testing async code', function () {
+    asyncFunc1() // (A)
+    .then(result1 =&gt; {
+        assert.strictEqual(result1, 'a'); // (B)
+        return asyncFunc2();
+    })
+    .then(result2 =&gt; {
+        assert.strictEqual(result2, 'b'); // (C)
+    });
+});
+</code></pre>
+
+<p>然而上面的测试永远会成功，因为mocha不会等待（B）和（C）处的断言语句被执行。</p>
+<p>你可以通过返回promise链的结果来修正这个bug，因为mocha可以知道，当某个测试返回的是promise的时候，mocha将会等待那个promise被设定（除非超时了）。</p>
+<pre><code>return asyncFunc1() // (A)
+</code></pre>
+
+<p>因为异步函数总是返回promise，这使得它们对这种单元测试表现完美：</p>
+<pre><code>import assert from 'assert';
+test('Testing async code', async function () {
+    const result1 = await asyncFunc1();
+    assert.strictEqual(result1, 'a');
+    const result2 = await asyncFunc2();
+    assert.strictEqual(result2, 'b');
+});
+</code></pre>
+
+<p>现在，对于单元测试而言，异步函数有两大好处，一个是代码更加简练，另一个是返回的promise可以被正确处理。</p>
+<h4>5.4、无需担心未处理的rejected</h4>
+<p>JavaScript引擎越来越善于对未被处理的rejected发出警告。 例如，以下代码通常会在以前默默地失败，但大多数现代JavaScript引擎现在都报告了一个未处理的rejected：</p>
+<pre><code>async function foo() {
+    throw new Error('Problem!');
+}
+foo();
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

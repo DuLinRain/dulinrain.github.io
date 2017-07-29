@@ -35,8 +35,8 @@ export default {
                 bookcomment: '1、该书由Dr. Axel Rauschmayer于2015年10月撰写，本人在2017年X月完成中文翻译<br/>2、该书介绍了ES6的新特性<br/>3、该书内容翔实，深入浅出，推荐指数&#9733;&#9733;&#9733;&#9733;&#9733;<br/>4、原书全文555页，中文译本xxx页。<br/>5、点击封面查看中文译本，查看原书请点击',
                 bookcover: book_es6_jpg
             },{
-                bookname_ch: 'https://dulinrain.github.io/books/TypeScript编程指南.pdf',
-                bookname_en: 'https://dulinrain.github.io/books/TypeScript JavaScript Development Guide.pdf',
+                bookname_ch: 'https://dulinrain.github.io/books/Exploring ES2016 and ES2017.pdf',
+                bookname_en: 'http://exploringjs.com/es2016-es2017/',
                 bookcomment: '1、该书由Dr. Axel Rauschmayer于2017年撰写，本人在2017年7月完成中文翻译<br/>2、该书介绍了ECMAScript2016和ECMAScript2017的新特性<br/>3、因ECMAScript更新不多，故该书内容不多，推荐指数&#9733;&#9733;&#9733;&#9733;&#9733;<br/>4、原书为在线版，中文译本61页。<br/>5、点击封面查看中文译本，查看原书请点击',
                 bookcover: book_es7_8_jpg
             },{
