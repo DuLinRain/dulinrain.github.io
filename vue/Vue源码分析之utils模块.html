@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vue源码分析之utils模块</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>Vue源码分析之utils模块</h2>
+<p>shared目录下有两个文件，一个是constants.js，顾名思义就是定义了一些常量，另外一个是util.js，主要是定义了一些多用途、工具性质的函数。</p>
+<h3>一、utils.js</h3>
+<h4>1、isUndef</h4>
+<p>用来判断输入是否定义，从源码可以看出，vue将null也视为未定义，这与原生的js是不一致的。</p>
+<pre><code>export function isUndef (v: any): boolean %checks {
+  return v === undefined || v === null
+}
+</code></pre>
+
+<h4>2、isDef</h4>
+<p>与isUndef相反：</p>
+<pre><code>export function isDef (v: any): boolean %checks {
+  return v !== undefined &amp;&amp; v !== null
+}
+</code></pre>
+
+<h4>3、isTrue</h4>
+<p>仅仅是判断是否是true而已</p>
+<pre><code>export function isTrue (v: any): boolean %checks {
+  return v === true
+}
+</code></pre>
+
+<h4>4、isFalse</h4>
+<p>仅仅是判断是否是false而已</p>
+<pre><code>export function isFalse (v: any): boolean %checks {
+  return v === false
+}
+</code></pre>
+
+<h4>5、isPrimitive</h4>
+<p>判断是否是原始类型，Vue认为string、number、boolean是原始类型，也就是说它是<strong>没法检测ES6的Symbol的</strong>。</p>
+<pre><code>export function isPrimitive (value: any): boolean %checks {
+  return (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  )
+}
+</code></pre>
+
+<h4>6、isObject</h4>
+<p>判断是否是对象，<strong>注意Vue认为null不是对象而是未定义</strong></p>
+<pre><code>export function isObject (obj: mixed): boolean %checks {
+  return obj !== null &amp;&amp; typeof obj === 'object'
+}
+</code></pre>
+
+<h4>7、_toString</h4>
+<p>Vue的_toString方法就是Object原型上的toString方法：</p>
+<pre><code>const _toString = Object.prototype.toString
+</code></pre>
+
+<h4>8、isPlainObject</h4>
+<p>用来判断是不是纯粹对象，所谓的纯粹对象就是指key/value组成的对象字面量或者通过new Object，或者new一个类得到的东西，就是通过Object.prototype.toString.call来判断的：</p>
+<pre><code>export function isPlainObject (obj: any): boolean {
+  return _toString.call(obj) === '[object Object]'
+}
+</code></pre>
+
+<h4>9、isRegExp</h4>
+<p>判断是不是正则表达式，也是通过Object.prototype.toString.call来判断的</p>
+<pre><code>export function isRegExp (v: any): boolean {
+  return _toString.call(v) === '[object RegExp]'
+}
+</code></pre>
+
+<h4>10、isValidArrayIndex</h4>
+<p>判断数组索引是不是合法的，主要判断是不是没有小数，是否越界，是否是无穷大：</p>
+<pre><code>export function isValidArrayIndex (val: any): boolean {
+  const n = parseFloat(val)
+  return n &gt;= 0 &amp;&amp; Math.floor(n) === n &amp;&amp; isFinite(val)
+}
+</code></pre>
+
+<p>这里面一个比较有意思的地方是<code>Math.floor(n) === n</code>，也就是说，只要这个成立，那么也是可以索引的，我们看一下下面这个例子：</p>
+<pre><code>A = [1,2,3,4]
+3.000000000 === 3.00000000000000001//true
+Math.floor(3.00000000000000001) === 3.000000000//true
+A[3.00000000000000001]
+</code></pre>
+
+<p>这给我们以后写这样的函数的时候提供了一个新的思路，也就是说，数组的索引<strong>并不</strong>必须是整数。</p>
+<h4>11、toString</h4>
+<p>Vue.js的toString方法与JS原生的不一样，他主要是</p>
+<ul>
+<li>如果target是null则转为''</li>
+<li>否则，如果target是object，则调用JSON.stringify序列化</li>
+<li>
+<p>否则，调用String()</p>
+<p>export function toString (val: any): string {
+  return val == null
+    ? ''
+    : typeof val === 'object'
+      ? JSON.stringify(val, null, 2)
+      : String(val)
+}</p>
+</li>
+</ul>
+<p>JSON.stringify(val, null, 2)中null表示对象所有的属性都会被序列化，2表示有2个空格</p>
+<h4>12、toNumber</h4>
+<p>用来将target转换为number,如果是NaN的话，则返回NaN</p>
+<pre><code>export function toNumber (val: string): number | string {
+  const n = parseFloat(val)
+  return isNaN(n) ? val : n
+}
+</code></pre>
+
+<h4>13、makeMap</h4>
+<p>接收两个参数，第一个是字符串，第二个是是否将key转为小写，是可选的参数。将逗号分隔的字符串以逗号为间隔提取各个子串，并将子串作为对象的key，然后返回一个函数，用来检查某个key是否在里面。</p>
+<pre><code>export function makeMap (
+  str: string,
+  expectsLowerCase?: boolean
+): (key: string) =&gt; true | void {
+  const map = Object.create(null)
+  const list: Array&lt;string&gt; = str.split(',')
+  for (let i = 0; i &lt; list.length; i++) {
+    map[list[i]] = true
+  }
+  return expectsLowerCase
+    ? val =&gt; map[val.toLowerCase()]
+    : val =&gt; map[val]
+}
+</code></pre>
+
+<p>这个主要用来判断Vue中定义的内建标签以及保留字：</p>
+<pre><code>/**
+ * Check if a tag is a built-in tag.
+ */
+export const isBuiltInTag = makeMap('slot,component', true)
+
+/**
+ * Check if a attribute is a reserved attribute.
+ */
+export const isReservedAttribute = makeMap('key,ref,slot,is')
+</code></pre>
+
+<h4>14、remove</h4>
+<p>vue中直接按数组索引操作数组不会触发视图更新，所以vue提供了remove方法，本质上就是splice的语法糖：</p>
+<pre><code>export function remove (arr: Array&lt;any&gt;, item: any): Array&lt;any&gt; | void {
+  if (arr.length) {
+    const index = arr.indexOf(item)
+    if (index &gt; -1) {
+      return arr.splice(index, 1)
+    }
+  }
+}
+</code></pre>
+
+<h4>15、hasOwn</h4>
+<p>用来判断对象是否拥有某个属性，本质上就是hasOwnProperty</p>
+<pre><code>/**
+ * Check whether the object has the property.
+ */
+const hasOwnProperty = Object.prototype.hasOwnProperty
+export function hasOwn (obj: Object | Array&lt;*&gt;, key: string): boolean {
+  return hasOwnProperty.call(obj, key)
+}
+</code></pre>
+
+<h4>16、cached</h4>
+<p>参数是一个函数，用来给target函数添加缓存功能（也就是设计模式中的备忘录模式）：</p>
+<pre><code>/**
+ * Create a cached version of a pure function.
+ */
+export function cached&lt;F: Function&gt; (fn: F): F {
+  const cache = Object.create(null)
+  return (function cachedFn (str: string) {
+    const hit = cache[str]
+    return hit || (cache[str] = fn(str))
+  }: any)
+}
+</code></pre>
+
+<p>他这个代码可能是通过其它语言写的，然后转成的js，不太好看。本质上就是采用的闭包来实现的：</p>
+<pre><code>function cached (fn) {
+  if (typeof fn !== 'function') {
+    return
+  }
+  const cache = Object.create(null)
+  return function(str){
+    let hit = cache[str]
+    return hit || (cache[str] = fn(str))//没有缓存则执行返回，并把结果缓存起来
+  }
+}
+function add(x){
+  return x+1
+}
+let newFun = cached(add)
+newFun(1)
+2
+newFun(1)//从缓存里拿的结果
+2
+</code></pre>
+
+<h4>17、camelize</h4>
+<p>将短横线分隔的字符转换为驼峰法的字符,有缓存功能，用的是正则+replace</p>
+<pre><code>/**
+ * Camelize a hyphen-delimited string.
+ */
+const camelizeRE = /-(\w)/g
+export const camelize = cached((str: string): string =&gt; {
+  return str.replace(camelizeRE, (_, c) =&gt; c ? c.toUpperCase() : '')
+})
+</code></pre>
+
+<h4>18、capitalize</h4>
+<p>将首字母大写，有缓存。</p>
+<pre><code>/**
+ * Capitalize a string.
+ */
+export const capitalize = cached((str: string): string =&gt; {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+})
+</code></pre>
+
+<h4>19、hyphenate</h4>
+<p>将驼峰写法转换成短横线分隔的写法，采用的是正则replace.</p>
+<pre><code>/**
+ * Hyphenate a camelCase string.
+ */
+const hyphenateRE = /([^-])([A-Z])/g
+export const hyphenate = cached((str: string): string =&gt; {
+  return str
+    .replace(hyphenateRE, '$1-$2')
+    .replace(hyphenateRE, '$1-$2')
+    .toLowerCase()
+})
+</code></pre>
+
+<p><code>/([^-])([A-Z])/g</code>匹配任意大写字母，且该大写字母前面不能是-号。由于是全局匹配，所以它会一直往下找，用两次是因为当多个大写字母连着的时候，一次不能全部拆开，举个例子：</p>
+<p>驼峰写法aaBBCC</p>
+<ul>
+<li>第一次调用replace，首先第一次匹配到a<strong>aB</strong>BCC中的aB，然后替换后成为了aa-BBCC，因为是全局的，接着从第二个B开始找，结果匹配到aa-B<strong>BC</strong>C，然后再次替换成aa-BB-CC。还没搞定所以需要再次调用replace</li>
+<li>第二次调用replace，首先第一次匹配到aa-<strong>BB</strong>-CC中的BB，然后替换后成为了aa-B-B-CC，因为是全局的，接着从第一个C开始找，结果匹配到aa-B-B-<strong>CC</strong>，然后再次替换成aa-B-B-C-C。</li>
+<li>最后转成小写就是aa-b-b-c-c了</li>
+</ul>
+<h4>19、bind</h4>
+<p>Vue实现的bind，号称更快</p>
+<pre><code>/**
+ * Simple bind, faster than native
+ */
+export function bind (fn: Function, ctx: Object): Function {
+  function boundFn (a) {
+    const l: number = arguments.length
+    return l
+      ? l &gt; 1
+        ? fn.apply(ctx, arguments)
+        : fn.call(ctx, a)
+      : fn.call(ctx)
+  }
+  // record original fn length
+  boundFn._length = fn.length
+  return boundFn
+}
+</code></pre>
+
+<p>主要是借用闭包实现的，bind接收连个参数，一个是待绑定函数，一个是上下文。然后再闭包内返回一个新的函数boundFn，这个函数默认有一个参数a,根据参数的不同采用了不同的绑定策略。</p>
+<ol>
+<li>如果没有参数，则直接fn.call(ctx)</li>
+<li>如果只有一个参数，则直接fn.call(ctx, a)</li>
+<li>如果有多于一个参数，则fn.apply(ctx, arguments)</li>
+</ol>
+<p>最后将源函数的参数个数赋给新函数的参数个数。</p>
+<h4>20、toArray</h4>
+<p>将类数组转换成数组，采用原生的实现的，其实可以采用ES6 Array.from或者Array.of来实现</p>
+<pre><code>/**
+ * Convert an Array-like object to a real Array.
+ */
+export function toArray (list: any, start?: number): Array&lt;any&gt; {
+  start = start || 0
+  let i = list.length - start
+  const ret: Array&lt;any&gt; = new Array(i)
+  while (i--) {
+    ret[i] = list[i + start]
+  }
+  return ret
+}
+</code></pre>
+
+<h4>21、extend</h4>
+<p>将源对象混入到目标对象，目标对象已经有的属性将会被覆写。</p>
+<pre><code>/**
+ * Mix properties into target object.
+ */
+export function extend (to: Object, _from: ?Object): Object {
+  for (const key in _from) {
+    to[key] = _from[key]
+  }
+  return to
+}
+</code></pre>
+
+<h4>22、toObject</h4>
+<p>数组的每个元素都是由object构成，toObject用于将数组的所有对象合并成一个对象。采用的是extend方法：</p>
+<pre><code>/**
+ * Merge an Array of Objects into a single Object.
+ */
+export function toObject (arr: Array&lt;any&gt;): Object {
+  const res = {}
+  for (let i = 0; i &lt; arr.length; i++) {
+    if (arr[i]) {
+      extend(res, arr[i])
+    }
+  }
+  return res
+}
+</code></pre>
+
+<h4>23、辅助元素</h4>
+<p>下面这几个什么都不做，仅仅用来辅助作用</p>
+<pre><code>/**
+ * Perform no operation.
+ * Stubbing args to make Flow happy without leaving useless transpiled code
+ * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/)
+ */
+export function noop (a?: any, b?: any, c?: any) {}
+
+/**
+ * Always return false.
+ */
+export const no = (a?: any, b?: any, c?: any) =&gt; false
+
+/**
+ * Return same value
+ */
+export const identity = (_: any) =&gt; _
+</code></pre>
+
+<p><strong>noop</strong>对任何输入都是一个空函数，不执行操作。<strong>no</strong>对任何输入都返回false。
+<strong>identity</strong>对任何输入都返回_</p>
+<h4>24、genStaticKeys</h4>
+<pre><code>/**
+ * Generate a static keys string from compiler modules.
+ */
+export function genStaticKeys (modules: Array&lt;ModuleOptions&gt;): string {
+  return modules.reduce((keys, m) =&gt; {
+    return keys.concat(m.staticKeys || [])
+  }, []).join(',')
+}
+</code></pre>
+
+<h4>25、looseEqual</h4>
+<p>松散的判断两个输入是否相等。</p>
+<ul>
+<li>对于两个都是普通类型，直接采用===。</li>
+<li>对于两个都是对象，先看看是不是都是数组，如果是数组，当长度一样并且数组的每个元素也长得一样则返回true。否则false数组元素是否长得一样是递归调用looseEqual来实现的。</li>
+<li>如果都不是数组，是对象字面量。则判断key个数是不是一样，然后再判断key对应的value是不是一样。判断value是不是一样也需要递归调用looseEqual来实现</li>
+<li>当都是对象但类型不一致的时候直接返回false</li>
+<li>当都不是对象的时候，则调用String后比较</li>
+<li>其它情况都返回false</li>
+</ul>
+<h1></h1>
+<pre><code>/**
+ * Check if two values are loosely equal - that is,
+ * if they are plain objects, do they have the same shape?
+ */
+export function looseEqual (a: any, b: any): boolean {
+  if (a === b) return true
+  const isObjectA = isObject(a)
+  const isObjectB = isObject(b)
+  if (isObjectA &amp;&amp; isObjectB) {
+    try {
+      const isArrayA = Array.isArray(a)
+      const isArrayB = Array.isArray(b)
+      if (isArrayA &amp;&amp; isArrayB) {
+        return a.length === b.length &amp;&amp; a.every((e, i) =&gt; {
+          return looseEqual(e, b[i])
+        })
+      } else if (!isArrayA &amp;&amp; !isArrayB) {
+        const keysA = Object.keys(a)
+        const keysB = Object.keys(b)
+        return keysA.length === keysB.length &amp;&amp; keysA.every(key =&gt; {
+          return looseEqual(a[key], b[key])
+        })
+      } else {
+        /* istanbul ignore next */
+        return false
+      }
+    } catch (e) {
+      /* istanbul ignore next */
+      return false
+    }
+  } else if (!isObjectA &amp;&amp; !isObjectB) {
+    return String(a) === String(b)
+  } else {
+    return false
+  }
+}
+</code></pre>
+
+<h4>26、looseIndexOf</h4>
+<p>和indexOf类似，只不过它可以索引对象、数组等。里面采用的是looseEqual进行判断</p>
+<pre><code>export function looseIndexOf (arr: Array&lt;mixed&gt;, val: mixed): number {
+  for (let i = 0; i &lt; arr.length; i++) {
+    if (looseEqual(arr[i], val)) return i
+  }
+  return -1
+}
+</code></pre>
+
+<h4>27、once</h4>
+<p>确保函数只执行一次，里面也是用的闭包实现的</p>
+<pre><code>/**
+ * Ensure a function is called only once.
+ */
+export function once (fn: Function): Function {
+  let called = false
+  return function () {
+    if (!called) {
+      called = true
+      fn.apply(this, arguments)
+    }
+  }
+}
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
