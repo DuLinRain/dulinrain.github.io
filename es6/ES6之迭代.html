@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ES6之迭代</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之迭代</h2>
+<p>ES6为迭代引入了一个新的接口：Iterable。本章将讲解它是如何工作，那些语言结构通过它消费数据（比如说for...of循环），那些数据源提供数据（比如说Array）</p>
+<h3>一、概述</h3>
+<p>下面这两个实体在迭代中具有至关重要的作用：</p>
+<ul>
+<li>Iterable:Iterable是一个想让自己的元素被公开访问的数据结构。它是怎么做到让它的数据可以被公开访问呢？它是实现了一个key为Symbol.iterator的方法，这个方法是iterators的工厂函数</li>
+<li>Iterator:是一个指针，用来传递数据结构的元素（想象一下游标）</li>
+</ul>
+<p>下面这些都是iterable:</p>
+<ul>
+<li>Array</li>
+<li>String</li>
+<li>Maps</li>
+<li>Sets</li>
+<li>DOM结构（正在实现）</li>
+</ul>
+<p><strong>普通对象是不可以迭代的。</strong></p>
+<p>语言结构通过迭代协议获取数据：</p>
+<p><strong>通过数组模式解构</strong></p>
+<pre><code>let [a,b] = new Set(['a', 'b', 'c']);
+</code></pre>
+
+<p><strong>通过for...of循环：</strong></p>
+<pre><code>let arr = Array.from(new Set(['a', 'b', 'c'])); 
+</code></pre>
+
+<p><strong>通过展开运算符</strong></p>
+<p>let arr = [...new Set(['a', 'b', 'c'])];</p>
+<p><strong>Map和Set的构造函数</strong></p>
+<pre><code>let map = new Map([[false, 'no'], [true, 'yes']]);
+let set = new Set(['a', 'b', 'c']);
+</code></pre>
+
+<p><strong>Promise.all(), Promise.race():</strong></p>
+<pre><code>Promise.all(iterableOverPromises).then(···);
+Promise.race(iterableOverPromises).then(···);
+</code></pre>
+
+<p><strong>yield*:</strong></p>
+<pre><code>yield* anIterable;
+</code></pre>
+
+<h3>二、迭代能力</h3>
+<p>迭代能力的思想如下：</p>
+<ul>
+<li><strong>数据消费者</strong>。js有一些语言结构可以消费数据。比如说for...of用于获取值以及展开运算符用于插入元素到数组或者是函数调用。</li>
+<li><strong>数据源</strong>。数据消费者可以从很多地方获取数据，比如说数组、Maps等</li>
+</ul>
+<p><img src="https://i.imgur.com/qjbx10p.png" /></p>
+<p>让每一个消费者都支持所有的数据源是不现实的。因此ES6引入了Iterable接口，数据消费者使用它，数据源实现它。</p>
+<p>考虑到js并没有接口的概念，所以通常来说Iterable更多的是一种约定：</p>
+<ul>
+<li>数据源。一个数据源有一个key为Symbol.iterator的方法，并且这个方法返回一个iterator,那么这个数据源被认为是iterable。而iterator通过它的next方法返回数据。每调用一次，返回一个数据</li>
+<li>消费者。消费者通过iterator来消费数据</li>
+</ul>
+<p>让我们来看看对于一个数组而言消费数据是一个怎样的过程：</p>
+<p>首先你需要创建一个iterator,这是通过调用数组的Symbol.iterator方法实现的：</p>
+<pre><code>let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
+</code></pre>
+
+<p>接下来，你重复的调用next方法来获取数组中的数据：</p>
+<p><img src="https://i.imgur.com/Hatk65G.png" /></p>
+<p>正如你所见，next将每次返回的值用一个对象包裹，这个值作为value属性的值。booean属性done用来指示是否到达终点。</p>
+<p>Iterable和iterator都是所谓迭代协议（方法+使用规则）的一部分，这个协议的关键是它是顺序的：iterator每次返回一个值。这意味着，如果数据结构是一个非线性的（比如树），iterator将线性化它。</p>
+<h3>三、iterable数据源</h3>
+<p>我接下来将用for...of来遍历各式各样的数据源：</p>
+<h4>3.1、Array</h4>
+<p>数组（以及类型数组）都可以迭代出他们的元素：</p>
+<pre><code>for (let x of ['a', 'b']) {
+    console.log(x);
+}
+// Output:
+// 'a'
+// 'b'
+</code></pre>
+
+<h4>3.2、String</h4>
+<p>String也是可以迭代的，但是迭代的时候获取的是Unicode码点，也就意味这每次迭代出来的元素可能包含一个或两个js字符：</p>
+<pre><code>for (let x of 'a\uD83D\uDC0A') {
+    console.log(x);
+}
+// Output:
+// 'a'
+// '\uD83D\uDC0A' (crocodile emoji)
+</code></pre>
+
+<p><strong>注意</strong>：你刚刚看到的是原始数据类型（string）也可以迭代，也就是说，一个东西并不是非得是对象才可以迭代，事实上对象字面量并不能直接迭代。</p>
+<h4>3.3、Maps</h4>
+<p>Map也可以迭代，是按照entries来迭代的，每一个entry都被组成了[key, value]，也就是键值对数组。Map总是按照他们的[key, value]加进去的顺序迭代出来。</p>
+<pre><code>let map = new Map().set('a', 1).set('b', 2);
+for (let pair of map) {
+    console.log(pair);
+}
+// Output:
+// ['a', 1]
+// ['b', 2]
+</code></pre>
+
+<p>注意：WeakMap是不可以迭代的。</p>
+<h4>3.4、Set是按照他们的元素值来迭代的，迭代顺序就是他们加进去的顺序。</h4>
+<pre><code>let set = new Set().add('a').add('b');
+for (let x of set) {
+    console.log(x);
+}
+// Output:
+// 'a'
+// 'b'
+</code></pre>
+
+<p>注意：WeakSet是不可以迭代的。</p>
+<h4>3.5、arguments</h4>
+<p>尽管arguments在ES6中或多或少可以说是废弃了，但是它也是可迭代的：</p>
+<pre><code>function printArgs() {
+    for (let x of arguments) {
+        console.log(x);
+    }
+}
+printArgs('a', 'b');
+// Output:
+// 'a'
+// 'b'
+</code></pre>
+
+<h4>3.6、DOM数据结构</h4>
+<p>大部分DOM数据结构最终都会变为可迭代的：</p>
+<pre><code>for (let node of document.querySelectorAll('div')) {
+···
+}
+</code></pre>
+
+<p>注意，这部分工作还在进行当中，但是实现起来应该不会太难。</p>
+<h4>3.7、计算值迭代</h4>
+<p>并不是所有的迭代源都得是数据结构，他也可以是计算后的东西。比如，所有ES6中主要的数据结构（Array,Typed Array,Maps,Sets）有三个方法可以返回iterable:</p>
+<ul>
+<li>entries().返回[key, value]，对于数组而言，key是索引，value是值。对于Set而言，key和value都是指Set的元素。</li>
+<li>keys().返回key</li>
+<li>values()。返回value</li>
+</ul>
+<p>让我们来看看具体长啥样，entries可以让你同时拿到索引和元素：</p>
+<pre><code>let arr = ['a', 'b', 'c'];
+for (let pair of arr.entries()) {
+    console.log(pair);
+}
+// Output:
+// [0, 'a']
+// [1, 'b']
+// [2, 'c']
+</code></pre>
+
+<h4>3.8、普通对象是不可迭代的</h4>
+<p>普通对象（通过对象字面量创建）是不可迭代的：</p>
+<pre><code>for (let x of {}) { // TypeError
+    console.log(x);
+}
+</code></pre>
+
+<p>为什么默认情况下普通对象不可以迭代呢？这是因为，在JS里面，你有两种级别的迭代：</p>
+<ul>
+<li>程序级。迭代属性意味着你需要检查整个程序</li>
+<li>数据级。迭代数据意味着检查程序所管理的数据</li>
+</ul>
+<p>如果默认支持迭代对象属性的话意味着将会混淆这两种级别。这将带来两个弊端：</p>
+<ol>
+<li>你无法迭代数据结构的属性</li>
+<li>一旦你迭代了对象的属性，将对象转换为数据结构将会破坏你的代码。</li>
+</ol>
+<p>因此，迭代对象属性最安全的方法就是通过工具函数，比如说objectEntries()（这个稍后会将），事实上ES6中已经有的是Object.keys。ES8中还会有Obejct.values以及Object.entries()。</p>
+<pre><code>let obj = { first: 'Jane', last: 'Doe' };
+for (let [key,value] of objectEntries(obj)) {
+    console.log(`${key}: ${value}`);
+}
+// Output:
+// first: Jane
+// last: Doe
+</code></pre>
+
+<p>值得记住的是，如果你将对象作为Map来迭代也是非常有趣的。但是我们只在ES5中这样干，因为ES5中没有其他更好的办法，ES6中提供了Map，所以我们不需要在那么干了。</p>
+<h3>四、迭代语言结构</h3>
+<p>下面这些ES6语言结构使用了迭代协议：</p>
+<ul>
+<li>数组模式解构</li>
+<li>for...of循环</li>
+<li>Array.from</li>
+<li>展开运算符</li>
+<li>Map和Set的构造函数</li>
+<li>Promise.all(),Promise.race()</li>
+<li>yeild*</li>
+</ul>
+<p>接下来的小结将分别详述：</p>
+<h4>4.1、数组模式解构</h4>
+<p>数组模式解构适用于任何iterable:</p>
+<pre><code>let set = new Set().add('a').add('b').add('c');
+let [x,y] = set;
+// x='a'; y='b'
+let [first, ...rest] = set;
+// first='a'; rest=['b','c'];
+</code></pre>
+
+<h4>4.2、for...of循环</h4>
+<p>for...of是ES6中的新的遍历语法，它大概长这个样子：</p>
+<pre><code>for (let x of iterable) {
+    ···
+}
+</code></pre>
+
+<p>这个循环会迭代iterable,将获取到的每一个值赋给x,然后可以在for循环体里面处理它，x的作用域只会在这里面，不会跑到外面去。</p>
+<p>iterable的迭代能力是必须要有的，也就是说，对于没有这样能力的，需要转为可迭代的后才能迭代。比如说对于类数组，可以使用Array.from将他们转为数组后再迭代：</p>
+<pre><code>let arrayLike = { length: 2, 0: 'a', 1: 'b' };
+for (let x of arrayLike) { // TypeError
+    console.log(x);
+}
+for (let x of Array.from(arrayLike)) { // OK
+    console.log(x);
+}
+</code></pre>
+
+<p><strong>我希望大家尽量用for...of替代Array.prototype.forEach，因为前者更通用，而后者只能应用于类数组（也就是说有.length属性的）而且，从长远来看，for...of速度会更快。</strong></p>
+<h5>4.2.1、迭代变量，let声明和var声明的比较</h5>
+<p>如果你用let声明迭代变量的话，每次迭代都会进行一次新的绑定，这可以在下面的代码片段中显示，在这段代码里，我们保存了当前elem的绑定。最终你将会看到，箭头函数的输出显示这里并不会共享同一个绑定，他们存下来的都是一个新的绑定。</p>
+<pre><code>let arr = [];
+for (let elem of [0, 1, 2]) {
+    arr.push(() =&gt; elem); // save `elem` for later
+}
+console.log(arr.map(f =&gt; f())); // [0, 1, 2]
+// `elem` only exists inside the loop:
+console.log(elem); // ReferenceError: elem is not defined
+</code></pre>
+
+<p>用const的效果是一样的，只不过它是不可更改的绑定，也就是说不能指向其他内存位置，只能指向最初的那个位置。</p>
+<p>但是用var就大不一样了，用var保存下来的都是同一个绑定，也就是最终都会指向最后个值：</p>
+<pre><code>let arr = [];
+for (var elem of [0, 1, 2]) {
+    arr.push(() =&gt; elem);
+}
+console.log(arr.map(f =&gt; f())); // [2, 2, 2]
+// `elem` exists in the surrounding function:
+console.log(elem); // 2
+</code></pre>
+
+<p>每次都是一个新的绑定非常有意义，因为这个在你通过循环创建函数或者添加事件处理函数的场合非常有意义。</p>
+<p>在for循环以及for...in循环中，你也可以通过let来达到同样的效果——每次迭代重新绑定一次。说白了，这是let的功劳。</p>
+<h4>4.2.2、用现存的变量、数组、对象作为迭代元素</h4>
+<p>目前为止，我们只看到了for...of的一种迭代变量形式，就是每次迭代时声明一个迭代对象，事实上，还可以有其它形式。</p>
+<p>我们可以用一个现存的变量作为迭代变量：</p>
+<pre><code>let x;//现存的变量
+for (x of ['a', 'b']) {
+    console.log(x);
+}
+</code></pre>
+
+<p>亦可以用一个对象属性作为迭代变量：</p>
+<pre><code>let obj = {};
+for (obj.prop of ['a', 'b']) {
+    console.log(obj.prop);
+}
+</code></pre>
+
+<p>也可以用一个对象元素：</p>
+<pre><code>let arr = [];
+for (arr[0] of ['a', 'b']) {
+    console.log(arr[0]);
+}
+</code></pre>
+
+<h4>4.2.3、用解构模式迭代</h4>
+<p>将for...of与结构模式结合起来非常有效，尤其是在迭代entries()的时候：</p>
+<pre><code>let map = new Map().set(false, 'no').set(true, 'yes');
+for (let [k,v] of map) {
+    console.log(`key = ${k}, value = ${v}`);
+}
+// Output:
+// key = false, value = no
+// key = true, value = yes
+
+let arr = ['a', 'b', 'c'];
+for (let [k,v] of arr.entries()) {
+    console.log(`key = ${k}, value = ${v}`);
+}
+// Output:
+// key = 0, value = a
+// key = 1, value = b
+// key = 2, value = c
+</code></pre>
+
+<p>entries可以让你基于位置来对迭代做一些自己想要的操作：</p>
+<pre><code>/** Same as arr.join(', ') */
+function toString(arr) {
+    let result = '';
+    for (let [i,elem] of arr.entries()) {
+        if (i &gt; 0) {
+            result += ', ';
+        }
+        result += String(elem);
+    }
+    return result;
+}
+</code></pre>
+
+<p>用法如下：</p>
+<pre><code>&gt; toString(['eeny', 'meeny', 'miny', 'moe'])
+'eeny, meeny, miny, moe'
+</code></pre>
+
+<h4>4.3、Array.from()</h4>
+<p>Array.from将iterables以及类数组转换成数组，它也适用于Typed Array：</p>
+<pre><code>&gt; Array.from(new Map().set(false, 'no').set(true, 'yes'))
+[[false,'no'], [true,'yes']]
+&gt; Array.from({ length: 2, 0: 'hello', 1: 'world' })
+['hello', 'world']
+</code></pre>
+
+<h4>4.4、展开运算符</h4>
+<p>展开运算符将iterable的元素插入到数组：</p>
+<pre><code>&gt; let arr = ['b', 'c'];
+&gt; ['a', ...arr, 'd']
+['a', 'b', 'c', 'd']
+</code></pre>
+
+<p>这意味着它提供了一种紧凑的模式来将iterable转换成数组：</p>
+<pre><code>let arr = [...iterable];
+</code></pre>
+
+<p>展开运算符也可以将iterables转为函数的参数（包括构造函数的参数）</p>
+<pre><code>&gt; Math.max(...[-1, 8, 3])
+</code></pre>
+
+<h4>4.5、Map和Set</h4>
+<p>Map的构造函数将iterable转换为键值对用来构造Map:</p>
+<pre><code>&gt; let map = new Map([['uno', 'one'], ['dos', 'two']]);
+&gt; map.get('uno')
+'one'
+&gt; map.get('dos')
+'two'
+</code></pre>
+
+<p>Set的构造函数则将iterable的元素转为Set的元素：</p>
+<pre><code>&gt; let set = new Set(['red', 'green', 'blue']);
+&gt; set.has('red')
+true
+&gt; set.has('yellow')
+false
+</code></pre>
+
+<p>WeakMap和WeakSet构造函数的工作方式类似，而且Map和Set本身也是iterable（WeakMap和WeakSet不是），这意味着你可以用他们的构造函数克隆他们自己。也就是说构造函数的参数也可以是一个Map或Set</p>
+<h4>4.6、Promise</h4>
+<pre><code>Promise.all(iterableOverPromises).then(···);
+Promise.race(iterableOverPromises).then(···);
+</code></pre>
+
+<h4>4.7、yeild*</h4>
+<p>yeild*输出所有枚举出来的元素：</p>
+<pre><code>function* yieldAllValuesOf(iterable) {
+    yield* iterable;
+}
+</code></pre>
+
+<p>yeild*最重要的用处是递归的调用一个generator.</p>
+<h3>五、iterable实现</h3>
+<p>迭代协议长下面这个样子：</p>
+<p><img src="https://i.imgur.com/0XFhce7.png" /></p>
+<p>一个对象如果它拥有一个key为Symbol.iterator的方法（不论这个方法是自己的还是继承的），那么它将是iterable的（也就是说实现了Iterable）接口。 这个key为Symbol.iterator的方法必须返回一个iterator,该iterator通过next方法枚举iterable中的数据。</p>
+<p>在ts语法中，Ietrable和Iterator接口长下面这个样子：</p>
+<p><img src="http://i.imgur.com/cC7OK2F.png" /></p>
+<p>通俗的讲就是，要想可迭代就需要实现Iterable接口，这个Iterable接口是什么呢？它是一个key为Symbol.iterator的方法，因为Symbol.iterator是一个计算属性，所以通常需要用[]括起来。而Symbol.iterator方法的返回值是一个Iterator，这个Iterator呢也是一个接口，它拥有一个next方法，next方法的返回值是一个IteratorResult接口。Iterator接口也可以拥有一个return方法，这个方法如果有的话也需要返回一个IteratorResult接口。IteratorResult接口又是什么呢？它是一个对象，包含value属性和done属性。</p>
+<p>return 是一个可选的方法，我们稍后具体讨论，throw也是，但是throw很少用到。现在我们来按照接口实现一个笨拙的迭代器吧：</p>
+<p><strong>Step1</strong>
+首先需要实现Iterable接口，所以它大概长这样子：</p>
+<pre><code>let iterable = {
+    [Symbol.iterator]() {//key是Symbol.iterator的方法
+        ......
+        return iterator//这个方法返回一个iterator
+    }
+}
+</code></pre>
+
+<p><strong>Step2</strong>
+我们需要实现Iterator接口，上面还没定义iterator就把它return 了，所以我们这里要定义它，也就是实现Iterator接口：</p>
+<pre><code>let iterable = {
+    [Symbol.iterator]() {//key是Symbol.iterator的方法
+        let iterator = {
+            next() {//这个iterator接口必须要有个next方法
+                ......
+            }
+        }
+        return iterator//这个方法返回一个iterator
+    }
+}
+</code></pre>
+
+<p><strong>Step3</strong>
+这个next方法需要返回一个IteratorResult接口，他是一个对象，所以我们可以这样写：</p>
+<pre><code>let iterable = {
+    [Symbol.iterator]() {//key是Symbol.iterator的方法
+        let step = 0
+        let iterator = {
+            next() {//这个iterator接口必须要有个next方法
+                if (step&lt;=2) {
+                    step++
+                }
+                switch(step) {
+                    case 1:
+                        return {value: 'hello', done: false}//返回IteratorResult
+                    case 2:
+                        return {value: 'word', done: false}//返回IteratorResult
+                    default:
+                        return {value: undefined, done: true}//返回IteratorResult
+                }
+            }
+        }
+        return iterator//这个方法返回一个iterator
+    }
+}
+</code></pre>
+
+<p>现在让我们来测试一下这个iterable:</p>
+<p><img src="http://i.imgur.com/Yo73XJX.png" /></p>
+<p>上述代码执行三步，计数器step用来确保所有的事情都以正确的顺序发生。首先输出hello，然后输出world，最后指示枚举已经到了尽头。每一项返回都是用一个对象字面量包裹</p>
+<ul>
+<li>value表示实际的返回值</li>
+<li>done用来表示是否到达终点</li>
+</ul>
+<p>如果done是false的话你可以省略它，或者如果done是true的话，你可以省略value,也就是说，上面的switch语句可以简化成这个样子：</p>
+<pre><code>switch(step) {
+    case 1:
+        return {value: 'hello'}//返回IteratorResult
+    case 2:
+        return {value: 'word'}//返回IteratorResult
+    default:
+        return {done: true}//返回IteratorResult
+}
+</code></pre>
+
+<p>让我们在看一个例子，iterableOver函数返回一个iterable，用来迭代iterableOver函数传进去的参数：</p>
+<pre><code>function iterableOver(...args){
+    let index = 0
+    let iterable = {
+        [Symbol.iterator]() {//key是Symbol.iterator的方法
+            let iterator = {
+                next() {//这个iterator接口必须要有个next方法
+                    if (index &lt; args.length) {
+                        return {value: args[index++]}//返回IteratorResult
+                    } else {
+                        return {done: true}//返回IteratorResult
+                    }
+                }
+            }
+            return iterator//这个方法返回一个iterator
+        }
+    }
+    return iterable
+}
+</code></pre>
+
+<p><img src="http://i.imgur.com/rCuwzdL.png" /></p>
+<h4>5.1、可迭代的iterator（iterator that are iterable）</h4>
+<p>什么意思呢？我们前面写的那么多都是反回了一个iterable，然后它是可迭代的。而可迭代的iterator是说，这个iterator和返回的iterable一样也是可迭代的。那这个怎么做到呢？这个可能就和我们的接口有点出入了，但是任然是可以的。</p>
+<p>我们想想，之前的接口描述的是，你需要实现一个Iterable接口，这个接口返回Iterator接口，而Iterator接口需要有next方法，并且next方法返回IteratorResult。那我们换一种思路：</p>
+<p>你需要实现一个Iterable接口，这个接口返回<strong>某个东西</strong>，<strong>该东西</strong>需要有next方法，并且next方法返回IteratorResult。</p>
+<p><strong>这个东西</strong>是什么呢？其实可以就是this，也就是说是iterable对象本身，进而也就是说，next方法需要挂载在iterable对象本身上，拿上面那个例子来说：</p>
+<pre><code>function iterableOver(...args){
+    let index = 0
+    let iterable = {
+        [Symbol.iterator]() {//key是Symbol.iterator的方法
+            return this
+        },
+        next() {
+            if (index &lt; args.length) {
+                return {value: args[index++]}//返回IteratorResult
+            } else {
+                return {done: true}//返回IteratorResult
+            }
+        }
+    }
+    return iterable
+}
+</code></pre>
+
+<p>这里面最关键的一点就是在[Symbol.iterator]里返回this:</p>
+<pre><code>[Symbol.iterator]() {//key是Symbol.iterator的方法
+    return this
+}
+</code></pre>
+
+<p>所有ES6中内建的迭代器都遵循这样一种模式，所以说下面这个等式是成立的：</p>
+<pre><code>let arr = []
+let iterator = arr[Symbol.iterator]() 
+//实际上iterator就是arr[Symbol.iterator]()返回的this，就是iterable本身。
+iterator[Symbol.iterator]() === iterator// true,他自己肯定指向他自己啊
+</code></pre>
+
+<p>为什么一个iterator也是一个iterable很有用呢？for...of只能作用域iterable，不能作用于iterator，那么因为数组是内建迭代器，它的iterator也是iterable，所以你可以在宁外一个loop中继续迭代：</p>
+<pre><code>let arr = ['a', 'b']
+let iterator = arr[Symbol.iterator]()
+for (let x of iterator){
+    console.log(x)
+    break
+}
+for (let x of iterator){
+    console.log(x)
+}
+</code></pre>
+
+<p><img src="http://i.imgur.com/3mCwIZi.png" /></p>
+<p>是不是很神奇？</p>
+<p>'继续一个迭代'在某些场合很有用，比如说你只想跳过集合前面的若干元素，只处理后面的元素。</p>
+<h4>5.2、可选的iterator方法</h4>
+<p>iterator有两个方法是可选的：</p>
+<ul>
+<li>return().return使得iterator有机会在它被提前结束的情况下做一些清理工作。</li>
+<li>throw(). throw可以向前推进generator中由yeild*插入的方法调用</li>
+</ul>
+<h5>5.3、通过return结束iterator</h5>
+<p>正如前面提到的，return方法用于iterator在非正常结束的情况下做一些清理工作。在for...of循环里面，下面的这几个都会导致iterator提前终止：</p>
+<ul>
+<li>break</li>
+<li>continue.(如果你continue一个外层循环，continue表现和break一致)</li>
+<li>throw</li>
+<li>return</li>
+</ul>
+<p>上面这几种情况都会使得for...of知道它并没有正常结束。让我们看一个例子，readLinesSync返回一个iterable,它确保在文件正常结束或异常结束时都能够关闭文件描述符：</p>
+<p><img src="https://i.imgur.com/dBJmfmr.png" /></p>
+<p>由于有return，在下面的循环中，文件会正常关闭，因为break触发了iterator的return函数。</p>
+<p><img src="https://i.imgur.com/sVxl4MU.png" /></p>
+<p>return方法必须返回一个对象，这是有generator处理return语句的方式决定的，我们将在generator这一章节继续讨论。</p>
+<p>下面这几个结构会关闭没有完全迭代干净的iterator</p>
+<ul>
+<li>for...of</li>
+<li>yeild*</li>
+<li>destructuring</li>
+<li>Array.from()</li>
+<li>Map(),Set(),WeakMap(),WeakSet()</li>
+<li>Promise.all(),Promise.race()</li>
+</ul>
+<p>稍后会有章节继续讲“关闭iterator”的内容</p>
+<h3>六、更多关于iterables的例子</h3>
+<p>在本节，我们将看更多有关iterable的例子，这些例子中的大部分都可以用generator很容易的实现。generator这一章节将详细讲述如何实现。</p>
+<h4>6.1、返回iterable的工具函数</h4>
+<p>返回迭代器的工具函数的重要性与iterable数据结构的重要性几乎相当，下面的工具函数实现迭代对象的自有属性。实际上就相当于Object.entries（）的实现。</p>
+<pre><code>function objectEmtries(obj){
+    let index = 0 ;
+    let propKeys = Reflect.ownKeys(obj)
+    return {
+        [Symbol.iterator]() {
+          return this
+        },
+        next () {
+          if (index &lt; propKeys.length) {
+                let key = propKeys[index]
+                index++
+              return {value: [key,obj[key]]}
+          } else {
+              return {done: true}
+          }
+        }
+    }
+}
+</code></pre>
+
+<p>我们来测试一下：</p>
+<pre><code>let obj = {first: 'hello', last: 'world'}
+for (let [key,value] of objectEmtries(obj)) {
+  console.log(key,value)
+}
+//first hello
+//last world
+</code></pre>
+
+<p>这里面用Reflect.ownKeys是因为他可以拿到key为Symbol类型属性。</p>
+<h4>6.2、combinators</h4>
+<p>combinator是函数，用于将已有的iterables联合起来构成新的：</p>
+<h5>6.2.1、1、take(n, iterable)</h5>
+<p>让我们首先以take(n, iterable)函数开始，它会以一个iterable的前n个元素生成一个新的iterable。</p>
+<pre><code>function take(n, iterable){
+  let iter = iterable[Symbol.iterator]()
+  return {
+    [Symbol.iterator](){
+      return this
+    },
+    next () {
+      if (n&gt;0){
+        n--
+        return iter.next()
+      }else {
+        return {done:true}
+      }
+    }
+  }
+}
+let arr = [1,2,3,4]
+for (let x of take(2, arr)){
+  console.log(x)
+}
+//1
+//2
+</code></pre>
+
+<p>注意：这个版本的take并没有关闭iter这个iterator,我将会在稍后讲了关闭一个iterator具体意味着什么之后再讲如何关闭它。</p>
+<h5>6.2.2、zip(...iterables)</h5>
+<p>zip将n个iterables组成一个iterable，这个新的iterable的元素是元组：</p>
+<pre><code>function zip(...iterables){
+  let iterators = iterables.map((i)=&gt;i[Symbol.iterator]())
+  let done = false
+  return {
+    [Symbol.iterator](){
+      return this
+    },
+    next() {
+      if(!done){
+        let items = iterators.map(i=&gt;i.next())
+        done = items.some(item=&gt;item.done)//有没有任意一个结束
+        if (!done) {
+          return {value: items.map(i=&gt;i.value)}
+        }
+        //如果有任意一个结束了
+        for(let iterator of iterators){
+          iterator.return()
+        }
+      }
+      return {done: true}
+    }
+  }
+}
+
+let zipped = zip([1,2,3],[4,5,6,7,8])
+for (let x of zipped){
+  console.log(x)
+}
+//[1,4]
+//[2,5]
+//[3,6]
+</code></pre>
+
+<h5>6.2.3、无限迭代</h5>
+<p>有一些iterable可能永远也不会停止：</p>
+<pre><code>function natureNumber() {
+  let n = 0
+  return {
+    [Symbol.iterator](){
+      return this
+    },
+    next(){
+      return {value: n++}
+    }
+  }
+}
+</code></pre>
+
+<p>对于这样的iterable，你千万不要迭代它所有的元素。比如，你应该让它从for...of中用break终止：</p>
+<pre><code>for (let x of natureNumber() ){
+  if (x&gt;2) break
+  console.log(x)
+}
+</code></pre>
+
+<p>或者只获取它前面的几个元素：</p>
+<pre><code>let [a,b,c] = natureNumber()
+</code></pre>
+
+<p>或者用前面写的take(n,iterable)函数：</p>
+<pre><code>for (let x of take(2,natureNumber())){
+  console.log(x)
+}
+</code></pre>
+
+<p>因为zip返回的iterable的长度由最小的输入iterables决定，所以，这也意味着，你可以用zip来结合任意长度的iterable:</p>
+<pre><code>for (let x of zip([a,b,c],natureNumber())){
+  console.log(x)
+}
+</code></pre>
+
+<h3>七、常见问题：iterables和iterators</h3>
+<h4>7.1、迭代会不会很慢？</h4>
+<p>你可能会担心迭代会很慢，因为在每次调用next的时候都新建了一个对象字面量，然而，现代引擎对小对象的内存管理是非常高效的并且，从长远来看，引擎会对它做优化，从而不会让中间对象被多次创建。</p>
+<h4>7.2、我可以多次重新使用同一个对象吗？</h4>
+<p>原则上来说，没有什么可以阻止你多次使用同一个迭代结果对象，我认为大部分情况下都会工作的很OK，但是在某些场合可能有问题，比如说，你想将每次的结果保存起来的话。因为对象是引用类型，下面的代码将导致你数组里面保留的结果都是最后一次的迭代结果对象。</p>
+<pre><code>let iterationResults = [];
+let iterator = iterable[Symbol.iterator]();
+let iterationResult;
+while (!(iterationResult = iterator.next()).done) {
+    iterationResults.push(iterationResult);
+}
+</code></pre>
+
+<h4>7.3、为什么ES6没有iterable combinator?</h4>
+<p>你可能会有疑惑，为什么ES6没有iterable combinator呢？这是因为这样的计划需要分两步：</p>
+<ol>
+<li>第一步，标准化迭代协议</li>
+<li>第二部，等待基于该协议的库</li>
+</ol>
+<p>最终，一个完整的库或者若干库的其中一部分会被纳入到JS标准中，如果你想深入了解这样的库长啥样子的话，你可以看一看Pyhton的itertools模块</p>
+<h4>7.4、iterables是不是很难实现？</h4>
+<p>确实，如果你手工实现的话。下一章将会介绍generators以及其它知识来简化iterables的实现。</p>
+<h3>八、深入理解ES6的迭代协议</h3>
+<p>迭代协议包含下面这几个接口（我省略了throw,因为它只能通过yeild*支持，它在这里是可选的）：</p>
+<p><img src="https://i.imgur.com/veUYe1t.png" /></p>
+<h4>8.1、迭代</h4>
+<p>next()的规则：</p>
+<ul>
+<li>只要iterator还能产生数据，next就返回对象{value: x, done: false}</li>
+<li>当最后一个值被迭代出来之后，next应总是返回一个对象，这个对象的done属性为false</li>
+</ul>
+<h5>8.1.1、迭代结果</h5>
+<p>迭代结果对象的done的属性值不一定非得是true或者false,只要他们只真值或者假值就是OK的，也就是说没必要非得是bool型</p>
+<h5>8.1.2、返回新的iterator的iterable与返回同一个iterator的iterable</h5>
+<p>有一些iterable当每次去拿它的iterator的时候他都会返回一个新的iterator，比如说数组：</p>
+<pre><code>function getIterator(iterable){
+  return iterable[Symbol.iterator]()
+}
+let iterable = ['a','b']
+console.log(getIterator(iterable) === getIterator(iterable))
+//false
+</code></pre>
+
+<p>而有些则总是返回同一个，比如说generator对象：</p>
+<pre><code>function getIterator(iterable){
+  return iterable[Symbol.iterator]()
+}
+function* elements(){
+  yield 'a'
+  yield 'b'
+}
+let iterable = elements()
+console.log(getIterator(iterable) === getIterator(iterable))
+//true
+</code></pre>
+
+<p>在当你多次迭代同一个iterable的时候这个区别就体现出来了，比如说，下面的例子：</p>
+<pre><code>function iterateTwice(iterable){
+  for(let x of iterable){
+    console.log(x)
+  }
+  for(let x of iterable){
+    console.log(x)
+  }
+}
+</code></pre>
+
+<p>当每次返回新的iterator的话，你可以多次迭代同一个iterable</p>
+<pre><code>iterateTwice(['a','b'])
+// a
+// b
+// a
+// b
+</code></pre>
+
+<p>而当每次返回同一个iterator的话，你就没法那样：</p>
+<pre><code>iterateTwice(elements())
+// a
+// b
+</code></pre>
+
+<p>注意，标准库中的每一个iterator它自身也是一个iterable，它的方法<a href="">Symbol.iterator</a>返回this，意味着总是返回同一个iterator（它自己）</p>
+<p>注意这个“iterator也是iterable，它的方法<a href="">Symbol.iterator</a>返回this，意味着总是返回同一个iterator（它自己）”不要与上面的内容搞混了，注意理解。</p>
+<h4>8.2、关闭iterator</h4>
+<p>迭代协议对下面两种结束迭代的行为做了区分：</p>
+<ul>
+<li>衰竭：也就是说当获得所有的值后正常结束，也就是一直调用next知道返回{done:true}</li>
+<li>关闭：通过调用return方法，你告诉iterator你再也不想调用next方法了</li>
+</ul>
+<p>调用return的规则：</p>
+<ul>
+<li>return 是一个可选的方法，并不是所有的iterator都拥有它，如果一个iterator拥有它，那么它将被视为<strong>可关闭</strong></li>
+<li>return只有当iterator没有衰竭的时候才可以调用。比如说for...of在当它被暴力退出（正常结束之前）的时候都会调用return。暴力退出是指在for...of里面用了break,return,continue,throw.</li>
+</ul>
+<p>return的实现规则：</p>
+<ul>
+<li>return.调用return(x)的方法必须正常的返回一个对象{done: true,value: x},但是，如果不是一个对象，语言机制仅仅抛出一个错误。</li>
+<li>当return调用后，next()返回的对象也必须是done为true。</li>
+</ul>
+<p>下面的例子是一个for...of在还没有获取{done: true}结果的时候被终止了，这个时候它也会调用return函数。也就是说当你获取到最后一个元素，但是在下一个next返回{done: true}的调用之前，也是可以被终止的，这样也会调用iterator的return方法。这是很微妙的，当你手动的迭代时或者实现迭代时你必须小心翼翼以确保它正确：</p>
+<pre><code>function createIterable() {
+  let done = false;
+  let iterable = {
+    [Symbol.iterator]() {
+      return this;
+    },
+    next() {
+      if (!done) {
+        done = true;
+        return { done: false, value: 'a' };
+      } else {
+        return { done: true, value: undefined };
+      }
+    },
+    return() {
+      console.log('return() was called!');
+      return {done: true, value: undefined}//必须要返回一个done:true的对象，否则抛出错误
+    },
+  };
+  return iterable;
+}
+for (let x of createIterable()) {
+  console.log(x);
+  // There is only one value in the iterable and
+  // we abort the loop after receiving it
+  break;
+}
+</code></pre>
+
+<p>结果</p>
+<pre><code>// Output:
+// a
+// return() was called!
+</code></pre>
+
+<h5>8.2.1、可关闭的iterator</h5>
+<p>如果iterator拥有return方法，那么它是可关闭的。并不是所有的iterator都拥有iterator方法，比如说Array就没有。</p>
+<pre><code>let arr = [1,2,3]
+let iterator = arr[Symbol.iterator]()
+'return' in iterator
+//false
+</code></pre>
+
+<p>generators是默认拥有return方法的，也就是<strong>可关闭的</strong>：</p>
+<pre><code>function* elements() {
+    yield 'a';
+    yield 'b';
+    yield 'c';
+}
+let iterator = elements()
+'return' in iterator
+//true
+</code></pre>
+
+<p>如果你调用return，那么它将终止：</p>
+<p><img src="https://i.imgur.com/46MEdVX.png" /></p>
+<p>如果一个iterator是<strong>不可关闭的</strong>，那么当你在for...of循环中暴力退出之后，你任然可以继续迭代它：</p>
+<p><img src="https://i.imgur.com/EeF2X18.png" /></p>
+<p>相反，elements()返回一个可关闭的iterator,你在twoLoops中迭代它不会迭代出任何东西：</p>
+<pre><code>twoLoops(elements());
+// Output:
+// a
+</code></pre>
+
+<h5>8.2.2、阻止iterator被关闭</h5>
+<p>下面的代码是一种阻止iterators被关闭的通用的解决办法。他通过封装iterator并且向前推进除return之外的任何方法。</p>
+<pre><code>class PreventReturn {
+    constructor(iterator) {
+        this.iterator = iterator;
+    }
+    /** Must also be iterable, so that for-of works */
+    [Symbol.iterator]() {
+        return this;
+    }
+    next() {
+        return this.iterator.next();
+    }
+    return(value = undefined) {
+        return { done: false, value };
+    }
+    // Not relevant for iterators: `throw()`
+}
+</code></pre>
+
+<p>当我们使用PreventReturn后，elements()被暴力退出后不会调用return方法，也就是可以继续迭代它：</p>
+<pre><code>function* elements() {
+    yield 'a';
+    yield 'b';
+    yield 'c';
+}
+function twoLoops(iterator) {
+    for (let x of iterator) {
+        console.log(x);
+        break; // abrupt exit
+    }
+    for (let x of iterator) {
+        console.log(x);
+    }
+}
+twoLoops(elements());
+// Output:
+// a
+twoLoops(new PreventReturn(elements()));
+// Output:
+// a
+// b
+// c
+</code></pre>
+
+<p>有其它的方法可以阻止一个可关闭的iterator关闭：elements()返回的generator对象都有一个原型对象elements.prototype。通过这个原型对象，你可以隐藏默认的return实现：</p>
+<pre><code>// Make generator object unclosable
+// Warning: may not work in transpilers
+elements.prototype.return = undefined;
+twoLoops(elements());
+// Output:
+// a
+// b
+// c
+</code></pre>
+
+<h5>8.2.3、通过try...finally处理清除工作</h5>
+<p>有一些generators需要在迭代结束时做一些清除工作（比如释放空间，关闭文件描述符等等）。也就是下面代表的意思：</p>
+<pre><code>function* genFunc() {
+    yield 'a';
+    yield 'b';
+    console.log('Performing cleanup');
+}
+</code></pre>
+
+<p>在正常的for...of循环中，一切都是OK的：</p>
+<pre><code>for (let x of genFunc()) {
+    console.log(x);
+}
+// Output:
+// a
+// b
+// Performing cleanup
+</code></pre>
+
+<p>然而当你从中途暴力退出的时候，执行貌似就永远不会结束并且停在那儿了，并不会走到清除工作环境那一步：</p>
+<pre><code>for (let x of genFunc()) {
+    console.log(x);
+    break;
+}
+// Output:
+// a
+</code></pre>
+
+<p>到底发生了啥事？其实，当你在任何时候提前结束for...of的时候，iterator调用了return方法，这意味着永远不会走到后面“清除工作”这一步。万幸的是，这个很好解决，只需要将清除工作包含在try...catch里面：</p>
+<pre><code>function* genFunc() {
+    try {
+        yield 'a';
+        yield 'b';
+    } finally {
+        console.log('Performing cleanup');
+    }
+}
+</code></pre>
+
+<p>现在所有的都朝着你期待的方向去发展了：</p>
+<pre><code>for (let x of genFunc()) {
+    console.log(x);
+    break;
+}
+// Output:
+// a
+// Performing cleanup
+</code></pre>
+
+<p>一些普遍的需要做清除工作的场景如下：</p>
+<pre><code>function* funcThatUsesResource() {
+    let resource = allocateResource();
+    try {
+        ···
+    } finally {
+        resource.deallocate();
+    }
+}
+</code></pre>
+
+<h5>8.2.4、在手动实现的iterator中实现清除工作</h5>
+<pre><code>let iterable = {
+    [Symbol.iterator]() {
+        function hasNextValue() { ··· }
+        function getNextValue() { ··· }
+        function cleanUp() { ··· }
+        let returnedDoneResult = false;
+        return {
+            next() {
+                if (hasNextValue()) {
+                    let value = getNextValue();
+                    return { done: false, value: value };
+                } else {
+                    if (!returnedDoneResult) {
+                        // Client receives first `done` iterator result
+                        // =&gt; won’t call `return()`
+                        cleanUp();
+                        returnedDoneResult = true;
+                    }
+                    return { done: true, value: undefined };
+                }
+            },
+            return() {
+                cleanUp();
+            }
+        };
+    }
+}
+</code></pre>
+
+<p>当你决定返回done：true的时候，你必须调用cleanUp。</p>
+<h5>8.2.5、关闭你正在使用的iterator</h5>
+<p>如果你是用iterator，你应当正确的关闭他们，在generator中，你可以让for...of帮你干这个事儿：</p>
+<pre><code>/**
+* Converts a (potentially infinite) sequence of
+* iterated values into a sequence of length `n`
+*/
+function* take(n, iterable) {
+    for (let x of iterable) {
+        if (n &lt;= 0) {
+            break; // closes iterable
+        }
+        n--;
+        yield x;
+    }
+}
+</code></pre>
+
+<p>如果你手工干这个事，你还需要做更多的工作：</p>
+<p><img src="https://i.imgur.com/2iRBt4D.png" /></p>
+<p>而如果你不适用generator的话，你需要做得工作就更多更多了：</p>
+<p><img src="https://i.imgur.com/04qA6pK.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
