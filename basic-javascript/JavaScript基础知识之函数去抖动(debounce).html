@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JavaScript基础知识之函数去抖动(debounce)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>JavaScript基础知识之函数去抖动(debounce)</h2>
+<h3>一、概述</h3>
+<p>在实际项目中，常常会遇到密集触发的问题，比如说<strong>用户滚动鼠标滚轮</strong>或者<strong>用户缩放<strong>或者是</strong>条件改变触发ajax请求</strong>，如果我们对于每次触发都作出相应，一方面可能会导致性能损失，另一方面其实也是做了很多无意义的事。比如说用户滚动鼠标滚轮，事实上，用户滚动几次滚轮就会触发几十次的scroll事件，我们并不需要关心用户每次滚动，我们只需要关心用户停下来滚动的那一刻，在这一刻做出相应就可以了。而用户停没停下来可以用一个很微小的间隔，比如说100ms来区分。这个过程就是经典的<strong>函数去抖动（debounce）</strong>。</p>
+<h3>二、debounce实现</h3>
+<p>debounce的实现原理很简单，主要还是依赖于定时器SetTimeout，借用闭包来实现。 也就是return一个去过抖动（debounced）的函数。这个debounced函数每次执行的时候先要判断是不是存在一个定时handle（timerID）。如果存在说明判断用户还在操作，没有停止。那么它就需要清除这个handle并从新定时。而如果你用户停止了频繁的操作后，定时器会在定时结束后自动执行你注册的响应函数。实现如下：</p>
+<pre><code>function debounce (fn, wait) {
+  let timerID
+  return function () {
+    let context = this
+    let args = arguments
+    if (timerID) { //如果定时没结束
+      clearTimeout(timerID) //从新定时
+    }
+    timerID = setTimeout(delay, wait || 100)//因为return的function可能会有参数，所以这里需要用一个中间函数delay
+    function delay () {
+      fn.apply(context, args)
+      timerID = null
+    }
+  }
+}
+</code></pre>
+
+<p>这个函数有一些可以改进的地方，比如说默认定时100ms，那如果用户就是想设成0，这个也会变成100，另一方面，ES6中可以给参数设置默认值，所以我们可以改成这样：</p>
+<pre><code>function debounce (fn, wait = 100) {
+  let timerID
+  return function () {
+    let context = this
+    let args = arguments
+    if (timerID) { //如果定时没结束
+      clearTimeout(timerID) //从新定时
+    }
+    timerID = setTimeout(delay, wait)//因为return的function可能会有参数，所以这里需要用一个中间函数delay
+    function delay () {
+      fn.apply(context, args)
+      timerID = null
+    }
+  }
+}
+</code></pre>
+
+<p>另一个可以改进的地方是，ES6中arguments或多或少已经废弃了，因为我们有了剩余运算符(...)，所以这里我们可以改进如下：</p>
+<pre><code>function debounce (fn, wait = 100) {
+  let timerID
+  return function (...args) {
+    let context = this
+    //let args = arguments//不需要了
+    if (timerID) { //如果定时没结束
+      clearTimeout(timerID) //从新定时
+    }
+    timerID = setTimeout(delay, wait)//因为return的function可能会有参数，所以这里需要用一个中间函数delay
+    function delay () {
+      fn.apply(context, args)
+      timerID = null
+    }
+  }
+}
+</code></pre>
+
+<h3>三、trailing模与于leading模式</h3>
+<p>从上面的例子可以看出我们事实上是在密集触发事件的最后来真正执行一次响应函数，这也就是所谓的trailing模式。这也是大多数情况下需要用到的模式。但是有的人却希望，我在每一波密集触发事件的第一次触发就响应，那这种模式成为leading模式。二者比较形象的表示如下：</p>
+<h5>tailing模式效果：</h5>
+<p><img src="http://i.imgur.com/OBNnckw.png" /></p>
+<h5>leading模式效果：</h5>
+<p><img src="http://i.imgur.com/CLTscIy.png" /></p>
+<p>那要实现这样的功能我们需要将前面的额函数做一些改进，如下：</p>
+<pre><code>function debounce (fn, wait = 100, trailing) {
+  let timerID
+  return function (...args) {
+    let context = this
+    //let args = arguments//不需要了
+    if (timerID) { //如果定时没结束
+      clearTimeout(timerID) //从新定时
+    } else if (!trailing) {
+      fn.apply(context, args)//leading模式下第一次触发就响应
+    }
+    timerID = setTimeout(delay, wait)
+    function delay () {
+      if (trailing) {//只有trailing模式下需要，leading模式下因为前面已经响应了，这里不再需要响应
+        fn.apply(context, args)
+      }
+      timerID = null
+    }
+  }
+}
+</code></pre>
+
+<h3>四、使用案例</h3>
+<h4>4.1、案例1————返回顶部</h4>
+<p>当用户滚动到底部时，页面通常需要提供一个返回顶部的按钮，那么就需要监听scroll事件，但是不应该对每次scroll事件都做响应，需要等滚动停顿下来的时候响应一下，所以可以这样：</p>
+<pre><code>let scrollToTop = mydebounce(function () {
+    let domobj = document.querySelector('.data-container')
+    _.showToTop = domobj.scrollTop &gt; 400//滚动条距离顶部400px时显示“回到顶部”按钮
+    if (document.querySelector('.backtotop')) {
+        document.querySelector('.backtotop').style.top = (domobj.scrollTop + domobj.clientHeight - 100) + 'px'
+    }
+}, 100, true)
+document.querySelector('.data-container').addEventListener('scroll', function () {
+    scrollToTop()
+})
+</code></pre>
+
+<h4>4.2、案例2————去抖动ajax</h4>
+<p>在我做过的一个vue的项目中，某个页面有很多个选择框、按钮等，都是变化条件，每次进这个页面都会从后端拿到这些东西的值填进去，然后这个每个变化又都需要向后端发请求，请求这些参数对应的数据来绘图，因为变化条件很多，导致每次填进去的时候都会触发多次请求，如下：</p>
+<p><img src="https://i.imgur.com/cAE6l1v.png" /></p>
+<p><img src="https://i.imgur.com/z3XgIRU.png" /></p>
+<p>这个倒还不是最严重的问题，最严重的是，在谋学情况下，因为条件填进去是有先后的，导致请求时的参数不一致，而请求的回来顺序是不可控的，所以导致，我们最后拿到的数据并不是填完完整条件后拿到的数据：</p>
+<p><img src="https://i.imgur.com/j0Nk4HO.png" />
+<img src="https://i.imgur.com/mBocgyP.png" />
+<img src="https://i.imgur.com/yXax55s.png" /></p>
+<p>我们看到，页面渲染的数据是“当周，1周后，2周后”，然后就没有了，但我们实际的数据是这样的
+<img src="https://i.imgur.com/jv4kmOR.png" /></p>
+<p>这是因为这个请求最后发出，条件是完整的，但是比前面的先发出、条件不完整的请求更早回来</p>
+<p><img src="https://i.imgur.com/dBqbnI0.png" /></p>
+<p>导致我们拿这个数据去渲染页面了，所以我们可以用debounce来去抖动一下，让它在最后密集触发完之后发一个请求，这样无效请求没了，数据也对了：</p>
+<p><img src="https://i.imgur.com/JOoT9hU.png" />
+<img src="https://i.imgur.com/nUfZci2.png" />
+<img src="https://i.imgur.com/H3S35th.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
