@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ES6之Generators</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之Generators</h2>
+<p>Generators是ES6的新特性，它其实是可以被暂停和唤醒的函数（想象一下协作多任务或协同程序），它在很多地方都有用，比如说迭代、异步编程等等。本章将讲解它是如何工作的以及它的几种使用场景。</p>
+<h3>一、概述</h3>
+<p>generators的两个重要的应用是：</p>
+<ol>
+<li>实现迭代</li>
+<li>阻塞异步函数调用</li>
+</ol>
+<p>下面的小结给了关于这几种应用的大概描述，稍后将有更深入的讲解（包括一些其它的应用场景）</p>
+<h3>1.1、通过generator实现迭代</h3>
+<p>下面的函数将会返回一个关于对象属性的iterable，对于每个属性，它将会返回[key, value]：</p>
+<pre><code>function *objectEntries(obj) {
+  let propKeys = Reflect.ownKeys(obj);
+  for (let key of propKeys) {
+    yield [key, obj[key]]
+  }
+}
+</code></pre>
+
+<p>objectEntries具体是如何工作的我们稍后会讲到，先看看它的用法：</p>
+<pre><code>function *objectEntries(obj) {
+  let propKeys = Reflect.ownKeys(obj);
+  for (let key of propKeys) {
+    yield [key, obj[key]]
+  }
+}
+let obj = {
+    name: 'linyu',
+    [Symbol('hehe')]: 'test'
+}
+for (let [key, value] of objectEntries(obj)) {
+    console.log(key)
+    console.log(value)
+}
+// name
+// linyu
+// Symbol(hehe)
+// test
+</code></pre>
+
+<h3>1.2、阻塞异步函数调用</h3>
+<p>在下面的列子中，我是用了控制流库co来异步获取两个JSON文件，现在，在A行，执行块将会等待直至Promise.all()的结果准备好。这意味着在执行异步操作的时候代码看起来就像是同步的。</p>
+<p><img src="https://i.imgur.com/K6zwBOY.png" /></p>
+<p>getFile(url)用来获取URL指向的文件，它的实现稍后会讲到，我待会儿还会讲co是如何工作的。</p>
+<h3>二、generator是什么？</h3>
+<p>generator是可以被暂停和唤醒的函数（想象一下协作多任务或协同程序），它有各种各样的用处。</p>
+<p>作为第一个例子，考虑下面的generator函数genFunc：</p>
+<pre><code>function* genFunc() {
+    console.log('First');
+    yield; // (A)
+    console.log('Second'); // (B)
+}
+</code></pre>
+
+<p>genFunc的声明和普通函数声明有2点区别：</p>
+<ol>
+<li>它以关键字function*开头</li>
+<li>它在中间被yie</li>
+<li>ld暂停</li>
+</ol>
+<p>调用genFunc函数并不会执行它的函数体，相反，它会返回一个所谓的<code>generator对象</code>，我们可以用它来控制generator函数体的执行：</p>
+<pre><code>let genObj = genFunc()
+</code></pre>
+
+<p>genFunc最初在它的函数体的开始位置被暂停，genObj.next()方法将唤醒它并继续执行知道遇到下一个yield：</p>
+<p><img src="https://i.imgur.com/8LVyhZU.png" /></p>
+<p>正如你所看到的，genObj.next()也反回了一个对象。让我们暂时忽略它，当我们将generator作为iterator的时候它会有用。</p>
+<p>getFun现在暂停在A处，如果我们再次调用它，执行将会继续，然后B行的语句将会执行。</p>
+<p><img src="https://i.imgur.com/nvzts9u.png" /></p>
+<p>最后，这个函数就结束了，再次调用next将不会有任何效果。</p>
+<h4>2.1、创建generator的方式</h4>
+<p>你可以通过4种方式创建generator:</p>
+<p><strong>1. 通过generator函数声明</strong></p>
+<h1></h1>
+<pre><code>function* genFunc() { ··· }
+let genObj = genFunc();
+</code></pre>
+
+<h1></h1>
+<p><strong>2. 通过generator函数表达式</strong></p>
+<h1></h1>
+<pre><code>const genFunc = function* () { ··· };
+let genObj = genFunc();
+</code></pre>
+
+<h1></h1>
+<p><strong>3. 通过对象字面量中的方法定义</strong></p>
+<h1></h1>
+<pre><code>let obj = {
+    * generatorMethod() {
+    ···
+    }
+};
+let genObj = obj.generatorMethod();
+</code></pre>
+
+<h1></h1>
+<p><strong>4. 通过类（类声明/类表达式）中的方法定义</strong></p>
+<h1></h1>
+<pre><code>class MyClass {
+    * generatorMethod() {
+    ···
+    }
+}
+let myInst = new MyClass();
+let genObj = myInst.generatorMethod();
+</code></pre>
+
+<h1></h1>
+<h4>2.2、generator所扮演的角色</h4>
+<p>generator可以扮演三种角色：</p>
+<ol>
+<li>Iterator(数据生产者)。每一个yield都可以通过next返回一个值。这就意味着generator可以通过遍历和递归来产生顺序的数据。由于generator对象实现了Iterable接口(在iteration那一章有讲过)，这些顺序的数据可以被ES6中任何支持迭代的数据结果所处理。其中的两个例子是for...of以及展开运算符(...)</li>
+<li>观测者(数据消费者)。yield也可以通过next接收一个值(给next传递参数)。这意味着generator变成了数据消费者，它会暂停直到一个新数据被通过next的参数传递给他。</li>
+<li>协程(既是数据生产者，也是数据消费者)。考虑到generator是可以被暂停的，并且既可以提供数据也可以消费数据，那么无需做多少改动就可以将他们应用于协程(协作多任务)。</li>
+</ol>
+<p>接下来的章节将会对这几种角色做深入的讲解。</p>
+<h3>三、generator作为迭代器(数据生产者)</h3>
+<blockquote>
+<p>对于这一章节，你需要了解ES6的迭代器，相关内容在前一章有讲解</p>
+</blockquote>
+<p>正如前面所讲解的，generator可以作为数据生产者/数据消费者，或者二者兼而有之。本节将从数据生产者的视角来讨论他们，他们都实现了Iterable和Iterator这两个接口(如下)。这意味着，generator函数的返回结果既是一个iterable也是一个iterator。generator对象的完整接口将在稍后展示。</p>
+<pre><code>interface Iterable {
+    [Symbol.iterator]() : Iterator;
+}
+interface Iterator {
+    next() : IteratorResult;
+    return?(value? : any) : IteratorResult;
+}
+interface IteratorResult {
+    value : any;
+    done : boolean;
+}
+</code></pre>
+
+<p>generator函数通过yield来顺序的产生数据。数据消费者通过调用next来消费这些数据。比如说，下面的这个generator函数产生数据a和b：</p>
+<pre><code>function* genFunc() {
+    yield 'a';
+    yield 'b';
+}
+</code></pre>
+
+<p>下面的迭代过程将展示如何从它那里通过generator对象获取数据：</p>
+<pre><code>&gt; let genObj = genFunc();
+&gt; genObj.next()
+{ value: 'a', done: false }
+&gt; genObj.next()
+{ value: 'b', done: false }
+&gt; genObj.next() // done: true =&gt; end of sequence
+{ value: undefined, done: true }
+</code></pre>
+
+<h4>3.1、迭代generator的方式</h4>
+<p>由于genrator对象是可迭代的，所以ES6支持迭代的语言结构可以应用于它。下面的三种尤为重要：</p>
+<p><strong>首先是for...of循环：</strong></p>
+<pre><code>for (let x of genFunc()) {
+    console.log(x);
+}
+// Output:
+// a
+// b
+</code></pre>
+
+<p><strong>其次</strong>是展开运算符，可以将迭代器产生的序列转换成数组：</p>
+<pre><code>let arr = [...genFunc()]; // ['a', 'b']
+</code></pre>
+
+<p><strong>最后</strong>是解构：</p>
+<pre><code>&gt; let [x, y] = genFunc();
+&gt; x
+'a'
+&gt; y
+'b'
+</code></pre>
+
+<h4>3.2、从generator中返回</h4>
+<p>前面的generator函数并没有明显的return语句。一个隐式的return的效果和显式地<code>return undefined</code>是一样的效果。让我么看一看有着显式return语句的generator函数：</p>
+<pre><code>function* genFuncWithReturn() {
+    yield 'a';
+    yield 'b';
+    return 'result';
+}
+</code></pre>
+
+<p>return的返回值将显示在最后一次next()的返回值中，这个时候的done值是true：</p>
+<p><img src="https://i.imgur.com/7FFYXCA.png" /></p>
+<p>然而，大多数支持迭代的语言结构都会忽略最后return的这个值：</p>
+<pre><code>for (let x of genFuncWithReturn()) {
+    console.log(x);
+}
+// Output:
+// a
+// b
+let arr = [...genFuncWithReturn()]; // ['a', 'b']
+</code></pre>
+
+<p><strong>但是</strong>，<strong>yield</strong>*，一个用来实现递归调用generator函数的操作符，它不会忽略最后return的值，这个将会在稍后讲解。</p>
+<h4>3.3、例子：属性迭代</h4>
+<p>让我们来看一个例子，这个例子证明了用generator来实现迭代是多么的方便，下面的函数objectEntries()返回了一个关于关于对象属性的iterable:</p>
+<pre><code>function* objectEntries(obj) {
+    let propKeys = Reflect.ownKeys(obj)
+    for (let propKey of propKeys) {
+        yield [propKey, obj[propKey]]
+    }
+}
+</code></pre>
+
+<p>这个函数允许你通过for...of迭代对象的属性：</p>
+<pre><code>let jane = { first: 'Jane', last: 'Doe' };
+for (let [key, value] of objectEntries(jane)) {
+    console.log(`${key}, ${value}`)
+}
+//first, Jane
+//last, Doe
+</code></pre>
+
+<p>作为对比，我们上一章所讲的没有基于genrator的迭代版本则显得复杂多了：</p>
+<p><img src="https://i.imgur.com/ZUGcUJP.png" /></p>
+<h4>3.4、你只能在generator里面使用yield</h4>
+<p>generator的一个重要限制是你只能在generator函数里(静态的)面使用yield，也就是说，在回调函数里面也是不可以的：</p>
+<pre><code>function* genFunc() {
+    ['a', 'b'].forEach(x =&gt; yield x); // SyntaxError
+}
+</code></pre>
+
+<p>非generator函数里面是不能够使用generator的，这也是上面例子报错的原因。但是，这种情况下很容易做些改动，让其不适用回调，但达到预期的效果，不幸的是，并不是所有场合都存在这样的workaround:</p>
+<pre><code>function* genFunc() {
+    for (let x of ['a', 'b']) {
+        yield x; // OK
+    }
+}
+</code></pre>
+
+<p>该限制的好处将在稍后讲述：它使得generator更容易实现并且与事件环兼容。</p>
+<h4>3.5、通过yield*实现递归</h4>
+<p>你只能在generator函数中使用yield，因此如果你想通过generator实现一个递归方法，你需要从一个generator里面调用另一个generator的方法。本节表明这比想象中还要难实现，因此ES6专门提供了<code>yield*</code>操作符来办这个事。这会儿我只会将当两个generator都提供输出的时候，<code>yield*</code>是如何工作的。待会儿会讲当涉及到输入时它又是如何工作的。</p>
+<p>一个generator函数是如何做到递归调用另外一个generator函数的呢？让我们假定你有一个generator函数：</p>
+<pre><code>function* foo() {
+    yield 'a';
+    yield 'b';
+}
+</code></pre>
+
+<p>你怎样在另外一个generator函数bar中调用for呢？下面的方法是做不到的：</p>
+<pre><code>function* bar() {
+    yield 'x';
+    foo(); // does nothing!
+    yield 'y';
+}
+</code></pre>
+
+<p>调用foo()将返回一个genrator对象，但实际上并不会执行foo()，这就是为什么ES6提供了yield*操作符用来做递归generator调用：</p>
+<pre><code>function* bar() {
+    yield 'x';
+    yield* foo();
+    yield 'y';
+}
+// Collect all values yielded by bar() in an array
+let arr = [...bar()];
+// ['x', 'a', 'b', 'y']
+</code></pre>
+
+<p>yield*在内部大概是这么实现的：</p>
+<pre><code>function* bar() {
+    yield 'x';
+    for (let value of foo()) {
+        yield value;
+    }
+    yield 'y';
+}
+</code></pre>
+
+<p>yield*的操作数并不一定要是一个generator,它也可以是任意iterable:</p>
+<pre><code>function* bla() {
+    yield 'sequence';
+    yield* ['of', 'yielded'];
+    yield 'values';
+}
+let arr = [...bla()];
+// ['sequence', 'of', 'yielded', 'values']
+</code></pre>
+
+<h5>3.5.1、yield*会考虑最后的值</h5>
+<p>大多数迭代语言结构都会忽略状态为done时的value，这个值是通过显示return返回的。yield*的返回值就是那个值：</p>
+<pre><code>function* genFuncWithReturn() {
+    yield 'a';
+    yield 'b';
+    return 'The result';
+}
+function* logReturned(genObj) {
+    let result = yield* genObj;
+    console.log(result); // (A)
+}
+</code></pre>
+
+<p>如果我们想他执行到(A)行，我们必须先对logReturned进行迭代：</p>
+<pre><code>&gt; [...logReturned(genFuncWithReturn())]
+The result
+[ 'a', 'b' ]
+</code></pre>
+
+<h5>3.5.2、遍历树</h5>
+<p>通过递归来遍历树是很简单的，但是用传统的方法写一个树的迭代器是很复杂的。这就是为啥generator在这里闪耀：它是你可以通过递归来实现迭代。作为一个例子，看看下面二叉树的数据结构，它是可迭代的，因为它有个key为Symbol.iterator的方法。那个方法是一个generator方法，当调用时会返回一个迭代器：</p>
+<pre><code>class BinaryTree {
+    constructor(value, left=null, right=null) {
+        this.value = value
+        this.left = left
+        this.right = right
+    }
+    /** Prefix iteration 先序遍历**/
+    *[Symbol.iterator]() {
+        yield this.value
+        if (this.left) {
+            yield * this.left
+        }
+        if (this.right) {
+            yield * this.right
+        }
+    }
+}
+</code></pre>
+
+<p>下面的例子建了个二叉树，并且通过for...of来遍历它：</p>
+<pre><code>let tree = new BinaryTree('a',
+    new BinaryTree('b',
+        new BinaryTree('c'),
+        new BinaryTree('d')
+    ),
+    new BinaryTree('e')
+)
+
+for (let x of tree) {
+    console.log(x)
+}
+// a
+// b
+// c
+// d
+// e
+</code></pre>
+
+<h3>四、generator作为观察者(数据消费者)</h3>
+<p>作为数据的消费者，generator对象遵循了下面的接口：</p>
+<pre><code>interface Observer {
+    next(value? : any) : void;
+    return(value? : any) : void;
+    throw(error) : void;
+}
+</code></pre>
+
+<p>作为一个观测者，generator会暂停，直至接收一个输入。一共有三种方式提供一个输入：</p>
+<ul>
+<li>next()参数传递输入</li>
+<li>return()将会终止该genrator</li>
+<li>throw()发出一个错误信号</li>
+</ul>
+<h4>4.1、通过next()传递输入</h4>
+<p>如果你把genrator当做observer来用的话，你通过next给他传递一个值，它会接收到并通过yield输出：</p>
+<pre><code>function* dataConsumer() {
+    console.log('Started');
+    console.log(`1. ${yield}`); // (A)
+    console.log(`2. ${yield}`);
+    return 'result';
+}
+</code></pre>
+
+<p>让我们交互式的来使用这个generator，首先创建一个generator对象：</p>
+<pre><code>let genObj = dataConsumer()
+</code></pre>
+
+<p>我们接下来调用genObj.next()来启动它。执行直到第一个yield会暂停，它的值是（A）输出的结果，因为这时候还没有任何输入，所以结果是undefined。在这一节我们不关心next的返回值，我们只用它来传递数据，并不获取数据。</p>
+<p><img src="https://i.imgur.com/n5ynMuR.png" /></p>
+<p>最后一个next返回result，这时done为true表明已经结束了。</p>
+<p>不幸的是next()是非对称的，它总是传递值给当前暂停的yield，返回下一个yield的值。</p>
+<h5>4.1.1、第一个next</h5>
+<p>当将generator作为一个Observer(数据消费者)来使用的时候，需要注意的是第一次调用next()只是为了启动该Observer。它只是表示已经准备好了接收输入，因为它会提前执行到yield暂停的地方。这也就意味着，第一次调用next的时候是不能给他提供参数的。事实上，当你尝试这么做的时候，还会报错(译者注：实际上并不会报错，应该只是会忽略，如下例所示)。</p>
+<p><img src="https://i.imgur.com/UGhUcop.png" /></p>
+<h4>4.2、yield绑定的很松散</h4>
+<p>yield绑定的非常松散，所以我们没有必要将它的操作数用括号括起来：</p>
+<pre><code>yield a + b + c;
+</code></pre>
+
+<p>它被当作<code>yield (a + b + c)</code>而不是<code>(yield a) + b + c</code>;</p>
+<p>因此，许多操作符绑定的都比yield紧，所以当你想将它作为操作符来使用的时候，你需要用括号将它括起来。比如当+号和yield一起使用时，如果不括起来，你将会得到一个错误：</p>
+<pre><code>console.log('Hello' + yield); // SyntaxError
+console.log('Hello' + yield 123); // SyntaxError
+console.log('Hello' + (yield)); // OK
+console.log('Hello' + (yield 123)); // OK
+</code></pre>
+
+<p>当yield作为函数或方法调用时的直接参数的时候，你不需要用括号：</p>
+<pre><code>foo(yield 'a', yield 'b');
+</code></pre>
+
+<p>如果你将yield作为等号右边的赋值语句时，也不需要括号：</p>
+<pre><code>let input = yield;
+</code></pre>
+
+<h4>4.3、return和throw</h4>
+<p>让我们再回顾一下当next第一次调用之后next(x)是如何工作的：</p>
+<ol>
+<li>generator函数暂停在yield操作符处</li>
+<li>将x发送给这个yield，这意味着他将计算x的值</li>
+<li>处理下一个yield或者return</li>
+</ol>
+<h1></h1>
+<pre><code>yield x使得next返回{value: x, done: false}
+return x使得next返回{value: x, done: true}
+</code></pre>
+
+<p>return()和throw的工作原理和next类似，但是他们在第二步有区别：</p>
+<ul>
+<li>return(x) 将会在yield处执行return x</li>
+<li>throw(x) 将会在yield处执行throw x</li>
+</ul>
+<h4>4.4、return()会终止generator</h4>
+<p>return()将会在yield处执行return x将会导致generator的终止，让我们通过下面的例子看看他是如何工作的：</p>
+<pre><code>function* genFunc1() {
+    try {
+        console.log('Started');
+        yield; // (A)
+    } finally {
+        console.log('Exiting');
+    }
+}
+</code></pre>
+
+<p>在下面的操作中，我们首先用next()来启动generator,然后继续直到遇到yield。然后我们在这个地方调用return():</p>
+<pre><code>&gt; let genObj1 = genFunc1();
+&gt; genObj1.next()
+Started
+{ value: undefined, done: false }
+&gt; genObj1.return('Result')
+Exiting
+{ value: 'Result', done: true }
+</code></pre>
+
+<h5>4.4.1、阻止终止</h5>
+<p>如果你在finally语句中调用yield(使用return语句也是可以的)，你将会阻止generator被终止：</p>
+<pre><code>function* genFunc2() {
+    try {
+        console.log('Started');
+        yield;
+    } finally {
+        yield 'Not done, yet!';
+    }
+}
+</code></pre>
+
+<p>这会儿，return()将不会导致generator函数终止，你可以看到返回的done是false。</p>
+<pre><code>&gt; let genObj2 = genFunc2();
+&gt; genObj2.next()
+Started
+{ value: undefined, done: false }
+&gt; genObj2.return('Result')
+{ value: 'Not done, yet!', done: false }
+</code></pre>
+
+<p>你还可以再调用一次next(),与普通函数类似，这会儿的输出值就是按顺序传进去的值，也就是'Result':</p>
+<pre><code>&gt; genObj2.next()
+{ value: 'Result', done: true }
+</code></pre>
+
+<h5>4.4.2、从一个新生的generator返回</h5>
+<p>从一个新生的generator(还没有启动)返回也是可以的：</p>
+<pre><code>&gt; function* genFunc() {}
+&gt; genFunc().return('yes')
+{ value: 'yes', done: true }
+</code></pre>
+
+<h4>4.5、throw发出一个error信号</h4>
+<p>throw将在yield处发出一个error信号，也会导致generator终止，我们通过下面的例子来看看：</p>
+<pre><code>function* genFunc1() {
+    try {
+        console.log('Started');
+        yield; // (A)
+    } catch (error) {
+        console.log('Caught: ' + error);
+    }
+}
+</code></pre>
+
+<p>在下面的操作中，我们首先调用next()来启动generator然后继续直到遇到yield，然后我们在这个位置throw一个error：</p>
+<pre><code>&gt; let genObj1 = genFunc1();
+&gt; genObj1.next()
+Started
+{ value: undefined, done: false }
+&gt; genObj1.throw(new Error('Problem!'))
+Caught: Error: Problem!
+{ value: undefined, done: true }
+</code></pre>
+
+<p>throw使得函数结束</p>
+<h5>4.5.1、未捕获的异常</h5>
+<p>如果你没有捕获generator中的异常，它将会被throw抛出。比如下面的例子没有捕获异常：</p>
+<pre><code>function* genFunc2() {
+    console.log('Started');
+    yield; // (A)
+}
+</code></pre>
+
+<p>如果我们在A处throw一个Error，generator方法将会自己抛出这个错误：</p>
+<pre><code>&gt; let genObj2 = genFunc2();
+&gt; genObj2.next()
+Started
+{ value: undefined, done: false }
+&gt; genObj2.throw(new Error('Problem!'))
+Error: Problem!
+</code></pre>
+
+<h5>4.5.2、从一个新生的generator中抛出错误</h5>
+<p>从一个新生的(还没有启动)generator中抛出错误也是允许的：</p>
+<pre><code>function* genFunc() {}
+&gt; genFunc().throw(new Error('Problem!'))
+Error: Problem!
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
