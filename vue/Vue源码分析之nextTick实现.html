@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vue源码分析之nextTick实现</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>Vue源码分析之nextTick实现</h2>
+<h3>一、概述</h3>
+<p>在实际应用中，我们用数据驱动方式更新了某个DOM，并且想在DOM更新完成之后做一些事情，由于DOM更新也是异步的，不能在当前事件循环中直接操作该DOM。这种情况下，我们可以通过Vue实例上的$nextTick来达到目的。可能有的人发现，其实用setTimeout(fun, 0)也可以达到目的，确实。这是因为$nextTick里面就是有用到setTimeout(fun, 0)来实现。但是实际上setTimeout(fun, 0)实现是下下策，$nextTick会<strong>首先使用promise</strong>来实现，如果不支持promise则<strong>使用MutationObserver来实现<strong>，如果还不支持，则使用</strong>setTimeout(fun, 0)来实现</strong>。也就是优先级如下：</p>
+<ol>
+<li>promise</li>
+<li>MutationObserver</li>
+<li>setTimeout(fun, 0)</li>
+</ol>
+<p>那么我们就来看看它的源码实现吧！</p>
+<h3>二、nextTick源码</h3>
+<p>我们先来看看nextTick的源码，改源码在util/env.js文件中：</p>
+<pre><code>/**
+ * Defer a task to execute it asynchronously.
+ * 推迟某个任务异步执行它
+ * nextTick采用的是典型的IIFE(立即执行函数表达式) + 闭包来实现的
+ */
+export const nextTick = (function () {
+  //私有的会调函数数组
+  const callbacks = []
+  let pending = false//是否处于pending状态
+  let timerFunc
+
+  function nextTickHandler () {
+    pending = false//置pending为false
+    //拿到当前callbacks数组中的所有回调函数副本
+    const copies = callbacks.slice(0)
+    //立即清空数组
+    callbacks.length = 0
+    for (let i = 0; i &lt; copies.length; i++) {
+      copies[i]()//执行回调函数
+    }
+  }
+
+  // the nextTick behavior leverages the microtask queue, which can be accessed
+  // via either native Promise.then or MutationObserver.
+  // MutationObserver has wider support, however it is seriously bugged in
+  // UIWebView in iOS &gt;= 9.3.3 when triggered in touch event handlers. It
+  // completely stops working after triggering a few times... so, if native
+  // Promise is available, we will use it:
+  // nextTick会调用微任务队列(microtask queue),这个东西既可以通过promise获取，也可以通过
+  // MutationObserver获取。MutationObserver具有广泛的支持，但是在iOS &gt;= 9.3.3的UIWebView中，当
+  // touch事件中触发的时候它会停止工作，所以如果支持原生的promise的话，我们会使用原生的promsie
+  //
+  //
+  /* istanbul ignore if */
+  //如果支持原生的promise
+  if (typeof Promise !== 'undefined' &amp;&amp; isNative(Promise)) {
+    //
+    var p = Promise.resolve()
+    var logError = err =&gt; { console.error(err) }
+    timerFunc = () =&gt; {
+      p.then(nextTickHandler).catch(logError)
+      //在有问题的UIWebViews中 Promise.then并不会完全中断
+      //但是它可能会陷入一个奇怪的状态，回调被推入微任务队列，但队列没有被刷新，
+      //直到浏览器需要做其他一些工作，例如 处理定时器
+      //因此，我们可以通过添加一个空的定时器来“强制”微任务队列被刷新。
+      // in problematic UIWebViews, Promise.then doesn't completely break, but
+      // it can get stuck in a weird state where callbacks are pushed into the
+      // microtask queue but the queue isn't being flushed, until the browser
+      // needs to do some other work, e.g. handle a timer. Therefore we can
+      // &quot;force&quot; the microtask queue to be flushed by adding an empty timer.
+      if (isIOS) setTimeout(noop)//苹果系统中，加一个空的定时器
+    }
+  //如果不支持promise，并且在非IE下，并且原生支持MutationObserver的环境里
+  } else if (!isIE &amp;&amp; typeof MutationObserver !== 'undefined' &amp;&amp; (
+    isNative(MutationObserver) ||
+    // PhantomJS and iOS 7.x或者是PhantomJS 和 iOS 7.x系统
+    MutationObserver.toString() === '[object MutationObserverConstructor]'
+  )) {
+    // use MutationObserver where native Promise is not available,
+    // e.g. PhantomJS, iOS7, Android 4.4
+    var counter = 1
+    var observer = new MutationObserver(nextTickHandler)//定义回调nextTickHandler
+    var textNode = document.createTextNode(String(counter))//创建一个文本节点
+    observer.observe(textNode, {
+      characterData: true
+    })
+    timerFunc = () =&gt; {
+      counter = (counter + 1) % 2
+      //当timerFunc被执行时会改变文本节点，触发触发nextTickHandler回调
+      textNode.data = String(counter)
+    }
+  } else {
+    //如果既不支持promise又不支持MutationObserver，则回退到setTimeout
+    // fallback to setTimeout
+    /* istanbul ignore next */
+    //timerFunc执行时会把nextTickHandler加入到任务队列
+    timerFunc = () =&gt; {
+      setTimeout(nextTickHandler, 0)
+    }
+  }
+  //返回一个函数，我们调用nextTick时，真正调用的是这个函数
+  //它接收两个参数，一个是注册的回调函数，一个是上下文对象
+  return function queueNextTick (cb?: Function, ctx?: Object) {
+    let _resolve
+    //将待执行的函数用箭头函数包裹起来放入回调队列，箭头函数里调用回调
+    callbacks.push(() =&gt; {
+      if (cb) {
+        try {
+          cb.call(ctx)//执行
+        } catch (e) {
+          handleError(e, ctx, 'nextTick')
+        }
+      } else if (_resolve) {
+        _resolve(ctx)
+      }
+    })
+    if (!pending) {
+      pending = true
+      timerFunc()//执行timerFunc
+    }
+    //如果没指定回调
+    if (!cb &amp;&amp; typeof Promise !== 'undefined') {
+      return new Promise((resolve, reject) =&gt; {
+        _resolve = resolve
+      })
+    }
+  }
+})()
+</code></pre>
+
+<p>nextTick采用的是典型的IIFE+闭包的形式来实现的，当调用nextTick时，我们实际上调用的是闭包返回的queueNextTick函数。</p>
+<p>nextTick函数中首先定义了几个私有的变量，这些只能被queueNextTick访问到：</p>
+<pre><code>  //私有的回调函数数组
+  const callbacks = []
+  let pending = false//是否处于pending状态
+  let timerFunc
+</code></pre>
+
+<p>callbacks用于存放回调函数的队列，pending指示回调函数队列的执行状态，timerFunc是临时变量，根据不同的环境，它的值不同，也就是采用不同的策略。调用timerFunc会开始执行回调队列中的回调函数。</p>
+<p>nextTick会调用微任务队列(microtask queue),这个东西既可以通过promise获取，也可以通过MutationObserver获取。MutationObserver具有广泛的支持，但是在iOS &gt;= 9.3.3的UIWebView中，当touch事件中触发的时候它会停止工作，所以如果支持原生的promise的话，我们会首先使用原生的promsie来实现异步。</p>
+<p>这里面涉及到一个问题，<strong>怎么判断是否支持原生promise</strong>,它是这么来判断的：</p>
+<pre><code>/* istanbul ignore next */
+//判断是否原生支持promise，toString方法会返回&quot;function Promise() { [native code] }&quot;
+//所以可以用/native code/正则匹配
+export function isNative (Ctor: any): boolean {
+  return typeof Ctor === 'function' &amp;&amp; /native code/.test(Ctor.toString())
+}
+</code></pre>
+
+<p>当不支持promise的话，如果在非IE下，并且原生支持MutationObserver的环境里，我们会使用MutationObserver，它自己创建一个文本节点，当timerFunc被调用时会改变文本节点的值从而触发注册的回调函数。</p>
+<p>而当既不支持promise，也不支持MutationObserver，那么它会采用最经典的setTimeout(nextTickHandler, 0)来实现。</p>
+<p>前面说了，调用timerFunc会执行回调队列，实际上就是会执行extTickHandler函数，它在闭包里面定义的，就是遍历回调函数数组中的每个函数，然后执行：</p>
+<pre><code>function nextTickHandler () {
+    pending = false//置pending为false
+    //拿到当前callbacks数组中的所有回调函数副本
+    const copies = callbacks.slice(0)
+    //立即清空数组
+    callbacks.length = 0
+    for (let i = 0; i &lt; copies.length; i++) {
+      copies[i]()//执行回调函数
+    }
+  }
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

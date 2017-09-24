@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vue源码分析之父子合并策略</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>Vue源码剖析之父子合并策略</h2>
+<h3>一、概述</h3>
+<p>Vue支持mixin(混入)以及Vue.extend()进行组件合并。以mixin为例，Vue官网是这么说的：</p>
+<blockquote>
+<p>混合 (mixins) 是一种分发 Vue 组件中可复用功能的非常灵活的方式。混合对象可以包含任意组件选项。以组件使用混合对象时，所有混合对象的选项将被混入该组件本身的选项。</p>
+</blockquote>
+<p>因为混合对象和组件的写法基本上是一样的，它可以有自己的<strong>属性、data、计算属性，方法、watch、生命周期钩子函数</strong>等等，那么就会出现疑问：当我在组件A中使用mixin B的时候，B的这些<strong>属性、data、计算属性，方法、watch、生命周期钩子函数</strong>等等和组件A自身的会不会有冲突呢？如果没有冲突，它们的合并策略又是什么呢？</p>
+<h3>Vue官网也说了：</h3>
+<p><strong>对于钩子函数：</strong></p>
+<blockquote>
+<p>当组件和混合对象(mixins)含有同名选项时，这些选项将以恰当的方式混合。比如，<strong>同名钩子函数将混合为一个数组，因此都将被调用</strong>。另外，混合对象的钩子将在组件自身钩子 <strong>之前</strong> 调用 </p>
+</blockquote>
+<p>示例如下：</p>
+<pre><code>var mixin = {
+  created: function () {
+    console.log('混合对象的钩子被调用')
+  }
+}
+new Vue({
+  mixins: [mixin],
+  created: function () {
+    console.log('组件钩子被调用')
+  }
+})
+// =&gt; &quot;混合对象的钩子被调用&quot;
+// =&gt; &quot;组件钩子被调用&quot;
+</code></pre>
+
+<p><strong>对于其它：</strong></p>
+<blockquote>
+<p><strong>值为对象</strong>的选项，例如 <strong>methods, components 和 directives<strong>，将被混合为同一个对象。两个对象键名冲突时，</strong>取组件对象的键值对</strong>。</p>
+</blockquote>
+<p>示例如下：</p>
+<pre><code>var mixin = {
+  methods: {
+    foo: function () {
+      console.log('foo')
+    },
+    conflicting: function () {
+      console.log('from mixin')
+    }
+  }
+}
+var vm = new Vue({
+  mixins: [mixin],
+  methods: {
+    bar: function () {
+      console.log('bar')
+    },
+    conflicting: function () {
+      console.log('from self')
+    }
+  }
+})
+vm.foo() // =&gt; &quot;foo&quot;
+vm.bar() // =&gt; &quot;bar&quot;
+vm.conflicting() // =&gt; &quot;from self&quot;
+</code></pre>
+
+<p><strong>注意：</strong>这个例子只是证明了对于methods而言上述说法是正确的，没法证明components 和 directives也适用于上述合并策略。事实上，通过查看源码，感觉methods和(components、 directives)的合并策略并不一样，我们稍后会看看。</p>
+<h5>Vue.extend() 也使用同样的策略进行合并。</h5>
+<p>实际上应该还有data的混合策略没有说，下面我们就从源码来看看这些<strong>混合策略</strong>。</p>
+<h3>二、源码角度看混合策略的实现</h3>
+<p>vue中混合策略的实现是在core模块-&gt;utils模块-&gt;options.js文件中(2.4.4版本)实现的：</p>
+<p><img src="https://i.imgur.com/QIjqBdx.png" /></p>
+<p>该文件首先引入了一些配置文件，具体内容等用到的时候再说。</p>
+<p>接着引入了shared/constants.js文件引入了<code>ASSET_TYPES</code>、<code>LIFECYCLE_HOOKS</code>，他们都是些常量，我们打开constants.js看看他们到底是些什么：</p>
+<p><img src="https://i.imgur.com/XmKZa54.png" /></p>
+<p>可以看到，他们都是数组，<code>ASSET_TYPES</code>存放了Vue实例的component,directive,filter这三种属性，<code>LIFECYCLE_HOOKS</code>存放Vue实例的所有钩子函数的名称。</p>
+<p>然后从share/utils.js文件中引入了一些工具函数，这些函数在我们将share/utils.js模块的时候已经讲过了。</p>
+<p><img src="https://i.imgur.com/xkmNvNn.png" /></p>
+<h4>2.1、自定义合并策略</h4>
+<p>用户可以自定义合并策略，这是通过配置config对象的optionMergeStrategies属性实现的：</p>
+<pre><code>/**
+ * Option overwriting strategies are functions that handle
+ * how to merge a parent option value and a child option
+ * value into the final value.
+ * 可选的自定义合并策略，它是一个函数用于处理如何合并父子options值
+ */
+const strats = config.optionMergeStrategies
+</code></pre>
+
+<p>我们可以先看看官网的讲解：</p>
+<p><img src="https://i.imgur.com/pllGZnW.png" />
+<img src="https://i.imgur.com/H80dC1o.png" />
+<img src="https://i.imgur.com/b1mQF73.png" /></p>
+<h4>2.2、propData合并策略</h4>
+<p>propData我们很少用到，因为它主要用于测试用，我们来看看官方对它的说明：</p>
+<p><img src="https://i.imgur.com/VEWjEJ9.png" /></p>
+<p>它呢采用的是<strong>默认合并策略</strong>。默认合并策略是什么呢？前面也说了就是简单覆盖已有值。也就是说，如果孩子没有，则使用父亲自身的。如果孩子有，则使用孩子的：</p>
+<p><img src="https://i.imgur.com/AMyYe8w.png" /></p>
+<h4>2.3、钩子函数(Hook)和属性(Props)合并策略</h4>
+<p>钩子函数/属性的合并策略是：</p>
+<ul>
+<li>如果不存在孩子，则直接使用父亲</li>
+<li>如果存在孩子。这时，如果父亲存在，则将父亲和孩子concat为一个数组，否则判断孩子是不是数组，如果不是转换成数组</li>
+</ul>
+<p><img src="https://i.imgur.com/8GE5qS5.png" /></p>
+<h4>2.4、<code>ASSET_TYPES</code>(component,directive,filter)合并策略</h4>
+<p>component,directive,filter的合并策略是，如果存在不存在孩子，则返回从父亲继承来的对象，如果存在孩子，则先从父亲继承，然后将孩子extend到继承后的对象：</p>
+<p><img src="https://i.imgur.com/VheoMmj.png" /></p>
+<p>extend的源码在shared/utils.js实现如下：</p>
+<p><img src="https://i.imgur.com/KgSk8kS.png" /></p>
+<p><strong>注意：</strong>从这些源码看，compoennts,directive的合并策略并不是像官方文档所说：</p>
+<blockquote>
+<p><strong>值为对象</strong>的选项，例如 <strong>methods, components 和 directives<strong>，将被混合为同一个对象。两个对象键名冲突时，</strong>取组件对象的键值对</strong>。</p>
+</blockquote>
+<p>事实上，通过源码来看，官网的这段描述应该是不正确的，这段描述只适用于methods合并，components 和 directives采用的是另外一种合并策略，这个稍后会讲。</p>
+<h4>2.5、props、computed、methods、inject合并策略</h4>
+<p>props、computed、methods、inject的合并策略是：</p>
+<ul>
+<li>如果父亲不存在，则返回孩子</li>
+<li>如果父亲存在，孩子不存咋，则返回父亲</li>
+<li>如果父亲存在，孩子也存在，则返回extend合并后的</li>
+</ul>
+<p>这样同名的key会被孩子的值覆盖，这个和官网的说法是一致的。</p>
+<p><img src="https://i.imgur.com/Ddk99Nv.png" /></p>
+<p>注意：这里返回父亲或孩子并不是直接返回本省，都是返回在Object.create(null)基础上extend后的结果。</p>
+<h4>2.6、watchers的合并策略</h4>
+<p>watchers的合并策略是：</p>
+<ul>
+<li>如果父亲不存在，则返回孩子</li>
+<li>如果父亲存在，孩子不存咋，则返回父亲</li>
+<li>如果都存在，对于同名的wacher,他们是用caoncat实现的</li>
+</ul>
+<p><img src="https://i.imgur.com/1IcttHF.png" /></p>
+<h4>2.7、data的合并策略</h4>
+<p>data的合并策略执行三个参数parent,child,vm。其中第三个参数vm是可选的。</p>
+<ul>
+<li>如果提供了vue实例，则调用mergeDataOrFn(parentVal, childVal, vm)执行三方合并</li>
+<li>否则，调用mergeDataOrFn.call(this, parentVal, childVal)执行父子合并。这其中，如果child的data不是一个函数，直接返回父亲的，也就是不需要合并</li>
+</ul>
+<p><img src="https://i.imgur.com/eX6GMUN.png" /></p>
+<p>这里面都是调用mergeDataOrFn来实现的合并，我们来看看它的源码：</p>
+<pre><code>/**
+ * Data
+ */
+export function mergeDataOrFn (
+  parentVal: any,
+  childVal: any,
+  vm?: Component
+): ?Function {
+  //如果没有vue实例参数
+  if (!vm) {
+    //在Vue.extend合并时，父亲和孩子的data都必须是function
+    // in a Vue.extend merge, both should be functions
+    // 孩子不存在data，直接返回父亲的
+    if (!childVal) {
+      return parentVal
+    }
+    // 父亲不存在data，直接返回孩子的
+    if (!parentVal) {
+      return childVal
+    }
+    // when parentVal &amp; childVal are both present,
+    // we need to return a function that returns the
+    // merged result of both functions... no need to
+    // check if parentVal is a function here because
+    // it has to be a function to pass previous merges.
+    // 当父亲和孩子都存在的时候，我们需要返回一个函数，这个函数会返回合并后的结果
+    // 不需要在这里检查父亲是不是function，因为如果它不是function走不到这里来
+    return function mergedDataFn () {
+      //再返回一个函数，这个函数执行真正的合并
+      return mergeData(
+        typeof childVal === 'function' ? childVal.call(this) : childVal,
+        typeof parentVal === 'function' ? parentVal.call(this) : parentVal
+      )
+    }
+    //如果有vue实例参数
+  } else if (parentVal || childVal) {//父亲和孩子任意一个有存在
+    //返回一个函数，用于在有vue实例的情况下执行三方合并
+    return function mergedInstanceDataFn () {
+      // instance merge
+      // 孩子示例数据
+      const instanceData = typeof childVal === 'function'
+        ? childVal.call(vm)
+        : childVal
+      //父亲实例数据
+      const defaultData = typeof parentVal === 'function'
+        ? parentVal.call(vm)
+        : parentVal
+      //如果存在孩子，调用mergeData合并父实例例数据
+      if (instanceData) {//这是唯一多的一个步骤，为什么
+        return mergeData(instanceData, defaultData)
+      } else {
+        //否则返回父亲的
+        return defaultData
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>我们看看，其实有没有vue实例，它们的操作基本上是一样的，对于有vue实例的情况下，唯一多的一步是判断孩子有没有data。</p>
+<p>它们调用的都是mergeData来完成的合并，我们看看它的实现：</p>
+<p><img src="https://i.imgur.com/K78UDxc.png" /></p>
+<p>它所执行的就是如果父亲没有，则把孩子的合并进来，如果父亲有则不需要合并孩子的。这里面，由于父亲的data的某个key对应的值可能还是个对象，所以需要递归调用mergeData。</p>
+<p>这里面在给父亲添加孩子的data的时候调用了set(to, key, fromVal)，这个是在头部引入的：</p>
+<p><img src="https://i.imgur.com/Xt7aPeM.png" /></p>
+<p>我们看看它的源码：</p>
+<pre><code>/**
+ * Set a property on an object. Adds the new property and
+ * triggers change notification if the property doesn't
+ * already exist.
+ */
+/*
+ * 设置对象的属性。如果该属性不存在则，给对象添加一个属性，并通知变化
+ */
+export function set (target: Array&lt;any&gt; | Object, key: any, val: any): any {
+  //如果是数组，切下标合法
+  if (Array.isArray(target) &amp;&amp; isValidArrayIndex(key)) {
+    target.length = Math.max(target.length, key)
+    //调用splice方法添加一个
+    target.splice(key, 1, val)
+    return val//返回新值
+  }
+  //如果对象已经有该属性，则赋值并返回
+  if (hasOwn(target, key)) {
+    target[key] = val
+    return val
+  }
+  //拿到它的观察者
+  const ob = (target: any).__ob__
+  //如果是vue实例，则直接返回
+  if (target._isVue || (ob &amp;&amp; ob.vmCount)) {
+    process.env.NODE_ENV !== 'production' &amp;&amp; warn(
+      'Avoid adding reactive properties to a Vue instance or its root $data ' +
+      'at runtime - declare it upfront in the data option.'
+    )
+    return val
+  }
+  //如果不存在观察者，则设置新值
+  if (!ob) {
+    target[key] = val
+    return val
+  }
+  //前面这些可能大家会有疑惑，不需要通知吗，实际上前面这些要么调用数组变异方法，要么调用
+  //setter，这些都会触发通知的
+
+
+  //如果存在观察者，则定义该属性值为响应式
+  defineReactive(ob.value, key, val)
+  //发出通知
+  ob.dep.notify()
+  return val
+  //返回值
+}
+</code></pre>
+
+<p>因为data是响应式的，所以我们在给父亲添加一个data的时候需要设置它的时候需要设置它为响应式并通知响应变化。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
