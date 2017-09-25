@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vue源码分析之全局API(Vue.mixin)的实现</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>Vue源码分析之全局API(Vue.mixin)的实现</h2>
+<h3>一、概述</h3>
+<p>Vue在给Vue类上全局注册了Vue.mixin这个方法，也就是相当于Vue类的静态方法，我们看看官方API的描述：</p>
+<p><img src="https://i.imgur.com/T8IlNty.png" /></p>
+<p>以及它的语法签名：</p>
+<p><img src="https://i.imgur.com/gwiNB4t.png" /></p>
+<p>那么它在源码中是如何实现的呢？我们来看看：</p>
+<h3>二、源码分析</h3>
+<p>全局mixin的实现是在global-api/mixin.js文件中实现的：</p>
+<pre><code>import { mergeOptions } from '../util/index'
+
+export function initMixin (Vue: GlobalAPI) {
+  //全局mixin的定义，是调用的mergeOptions将mixin参数混入到全局Vue实例的options中，
+  //会影响之后创建的所有vue实例
+  Vue.mixin = function (mixin: Object) {
+    this.options = mergeOptions(this.options, mixin)
+    return this
+  }
+}
+</code></pre>
+
+<p>它主要是在当前Vue实例的options上挂载了将当前options和mixin合并后的结果，它是调用mergeOptions实现的，它的util/index.js文件中，而util/index.js文件又从option.js中引入它：</p>
+<pre><code>export * from './options'
+</code></pre>
+
+<p>所以它的实际位置在options.js文件中，我们来看看它的源码：</p>
+<pre><code>/**
+ * Merge two option objects into a new one.
+ * Core utility used in both instantiation and inheritance.
+ * 将两个options对象合并成一个新的
+ * 主要用于实例化和继承
+ */
+export function mergeOptions (
+  parent: Object,
+  child: Object,
+  vm?: Component
+): Object {
+  //开发环境检查child的组件
+  if (process.env.NODE_ENV !== 'production') {
+    checkComponents(child)
+  }
+  //如果是一个函数
+  if (typeof child === 'function') {
+    child = child.options
+  }
+  //归一化props、inject、child
+  normalizeProps(child)
+  normalizeInject(child)
+  normalizeDirectives(child)
+  const extendsFrom = child.extends
+  //如果孩子是extend得到的
+  if (extendsFrom) {
+    parent = mergeOptions(parent, extendsFrom, vm)//三方合并
+  }
+  if (child.mixins) {//如果孩子有mixin数组
+    for (let i = 0, l = child.mixins.length; i &lt; l; i++) {
+      parent = mergeOptions(parent, child.mixins[i], vm)//对每一个mixin执行三方合并
+    }
+  }
+  const options = {}
+  let key
+  for (key in parent) {
+    mergeField(key)
+  }
+  for (key in child) {
+    if (!hasOwn(parent, key)) {
+      mergeField(key)
+    }
+  }
+  function mergeField (key) {
+    //对于computed、methods、data等等调用相应的方法执行合并策略
+    //合并策略详见我的另外一篇文章——Vue源码分析之父子合并策略
+    const strat = strats[key] || defaultStrat
+    options[key] = strat(parent[key], child[key], vm, key)
+  }
+  return options//返回合并后的
+}
+</code></pre>
+
+<p>mergeOptions首先会用checkComponents检查混入的组建的key的合法性：</p>
+<pre><code>/**
+ * Validate component names
+ * 验证组件的名字，主要是看他是不是保留字
+ */
+function checkComponents (options: Object) {
+  for (const key in options.components) {
+    const lower = key.toLowerCase()
+    if (isBuiltInTag(lower) || config.isReservedTag(lower)) {
+      warn(
+        'Do not use built-in or reserved HTML elements as component ' +
+        'id: ' + key
+      )
+    }
+  }
+}
+</code></pre>
+
+<p>如果mixin的参数是一个函数的话，会拿他的options：</p>
+<pre><code>  //如果是一个函数
+  if (typeof child === 'function') {
+    child = child.options
+  }
+</code></pre>
+
+<p>之后会对混入对象的props、injects、directives进行归一化为基于对象的格式：</p>
+<pre><code>//归一化props、inject、child
+  normalizeProps(child)
+  normalizeInject(child)
+  normalizeDirectives(child)
+</code></pre>
+
+<p>我们知道，比如说定义props的时候，可以用数组形式：</p>
+<pre><code>Vue.component('child', {
+  // 声明 props
+  props: ['message'],
+  // 就像 data 一样，prop 可以用在模板内
+  // 同样也可以在 vm 实例中像“this.message”这样使用
+  template: '&lt;span&gt;{{ message }}&lt;/span&gt;'
+})
+</code></pre>
+
+<p>也可以使用对象形式：</p>
+<pre><code>  props: {
+    size: {
+        default: 0
+    },
+    myMessage1: {
+        default: 0
+    }
+  },
+</code></pre>
+
+<p>但实际上最终都是用normalizeProps转换成了对象形式：</p>
+<pre><code>/**
+ * Ensure all props option syntax are normalized into the
+ * Object-based format.
+ * 确保所有的属性选项的语法都归一化为基于对象的语法
+ */
+function normalizeProps (options: Object) {
+  const props = options.props
+  if (!props) return
+  const res = {}
+  let i, val, name
+  //如果是一个数组，转换为对象
+  if (Array.isArray(props)) {
+    i = props.length
+    while (i--) {
+      val = props[i]
+      if (typeof val === 'string') {
+        name = camelize(val)//驼峰格式
+        res[name] = { type: null }
+      } else if (process.env.NODE_ENV !== 'production') {
+        warn('props must be strings when using array syntax.')
+      }
+    }
+  } else if (isPlainObject(props)) {
+    for (const key in props) {
+      val = props[key]
+      name = camelize(key)
+      res[name] = isPlainObject(val)
+        ? val
+        : { type: val }
+    }
+  }
+  options.props = res
+}
+</code></pre>
+
+<p>injects、directives的归一化类似，他们的归一化函数分别如下：</p>
+<pre><code>/**
+ * Normalize all injections into Object-based format
+ * 将所有injections转化为基于对象的格式
+ */
+function normalizeInject (options: Object) {
+  const inject = options.inject
+  if (Array.isArray(inject)) {
+    const normalized = options.inject = {}
+    for (let i = 0; i &lt; inject.length; i++) {
+      normalized[inject[i]] = inject[i]
+    }
+  }
+}
+
+/**
+ * Normalize raw function directives into object format.
+ * 将函数指令转换为基于对象的
+ */
+function normalizeDirectives (options: Object) {
+  const dirs = options.directives
+  if (dirs) {
+    for (const key in dirs) {
+      const def = dirs[key]
+      if (typeof def === 'function') {//将函数指令转换为基于对象的
+        dirs[key] = { bind: def, update: def }
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>回到mergeOptions函数，因为Vue.mixin(mixin)的参数是一个mixin，但这个mixin自身还可以是通过mixin来的，或者通过extend来的，所以需要递归的调用mergeOptions函数：</p>
+<p><img src="https://i.imgur.com/k8rgHwe.png" /></p>
+<p>完了之后，会调用mergeOptions函数内部定义的mergeField函数实现合并操作：</p>
+<p><img src="https://i.imgur.com/Wf6x0G1.png" /></p>
+<p>而真正的合并操作是调用我们定义的各种(data、watchers、computed、hook等等)合并策略来实现的。</p>
+<p>那这个Vue.mixin()是在什么时候定义到Vue上的呢？它也是在global-api下的index.js文件中的initGlobalAPI函数中调用的：</p>
+<p><img src="https://i.imgur.com/TK3k9Tp.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
