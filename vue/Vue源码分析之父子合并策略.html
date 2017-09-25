@@ -298,7 +298,9 @@ img {
 <p>混合 (mixins) 是一种分发 Vue 组件中可复用功能的非常灵活的方式。混合对象可以包含任意组件选项。以组件使用混合对象时，所有混合对象的选项将被混入该组件本身的选项。</p>
 </blockquote>
 <p>因为混合对象和组件的写法基本上是一样的，它可以有自己的<strong>属性、data、计算属性，方法、watch、生命周期钩子函数</strong>等等，那么就会出现疑问：当我在组件A中使用mixin B的时候，B的这些<strong>属性、data、计算属性，方法、watch、生命周期钩子函数</strong>等等和组件A自身的会不会有冲突呢？如果没有冲突，它们的合并策略又是什么呢？</p>
-<h3>Vue官网也说了：</h3>
+<p><strong>注意，因为组件相当于是继承混合对象的内容，所以，下文中孩子指的是组件，父亲指的是混合对象。这个不要搞混。</strong></p>
+<h3>二、源码分析</h3>
+<p>Vue官网也说了：</p>
 <p><strong>对于钩子函数：</strong></p>
 <blockquote>
 <p>当组件和混合对象(mixins)含有同名选项时，这些选项将以恰当的方式混合。比如，<strong>同名钩子函数将混合为一个数组，因此都将被调用</strong>。另外，混合对象的钩子将在组件自身钩子 <strong>之前</strong> 调用 </p>
@@ -350,7 +352,6 @@ vm.bar() // =&gt; &quot;bar&quot;
 vm.conflicting() // =&gt; &quot;from self&quot;
 </code></pre>
 
-<p><strong>注意：</strong>这个例子只是证明了对于methods而言上述说法是正确的，没法证明components 和 directives也适用于上述合并策略。事实上，通过查看源码，感觉methods和(components、 directives)的合并策略并不一样，我们稍后会看看。</p>
 <h5>Vue.extend() 也使用同样的策略进行合并。</h5>
 <p>实际上应该还有data的混合策略没有说，下面我们就从源码来看看这些<strong>混合策略</strong>。</p>
 <h3>二、源码角度看混合策略的实现</h3>
@@ -380,25 +381,21 @@ const strats = config.optionMergeStrategies
 <h4>2.2、propData合并策略</h4>
 <p>propData我们很少用到，因为它主要用于测试用，我们来看看官方对它的说明：</p>
 <p><img src="https://i.imgur.com/VEWjEJ9.png" /></p>
-<p>它呢采用的是<strong>默认合并策略</strong>。默认合并策略是什么呢？前面也说了就是简单覆盖已有值。也就是说，如果孩子没有，则使用父亲自身的。如果孩子有，则使用孩子的：</p>
+<p>它呢采用的是<strong>默认合并策略</strong>。默认合并策略是什么呢？前面也说了就是简单覆盖已有值。也就是说，如果孩子(组件)没有，则使用父亲(mixin)自身的。如果孩子有，则使用孩子的：</p>
 <p><img src="https://i.imgur.com/AMyYe8w.png" /></p>
-<h4>2.3、钩子函数(Hook)和属性(Props)合并策略</h4>
-<p>钩子函数/属性的合并策略是：</p>
+<h4>2.3、钩子函数(Hook)合并策略</h4>
+<p>钩子函数的合并策略是：</p>
 <ul>
 <li>如果不存在孩子，则直接使用父亲</li>
 <li>如果存在孩子。这时，如果父亲存在，则将父亲和孩子concat为一个数组，否则判断孩子是不是数组，如果不是转换成数组</li>
 </ul>
+<p>会先调用父亲(混合对象)的钩子函数</p>
 <p><img src="https://i.imgur.com/8GE5qS5.png" /></p>
 <h4>2.4、<code>ASSET_TYPES</code>(component,directive,filter)合并策略</h4>
 <p>component,directive,filter的合并策略是，如果存在不存在孩子，则返回从父亲继承来的对象，如果存在孩子，则先从父亲继承，然后将孩子extend到继承后的对象：</p>
 <p><img src="https://i.imgur.com/VheoMmj.png" /></p>
 <p>extend的源码在shared/utils.js实现如下：</p>
 <p><img src="https://i.imgur.com/KgSk8kS.png" /></p>
-<p><strong>注意：</strong>从这些源码看，compoennts,directive的合并策略并不是像官方文档所说：</p>
-<blockquote>
-<p><strong>值为对象</strong>的选项，例如 <strong>methods, components 和 directives<strong>，将被混合为同一个对象。两个对象键名冲突时，</strong>取组件对象的键值对</strong>。</p>
-</blockquote>
-<p>事实上，通过源码来看，官网的这段描述应该是不正确的，这段描述只适用于methods合并，components 和 directives采用的是另外一种合并策略，这个稍后会讲。</p>
 <h4>2.5、props、computed、methods、inject合并策略</h4>
 <p>props、computed、methods、inject的合并策略是：</p>
 <ul>
@@ -406,16 +403,17 @@ const strats = config.optionMergeStrategies
 <li>如果父亲存在，孩子不存咋，则返回父亲</li>
 <li>如果父亲存在，孩子也存在，则返回extend合并后的</li>
 </ul>
-<p>这样同名的key会被孩子的值覆盖，这个和官网的说法是一致的。</p>
+<p>这样同名的key会被孩子(组件)的值覆盖，这个和官网的说法是一致的。</p>
 <p><img src="https://i.imgur.com/Ddk99Nv.png" /></p>
-<p>注意：这里返回父亲或孩子并不是直接返回本省，都是返回在Object.create(null)基础上extend后的结果。</p>
+<p>注意：这里返回父亲或孩子并不是直接返回本身，都是返回在Object.create(null)基础上extend后的结果。</p>
 <h4>2.6、watchers的合并策略</h4>
 <p>watchers的合并策略是：</p>
 <ul>
 <li>如果父亲不存在，则返回孩子</li>
-<li>如果父亲存在，孩子不存咋，则返回父亲</li>
-<li>如果都存在，对于同名的wacher,他们是用caoncat实现的</li>
+<li>如果父亲存在，孩子不存在，则返回父亲</li>
+<li>如果都存在，对于同名的wacher,他们是用cancat实现的，父亲concat孩子</li>
 </ul>
+<p>也就是说对于同名的，会先触发父亲(混合对象)的watcher，再触发孩子(组件)的watcher</p>
 <p><img src="https://i.imgur.com/1IcttHF.png" /></p>
 <h4>2.7、data的合并策略</h4>
 <p>data的合并策略执行三个参数parent,child,vm。其中第三个参数vm是可选的。</p>
@@ -541,6 +539,157 @@ export function set (target: Array&lt;any&gt; | Object, key: any, val: any): any
 </code></pre>
 
 <p>因为data是响应式的，所以我们在给父亲添加一个data的时候需要设置它的时候需要设置它为响应式并通知响应变化。</p>
+<h3>三、完整测试例子</h3>
+<p>下面是一个完整的例子：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Vue mixin test&lt;/title&gt;
+    &lt;script src=&quot;./vue.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script&gt;
+var mixin = {
+  props: {
+    size: {
+        default: 0
+    },
+    myMessage1: {
+        default: 0
+    }
+  },
+  computed: {
+    cp1() {
+        console.log(`from parent computed cp1: ${this.size}`)
+    },
+    cp3() {
+        console.log(`from parent computed cp3: ${this.size}`)
+    }
+  },
+  created () {
+        console.log(`from parent hook created`)
+  },
+  data () {
+    return {
+        age: 12,
+        heigt:175
+    }
+  },
+  methods: {
+    foo: function () {
+      console.log(`from parent method foo`)
+    },
+    conflicting: function () {
+      console.log(`from parent method conflicting`)
+    }
+  },
+  directives: {
+      focus: {
+        // 指令的定义---
+        bind: function (el) {
+            // 聚焦元素
+            el.focus()
+        }
+      }
+  },
+  watch: {
+    size: function (val, oldval) {
+        console.log(`from parent watcher size: ${this.size}`)
+    }
+  }
+}
+var vm = new Vue({
+  mixins: [mixin],
+  props: {
+    size: {
+        default: 10
+    },
+    myMessage: {
+        default: 10
+    }
+  },
+  created () {
+        console.log(`from child hook created`)
+  },
+  computed: {
+    cp1() {
+        console.log(`from child computed cp1: ${this.size}`)
+    },
+    cp2() {
+        console.log(`from child computed cp2: ${this.size}`)
+    }
+  },
+  methods: {
+    bar: function () {
+      console.log(`from child method bar`)
+    },
+    conflicting: function () {
+      console.log(`from child method conflicting`)
+    }
+  },
+  directives: {
+      focus: {
+        // 指令的定义---
+        inserted: function (el) {
+            // 聚焦元素
+            el.focus()
+        }
+      }
+  },
+  data () {
+    return {
+        age: 16,
+        number: 20
+    }
+  },
+  watch: {
+    size: function (val, oldval) {
+        console.log(`from child watcher size: ${this.size}`)
+    }
+  }
+})
+//测试methods合并策略
+console.group(&quot;测试methods合并策略&quot;);
+vm.foo() //
+vm.bar() //
+vm.conflicting()
+console.groupEnd();
+
+console.group(&quot;测试computed合并策略&quot;);
+//测试computed合并策略
+console.log(vm.cp1)
+console.log(vm.cp2)
+console.log(vm.cp3)
+console.groupEnd();
+
+console.group(&quot;测试props合并策略&quot;);
+//测试data合并策略
+console.log(vm.size)
+console.log(vm.myMessage)
+console.log(vm.myMessage1)
+console.groupEnd();
+
+console.group(&quot;测试watcher合并策略&quot;);
+//测试watcher合并策略
+vm.size = 100
+console.groupEnd();
+
+
+console.group(&quot;测试data合并策略&quot;);
+//测试data合并策略
+console.log(vm.age)
+console.log(vm.number)
+console.log(vm.height)
+console.groupEnd();
+
+
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>结果：</p>
+<p><img src="https://i.imgur.com/Wupxagd.png" /></p>
 
 </body>
 </html>
