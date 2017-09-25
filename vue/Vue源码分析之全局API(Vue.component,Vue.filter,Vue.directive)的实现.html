@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vue源码分析之全局API(Vue.component,Vue.filter,Vue.directive)的实现</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>Vue源码分析之全局API(Vue.component,Vue.filter,Vue.directive)的实现</h2>
+<h3>一、概述</h3>
+<p>Vue在给Vue类上全局注册了Vue.component,Vue.filter,Vue.directive这几个方法，也就是相当于Vue类的静态方法，他们的语法签名完全一样，我们看看官方API的描述：</p>
+<p><img src="https://i.imgur.com/6a4sjhT.png" />
+<img src="https://i.imgur.com/qgVWEWW.png" />
+<img src="https://i.imgur.com/8EaFxR3.png" /></p>
+<p>那么他们是如何实现的呢？我们看看源码</p>
+<h3>二、源码实现</h3>
+<p>这几个全局API的实现在global-api/assets.js文件中，我们看看代码：</p>
+<pre><code>/* @flow */
+
+import config from '../config'
+import { ASSET_TYPES } from 'shared/constants'
+import { warn, isPlainObject } from '../util/index'
+
+export function initAssetRegisters (Vue: GlobalAPI) {
+  /**
+   * Create asset registration methods.
+   * 在Vue上定义注册全局ASSET_TYPES(components、derective、filters)的方法
+   * Vue.component( id, [definition] )
+   * 参数：
+   * {string} id
+   * {Function | Object} [definition]
+   * derective、filters语法签名一样
+   * definition表示是注册还是获取，如果提供了就是注册，如果没提供就是获取
+   */
+  ASSET_TYPES.forEach(type =&gt; {
+    Vue[type] = function (
+      id: string,
+      definition: Function | Object
+    ): Function | Object | void {
+      if (!definition) {//没提供definition参数，表示获取
+        return this.options[type + 's'][id]
+      } else {//提供了definition参数，表示注册
+        /* istanbul ignore if */
+        //type不能是内置的，其实type只可以是components、derective、filters
+        //这是在ASSET_TYPES中定义的
+        if (process.env.NODE_ENV !== 'production') {
+          if (type === 'component' &amp;&amp; config.isReservedTag(id)) {
+            warn(
+              'Do not use built-in or reserved HTML elements as component ' +
+              'id: ' + id
+            )
+          }
+        }
+        //如果是注册全局组件 &amp;&amp; definition是对象字面量
+        if (type === 'component' &amp;&amp; isPlainObject(definition)) {
+          definition.name = definition.name || id
+          definition = this.options._base.extend(definition)
+        }
+        //如果是注册全局指令 &amp;&amp; definition是函数
+        //则把bind和update钩子函数都设置为definition
+        if (type === 'directive' &amp;&amp; typeof definition === 'function') {
+          definition = { bind: definition, update: definition }
+        }
+        //在options上也挂载definition
+        this.options[type + 's'][id] = definition
+        return definition
+      }
+    }
+  })
+}
+</code></pre>
+
+<p>这个文件首先会从config.js文件中引入isReservedTag辅助函数，以及从../util/index文件中引入warn, isPlainObject函数，并且会从shared/constants文件中引入ASSET_TYPES数组。</p>
+<p>我们首先看看isReservedTag，它会判断参数是不是保留字：</p>
+<pre><code>  // platform
+  isReservedTag: (x?: string) =&gt; boolean;
+</code></pre>
+
+<p>再看看isPlainObject，它用来判断是否是对象字面量：</p>
+<pre><code>/**
+ * Strict object type check. Only returns true
+ * for plain JavaScript objects.
+ */
+export function isPlainObject (obj: any): boolean {
+  return _toString.call(obj) === '[object Object]'
+}
+</code></pre>
+
+<p>再看看ASSET_TYPES数组：</p>
+<pre><code>export const ASSET_TYPES = [
+  'component',
+  'directive',
+  'filter'
+]
+</code></pre>
+
+<p>然后就会遍历这个数组，在Vue类上定义函数名为component、directive、filter的三个函数，函数签名一样，都是id和definition:</p>
+<p><img src="https://i.imgur.com/Ww4sJLR.png" /></p>
+<p>当没有提供第二个参数definition时，表示获取全局component/directive/filter，而当提供了这个参数的话，表示定义全局component/directive/filter：</p>
+<p><img src="https://i.imgur.com/lPJ9lld.png" /></p>
+<p>这里面还会判断一下在component/directive情况下参数的合法性：</p>
+<p><img src="https://i.imgur.com/g8sTR3S.png" /></p>
+<p>一切合规之后还会把它挂载在实例的options上：</p>
+<p><img src="https://i.imgur.com/i1hw2ZY.png" /></p>
+<p>那这几个全局方法是在什么时候定义到Vue类上的呢？也就是说initAssetRegisters在什么时候执行的呢？它是在global-api下的index.js文件中的initGlobalAPI函数中调用的：</p>
+<p><img src="https://i.imgur.com/DQqlgGp.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
