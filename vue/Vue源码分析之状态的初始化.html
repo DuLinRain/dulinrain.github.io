@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vue源码分析之状态的初始化</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>Vue源码分析之状态的初始化</h2>
+<h3>一、概述</h3>
+<p>了解Vue钩子函数的都知道，Vue在实例化的过程中会进行一系列的初始化操作，就拿官网的一张图来举例：</p>
+<p><img src="https://i.imgur.com/QvDMswy.png" /></p>
+<p>从这张图可以看出，在beforeCreate钩子函数调用之前，会进行事件和生命周期的初始化。</p>
+<ul>
+<li><strong>初始化事件</strong>，其实就是给vue实例添加<em>events属性和</em>hasHookEvent属性</li>
+<li><strong>初始化生命周期</strong>，其实就是给vue实例添加了以下属性：$parent、$parent、$children、$refs、<code>_watcher</code>、<code>_inactive</code>、<code>_directInactive</code>、<code>_isMounted</code>、<code>_isDestroyed</code>、<code>_isBeingDestroyed</code></li>
+</ul>
+<p>而在beforeCreate和created之间则会进行injection、ractivity的初始化，这个我们可以Veu的源码看出。</p>
+<p>Vue在实例化的时候回调用<code>_init</code>函数,这个函数定义在instance/init.js文件中，该函数会进行以下一些初始化操作：</p>
+<p><img src="https://i.imgur.com/e5AgKB6.png" /></p>
+<p>可以看到，在beforeCreate和created钩子函数这一块做了哪些初始化操作是一目了然的，我们今天要讲的是专挑的初始化操作，也就是<code>initState(vm)</code>,该函数主要<strong>定义_watchers属性为[]，并初始化data、props、computed、methods、watch</strong>。下面我们分别看看他们的源码实现。</p>
+<h3>二、状态(data、props、computed、methods、watch)初始化源码实现</h3>
+<p>状态的初始化包括props, data，computed，methods, watch的初始化，是通过initState函数来完成的，initState函数定义在instance/state.js文件中，我们看看它的源码：</p>
+<p><img src="https://i.imgur.com/H58NXgF.png" /></p>
+<p>它首先拿到我们实例化时传进去的options，然后基于它初始化props, data，computed，methods, watch。下面逐一看看</p>
+<h4>2.1、props的初始化</h4>
+<p>props的初始化是通过initProps来完成的，我们看看它的源码：</p>
+<pre><code>function initProps (vm: Component, propsOptions: Object) {
+  //拿到实例上的propsData,这个东西不常用
+  const propsData = vm.$options.propsData || {}
+  //定义vue实例的_props属性为空对象
+  const props = vm._props = {}
+  // cache prop keys so that future props updates can iterate using Array
+  // instead of dynamic object key enumeration.
+  // 定义_propKeys属性在vm.$options上，初始化为[]
+  // 用于缓存属性keys,这样以后属性更新的时候可以遍历数组而不是枚举动态对象的key
+  const keys = vm.$options._propKeys = []
+  //是不是根，如果存在vm.$parent则不是根
+  const isRoot = !vm.$parent
+  // root instance props should be converted
+  // 如果是根实例的话，根实例的属性需要转换
+  observerState.shouldConvert = isRoot
+  //遍历实例化时options中定义的props
+  for (const key in propsOptions) {
+    //推入数组缓存属性的keys
+    keys.push(key)
+    //验证它
+    const value = validateProp(key, propsOptions, propsData, vm)
+    /* istanbul ignore else */
+    //如果是开发环境
+    if (process.env.NODE_ENV !== 'production') {
+      //判断key是不是保留字
+      if (isReservedAttribute(key) || config.isReservedAttr(key)) {
+        warn(
+          `&quot;${key}&quot; is a reserved attribute and cannot be used as component prop.`,
+          vm
+        )
+      }
+      defineReactive(props, key, value, () =&gt; {
+        if (vm.$parent &amp;&amp; !isUpdatingChildComponent) {
+          warn(
+            `Avoid mutating a prop directly since the value will be ` +
+            `overwritten whenever the parent component re-renders. ` +
+            `Instead, use a data or computed property based on the prop's ` +
+            `value. Prop being mutated: &quot;${key}&quot;`,
+            vm
+          )
+        }
+      })
+    } else {
+      defineReactive(props, key, value)
+    }
+    // static props are already proxied on the component's prototype
+    // during Vue.extend(). We only need to proxy props defined at
+    // instantiation here.
+    if (!(key in vm)) {
+      //对所有key的访问代理到_props上
+      proxy(vm, `_props`, key)
+    }
+  }
+  observerState.shouldConvert = true
+}
+</code></pre>
+
+<p>initProps会首先拿到vue实例上的propsData属性，然后给实例定义一个<code>_props</code>属性为空对象。</p>
+<pre><code>//拿到实例上的propsData,这个东西不常用
+  const propsData = vm.$options.propsData || {}
+  //定义vue实例的_props属性为空对象
+  const props = vm._props = {}
+</code></pre>
+
+<p>然后，会在实例上定义一个<code>_propKeys</code>数组</p>
+<pre><code>// cache prop keys so that future props updates can iterate using Array
+  // instead of dynamic object key enumeration.
+  // 定义_propKeys属性在vm.$options上，初始化为[]
+  // 用于缓存属性keys,这样以后属性更新的时候可以遍历数组而不是枚举动态对象的key
+  const keys = vm.$options._propKeys = []
+</code></pre>
+
+<p>然后会判断是否是根实例，然后设置相应的属性。</p>
+<p>然后会遍历options中的props，拿到它的key扔进刚才的缓存数组。</p>
+<pre><code>//遍历实例化时options中定义的props
+  for (const key in propsOptions) {
+    //推入数组缓存属性的keys
+    keys.push(key)
+</code></pre>
+
+<p>validateProp函数会验证props的value的合法性，并返回value:</p>
+<pre><code>//验证它
+    const value = validateProp(key, propsOptions, propsData, vm)
+</code></pre>
+
+<p>我们来看看<strong>validateProp函数</strong>的实现：</p>
+<p>该函数是从../util/index.js文件中引入的：</p>
+<p><img src="https://i.imgur.com/QNch5GB.png" /></p>
+<p>而最终是从../util/props.js文件中引入的：</p>
+<pre><code>export function validateProp (
+  key: string,
+  propOptions: Object,
+  propsData: Object,
+  vm?: Component
+): any {
+  //拿到对应的属性值
+  const prop = propOptions[key]
+  //propsData对象中是否存在该key
+  const absent = !hasOwn(propsData, key)
+  //拿到propsData中该key对应的值
+  let value = propsData[key]
+  // handle boolean props
+  // 处理bool类型
+  // 通过isType判断是否是对应类型
+  if (isType(Boolean, prop.type)) {
+    //如果propData中不存在该key，并且prop不拥有default属性
+    if (absent &amp;&amp; !hasOwn(prop, 'default')) {
+      value = false//设置值为false
+    //如果类型不是字符串，但是(传进来的却是个字符串 || 并且没有用驼峰法或-法)
+    //也就是说obj['true'] = true这种形式
+    } else if (!isType(String, prop.type) &amp;&amp; (value === '' || value === hyphenate(key))) {
+      value = true//设置值为true
+    }
+  }
+  // check default value
+  // 检查默认值
+  // 如果value是undefined
+  if (value === undefined) {
+    //拿到相应的值
+    value = getPropDefaultValue(vm, prop, key)
+    // since the default value is a fresh copy,
+    // make sure to observe it.
+    // 因为这个值是一个新的副本，所以需要观测它
+    const prevShouldConvert = observerState.shouldConvert
+    observerState.shouldConvert = true
+    observe(value)
+    observerState.shouldConvert = prevShouldConvert
+  }
+  //开发环境断言
+  if (process.env.NODE_ENV !== 'production') {
+    assertProp(prop, key, value, vm, absent)
+  }
+  //返回这个值
+  return value
+}
+</code></pre>
+
+<p>该函数会做这样一些事情：</p>
+<ul>
+<li>首先拿到该属性对应的值</li>
+</ul>
+<h1></h1>
+<pre><code>//拿到对应的属性值
+  const prop = propOptions[key]
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后判断propsData中是否也存在该属性</li>
+</ul>
+<h1></h1>
+<pre><code> //propsData对象中是否存在该key
+  const absent = !hasOwn(propsData, key)
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后拿到propsData中该属性对应的值(如果上一步不存在，这个值应该是undefined)</li>
+</ul>
+<h1></h1>
+<pre><code>//拿到propsData中该key对应的值
+  let value = propsData[key]
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后会对bool类型的属性做进一步处理</li>
+</ul>
+<h1></h1>
+<pre><code>// 处理bool类型
+  // 通过isType判断是否是对应类型
+  if (isType(Boolean, prop.type)) {
+    //如果propData中不存在该key，并且prop不拥有default属性
+    if (absent &amp;&amp; !hasOwn(prop, 'default')) {
+      value = false//设置值为false
+    //如果类型不是字符串，但是(传进来的却是个字符串 || 并且没有用驼峰法或-法)
+    //也就是说obj['true'] = true这种形式
+    } else if (!isType(String, prop.type) &amp;&amp; (value === '' || value === hyphenate(key))) {
+      value = true//设置值为true
+    }
+  }
+</code></pre>
+
+<h1></h1>
+<p>它会用isType来判断定义属性时通过通过type指定的类型是不是布尔类型，isType用于类型比对，因为定义属性时，type可以用数组指定多种类型，所以这个函数会区分是单个类型还是数组，如果是数组的话，任意一个数组元素类型匹配上就返回true,它的源码如下：</p>
+<pre><code>function isType (type, fn) {
+  //如果prop.type不是一个数组则直接通过getType判断
+  if (!Array.isArray(fn)) {
+    return getType(fn) === getType(type)
+  }
+  //而如果是数组，则遍历并对比用getType
+  for (let i = 0, len = fn.length; i &lt; len; i++) {
+    if (getType(fn[i]) === getType(type)) {
+      return true
+    }
+  }
+  /* istanbul ignore next */
+  return false
+}
+</code></pre>
+
+<p>这里面又会调用getType来返回某个类型，getType用函数字符串名去检查内置的类型，因为简单的常规检查可能在跨vm实例和跨iframe时会报错。比如String.toString()会得到&quot;function String() { [native code] }&quot;，然后可以匹配。 </p>
+<p>它的实现如下：</p>
+<pre><code>/**
+ * Use function string name to check built-in types,
+ * because a simple equality check will fail when running
+ * across different vms / iframes.
+ * 用函数字符串名去检查内置的类型，因为简单的常规检查可能在跨vm实例和跨iframe时会报错
+ * 比如String.toString()会得到&quot;function String() { [native code] }&quot;，然后可以匹配
+ */
+function getType (fn) {
+  const match = fn &amp;&amp; fn.toString().match(/^\s*function (\w+)/)
+  return match ? match[1] : ''
+}
+</code></pre>
+
+<ul>
+<li>然后如果propData中不存在该key，并且prop不拥有default属性，则设置该属性的值为false,而如果类型不是字符串，但是(传进来的却是个字符串 || 并且没有用驼峰法或-法)，也就是说obj['true'] = true这种形式，则设置值为true：</li>
+</ul>
+<h1></h1>
+<pre><code>// handle boolean props
+  // 处理bool类型
+  // 通过isType判断是否是对应类型
+  if (isType(Boolean, prop.type)) {
+    //如果propData中不存在该key，并且prop不拥有default属性
+    if (absent &amp;&amp; !hasOwn(prop, 'default')) {
+      value = false//设置值为false
+    //如果类型不是字符串，但是(传进来的却是个字符串 || 并且没有用驼峰法或-法)
+    //也就是说obj['true'] = true这种形式
+    } else if (!isType(String, prop.type) &amp;&amp; (value === '' || value === hyphenate(key))) {
+      value = true//设置值为true
+    }
+  }
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>而对于不是bool类型的，则先判断有没有定义初始值，如果没有则给他用getPropDefaultValue创建一个默认值并观测这个值：</li>
+</ul>
+<h1></h1>
+<pre><code>// check default value
+  // 检查默认值
+  // 如果value是undefined
+  if (value === undefined) {
+    //拿到相应的值
+    value = getPropDefaultValue(vm, prop, key)
+    // since the default value is a fresh copy,
+    // make sure to observe it.
+    // 因为这个值是一个新的副本，所以需要观测它
+    const prevShouldConvert = observerState.shouldConvert
+    observerState.shouldConvert = true
+    observe(value)
+    observerState.shouldConvert = prevShouldConvert
+  }
+</code></pre>
+
+<p>getPropDefaultValue主要是根据有没有设置default来拿他的默认值，它的代码如下：</p>
+<h1></h1>
+<pre><code>/**
+ * Get the default value of a prop.
+ * 拿到属性的默认值
+ */
+function getPropDefaultValue (vm: ?Component, prop: PropOptions, key: string): any {
+  // no default, return undefined
+  // 没有设置default属性，直接返回undefiend
+  if (!hasOwn(prop, 'default')) {
+    return undefined
+  }
+  //设置了default属性
+  const def = prop.default
+  // warn against non-factory defaults for Object &amp; Array
+  // 开发环境下当default是个对象的时候给出警告
+  if (process.env.NODE_ENV !== 'production' &amp;&amp; isObject(def)) {
+    warn(
+      'Invalid default value for prop &quot;' + key + '&quot;: ' +
+      'Props with type Object/Array must use a factory function ' +
+      'to return the default value.',
+      vm
+    )
+  }
+  // the raw prop value was also undefined from previous render,
+  // return previous default value to avoid unnecessary watcher trigger
+  // 如果实例的_props属性中有，则从_props中拿
+  if (vm &amp;&amp; vm.$options.propsData &amp;&amp;
+    vm.$options.propsData[key] === undefined &amp;&amp;
+    vm._props[key] !== undefined
+  ) {
+    return vm._props[key]
+  }
+  // call factory function for non-Function types
+  // a value is Function if its prototype is function even across different execution context
+  // 如果deafult是一个工厂函数，并且prop定义的类型不是Function
+  // 则调用该函数拿value否则直接返回该default的内容
+  return typeof def === 'function' &amp;&amp; getType(prop.type) !== 'Function'
+    ? def.call(vm)
+    : def
+}
+</code></pre>
+
+<p>它先判断有没有设置default,没有则返回undfined,如果有定义，但是实例上的_props中已经有了，则直接拿实例上的。否则
+如果default的值是一个函数，并且属性的type也指定的是一个函数，则返回这个函数的调用结果，否则直接返回这个值。</p>
+<h1></h1>
+<ul>
+<li>而在开发环境还需要用assertProp断言该属性，也就是判断传入的属性值和指定的属性类型是否一致。</li>
+</ul>
+<h1></h1>
+<pre><code>//开发环境断言
+  if (process.env.NODE_ENV !== 'production') {
+    assertProp(prop, key, value, vm, absent)
+  }
+</code></pre>
+
+<p>我们看看它的源码：</p>
+<pre><code>/**
+ * Assert whether a prop is valid.
+ * 断言一个属性是否有效
+ */
+function assertProp (
+  prop: PropOptions,
+  name: string,
+  value: any,
+  vm: ?Component,
+  absent: boolean
+) {
+  //如果是必须的，但是propsData中有没有它，则警告
+  if (prop.required &amp;&amp; absent) {
+    warn(
+      'Missing required prop: &quot;' + name + '&quot;',
+      vm
+    )
+    return
+  }
+  //如果value是null并且不是必须的，则直接返回
+  if (value == null &amp;&amp; !prop.required) {
+    return
+  }
+  //拿到指定的类型
+  let type = prop.type
+  //如果没有指定类型或者类型指定为true
+  let valid = !type || type === true
+  const expectedTypes = []
+  //如果有指定类型
+  if (type) {
+    //如果类型不是数组
+    if (!Array.isArray(type)) {
+      type = [type]//用数组包裹
+    }
+    //遍历它断言类型
+    for (let i = 0; i &lt; type.length &amp;&amp; !valid; i++) {
+      //拿到断言结果
+      const assertedType = assertType(value, type[i])
+      //放入期待的类型到数组
+      expectedTypes.push(assertedType.expectedType || '')
+      //只要有一个不合法，就会标记为不合法
+      valid = assertedType.valid
+    }
+  }
+  //如果不合法，则警告“非法，期待的类型是expectedType”类似的提示
+  if (!valid) {
+    warn(
+      'Invalid prop: type check failed for prop &quot;' + name + '&quot;.' +
+      ' Expected ' + expectedTypes.map(capitalize).join(', ') +
+      ', got ' + Object.prototype.toString.call(value).slice(8, -1) + '.',
+      vm
+    )
+    return
+  }
+  //如果定义了自定义validator，则进一步验证
+  const validator = prop.validator
+  if (validator) {
+    //如果验证不合法，则给出提示
+    if (!validator(value)) {
+      warn(
+        'Invalid prop: custom validator check failed for prop &quot;' + name + '&quot;.',
+        vm
+      )
+    }
+  }
+}
+</code></pre>
+
+<p>它首先判断该属性有没有设置为require,如果设置了但是没传，则直接返回并告警。</p>
+<pre><code>//如果是必须的，但是propsData中有没有它，则警告
+  if (prop.required &amp;&amp; absent) {
+    warn(
+      'Missing required prop: &quot;' + name + '&quot;',
+      vm
+    )
+    return
+  }
+</code></pre>
+
+<p>如果没有指定require,而值又是null，这种情况直接返回。</p>
+<pre><code>//如果value是null并且不是必须的，则直接返回
+  if (value == null &amp;&amp; !prop.required) {
+    return
+  }
+</code></pre>
+
+<p>然后判断是否有指定type，如果有指定type，如果这个type是单个类型，则转成数组。如果是数组，则直接用。它会遍历这个type数组，逐个检查传的value和类型是否匹配，只要有一个匹配上就会认为是合法的：</p>
+<pre><code>//如果有指定类型
+  if (type) {
+    //如果类型不是数组
+    if (!Array.isArray(type)) {
+      type = [type]//用数组包裹
+    }
+    //遍历它断言类型
+    for (let i = 0; i &lt; type.length &amp;&amp; !valid; i++) {
+      //拿到断言结果
+      const assertedType = assertType(value, type[i])
+      //放入期待的类型到数组
+      expectedTypes.push(assertedType.expectedType || '')
+      //只要有一个不合法，就会标记为不合法
+      valid = assertedType.valid
+    }
+  }
+</code></pre>
+
+<p>这里面又调用了assertType进行类型检查，它的源码如下：</p>
+<pre><code>const simpleCheckRE = /^(String|Number|Boolean|Function|Symbol)$/
+//断言某个值是否是属于某指定类型
+function assertType (value: any, type: Function): {
+  valid: boolean;
+  expectedType: string;
+} {
+  let valid
+  const expectedType = getType(type)//期待的类型
+  if (simpleCheckRE.test(expectedType)) {//如果期待的类型是String|Number|Boolean|Function|Symbol内置类型
+    const t = typeof value//检查值得类型
+    //判断二者是否一致
+    valid = t === expectedType.toLowerCase()
+    // for primitive wrapper objects
+    // 如果不一致且值得类型是对象，则根据值是不是type的实例来再次判断
+    // 适用于包裹后的原始对象比如new String()的typeof是object
+    if (!valid &amp;&amp; t === 'object') {
+      valid = value instanceof type
+    }
+    //如果期待类型是Object，判断是不是合法对象字面量
+  } else if (expectedType === 'Object') {
+    valid = isPlainObject(value)
+    //如果期待类型是Array，判断到底是不是数组
+  } else if (expectedType === 'Array') {
+    valid = Array.isArray(value)
+  } else {
+    //否则直接用instanceof判断
+    valid = value instanceof type
+  }
+  //返回一个对象，标识它是否合法以及期待的类型
+  //如果不合法最后可能在某个地方会有
+  //“非法，期待的类型是expectedType”类似的提示
+  return {
+    valid,
+    expectedType
+  }
+}
+</code></pre>
+
+<p>assertType将普通类型和Objetc、Array进行了区别对待，当检查完成后会返回一个对象字面量，表示它是否合法以及期望的类型。</p>
+<p>回到assertProp，当它遍历类型数组后，如果有不合法的，则会给出提示：</p>
+<pre><code>//如果不合法，则警告“非法，期待的类型是expectedType”类似的提示
+  if (!valid) {
+    warn(
+      'Invalid prop: type check failed for prop &quot;' + name + '&quot;.' +
+      ' Expected ' + expectedTypes.map(capitalize).join(', ') +
+      ', got ' + Object.prototype.toString.call(value).slice(8, -1) + '.',
+      vm
+    )
+    return
+  }
+</code></pre>
+
+<p>最后如果定义了自定义验证函数，还会继续进行验证：</p>
+<pre><code>//如果定义了自定义validator，则进一步验证
+  const validator = prop.validator
+  if (validator) {
+    //如果验证不合法，则给出提示
+    if (!validator(value)) {
+      warn(
+        'Invalid prop: custom validator check failed for prop &quot;' + name + '&quot;.',
+        vm
+      )
+    }
+  }
+</code></pre>
+
+<h4>2.2、data的初始化</h4>
+<p>data的初始化相对简单，它的源码如下：</p>
+<pre><code>//初始化数据
+function initData (vm: Component) {
+  //从vue的options上先拿数据
+  let data = vm.$options.data
+  //检查data并定义实例的_data属性，并将data挂载在实例的_data属性上
+  data = vm._data = typeof data === 'function'
+    //data必须是一个函数(回忆一下，它是一个返回一个对象字面量的函数data(){return {...}})
+    //如果是函数，调用getData拿数据,直接返回对象字面量
+    ? getData(data, vm)
+    : data || {}//如果不是函数，那么就设置为空对象
+  if (!isPlainObject(data)) {//如果不是合法的对象字面量，则设为{}
+    data = {}
+    process.env.NODE_ENV !== 'production' &amp;&amp; warn(
+      'data functions should return an object:\n' +
+      'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
+      vm
+    )
+  }
+  // proxy data on instance
+  const keys = Object.keys(data)//获得data对象字面量的所有keys
+  const props = vm.$options.props//vm实例上的属性
+  const methods = vm.$options.methods//vm实例上的方法
+  let i = keys.length
+  while (i--) {
+    const key = keys[i]
+    if (process.env.NODE_ENV !== 'production') {
+      if (methods &amp;&amp; hasOwn(methods, key)) {//data属性名称不和和方法名称重复
+        warn(
+          `Method &quot;${key}&quot; has already been defined as a data property.`,
+          vm
+        )
+      }
+    }//data的属性名称不能和prop名称重复
+    if (props &amp;&amp; hasOwn(props, key)) {
+      process.env.NODE_ENV !== 'production' &amp;&amp; warn(
+        `The data property &quot;${key}&quot; is already declared as a prop. ` +
+        `Use prop default value instead.`,
+        vm
+      )
+    } else if (!isReserved(key)) {//如果key是合法的，不是保留的($或_)
+      proxy(vm, `_data`, key)//代理到vue实例上，也就是说，所有对data的访问都会映射为对vm._data的访问
+    }
+  }
+  // observe data//观察数据
+  observe(data, true /* asRootData */)
+}
+</code></pre>
+
+<ul>
+<li>首先会检查data并定义实例的<em>data属性，并将data挂载在实例的</em>data属性上。我们知道data必须是个函数，如果不是函数则调用getData拿数据</li>
+</ul>
+<h1></h1>
+<pre><code>//从vue的options上先拿数据
+  let data = vm.$options.data
+  //检查data并定义实例的_data属性，并将data挂载在实例的_data属性上
+  data = vm._data = typeof data === 'function'
+    //data必须是一个函数(回忆一下，它是一个返回一个对象字面量的函数data(){return {...}})
+    //如果是函数，调用getData拿数据,直接返回对象字面量
+    ? getData(data, vm)
+    : data || {}//如果不是函数，那么就设置为空对象
+  if (!isPlainObject(data)) {//如果不是合法的对象字面量，则设为{}
+    data = {}
+    process.env.NODE_ENV !== 'production' &amp;&amp; warn(
+      'data functions should return an object:\n' +
+      'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
+      vm
+    )
+  }
+</code></pre>
+
+<p>getData的实现如下：</p>
+<pre><code>//当实例的data属性是一个函数时，拿数据
+function getData (data: Function, vm: Component): any {
+  try {
+    return data.call(vm)//调用后返回对象字面量
+  } catch (e) {
+    handleError(e, vm, `data()`)
+    return {}
+  }
+}
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后会验证data的key和props、methods的key会不会冲突，并将对data的key的访问代理到实例的_data上</li>
+</ul>
+<h1></h1>
+<pre><code>// proxy data on instance
+  const keys = Object.keys(data)//获得data对象字面量的所有keys
+  const props = vm.$options.props//vm实例上的属性
+  const methods = vm.$options.methods//vm实例上的方法
+  let i = keys.length
+  while (i--) {
+    const key = keys[i]
+    if (process.env.NODE_ENV !== 'production') {
+      if (methods &amp;&amp; hasOwn(methods, key)) {//data属性名称不和和方法名称重复
+        warn(
+          `Method &quot;${key}&quot; has already been defined as a data property.`,
+          vm
+        )
+      }
+    }//data的属性名称不能和prop名称重复
+    if (props &amp;&amp; hasOwn(props, key)) {
+      process.env.NODE_ENV !== 'production' &amp;&amp; warn(
+        `The data property &quot;${key}&quot; is already declared as a prop. ` +
+        `Use prop default value instead.`,
+        vm
+      )
+    } else if (!isReserved(key)) {//如果key是合法的，不是保留的($或_)
+      proxy(vm, `_data`, key)//代理到vue实例上，也就是说，所有对data的访问都会映射为对vm._data的访问
+    }
+  }
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>最后会对data进行观察</li>
+</ul>
+<h1></h1>
+<pre><code>// observe data//观察数据
+  observe(data, true /* asRootData */)
+</code></pre>
+
+<h1></h1>
+<h4>2.3、computed的初始化</h4>
+<p>计算属性的初始化源码如下：</p>
+<pre><code>//初始化计算属性
+function initComputed (vm: Component, computed: Object) {
+  //开发环境下检查vm实例上的computed属性
+  process.env.NODE_ENV !== 'production' &amp;&amp; checkOptionType(vm, 'computed')
+  //在vm实例上定义_computedWatchers属性并初始化为空对象
+  const watchers = vm._computedWatchers = Object.create(null)
+  //服务端渲染时计算属性只是getters
+  // computed properties are just getters during SSR
+  // 判断是不是服务端渲染
+  const isSSR = isServerRendering()
+  //遍历计算属性对象
+  for (const key in computed) {
+    //拿到定义的key
+    const userDef = computed[key]
+    //拿到getter,如果computed[key]是函数，则直接返回，如果不是则返回它额getter
+    const getter = typeof userDef === 'function' ? userDef : userDef.get
+    if (process.env.NODE_ENV !== 'production' &amp;&amp; getter == null) {
+      warn(
+        `Getter is missing for computed property &quot;${key}&quot;.`,
+        vm
+      )
+    }
+    //如果不是服务端渲染
+    if (!isSSR) {
+      // create internal watcher for the computed property.
+      // 创建专门针对计算属性的内部watchers,放在vue实例的_computedWatchers上
+      watchers[key] = new Watcher(
+        vm,
+        getter || noop,
+        noop,
+        computedWatcherOptions
+      )
+    }
+
+    // component-defined computed properties are already defined on the
+    // component prototype. We only need to define computed properties defined
+    // at instantiation here.
+    // 如果实例上还没有该计算属性相同的key
+    if (!(key in vm)) {
+      //则定义
+      defineComputed(vm, key, userDef)
+    } else if (process.env.NODE_ENV !== 'production') {
+      if (key in vm.$data) {
+        warn(`The computed property &quot;${key}&quot; is already defined in data.`, vm)
+      } else if (vm.$options.props &amp;&amp; key in vm.$options.props) {
+        warn(`The computed property &quot;${key}&quot; is already defined as a prop.`, vm)
+      }
+    }
+  }
+}
+</code></pre>
+
+<ul>
+<li>开发环境下它会先检查vm实例上的computed属性，该属性必须是个对象，并给自己定义一个_computedWatchers属性用于存放它的订阅者</li>
+</ul>
+<h1></h1>
+<pre><code>//开发环境下检查vm实例上的computed属性
+  process.env.NODE_ENV !== 'production' &amp;&amp; checkOptionType(vm, 'computed')
+  //在vm实例上定义_computedWatchers属性并初始化为空对象
+  const watchers = vm._computedWatchers = Object.create(null)
+</code></pre>
+
+<p>checkOptionType的源码如下：</p>
+<pre><code>function checkOptionType (vm: Component, name: string) {
+  const option = vm.$options[name]
+  //如果methods属性不是对象，则警告
+  if (!isPlainObject(option)) {
+    warn(
+      `component option &quot;${name}&quot; should be an object.`,
+      vm
+    )
+  }
+}
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后会遍历计算属性，看它的key对应的value是不是函数，如果是直接将函数作为getter，否则他的value必须要有定义get</li>
+</ul>
+<h1></h1>
+<pre><code>//服务端渲染时计算属性只是getters
+  // computed properties are just getters during SSR
+  // 判断是不是服务端渲染
+  const isSSR = isServerRendering()
+  //遍历计算属性对象
+  for (const key in computed) {
+    //拿到定义的key
+    const userDef = computed[key]
+    //拿到getter,如果computed[key]是函数，则直接返回，如果不是则返回它额getter
+    const getter = typeof userDef === 'function' ? userDef : userDef.get
+    if (process.env.NODE_ENV !== 'production' &amp;&amp; getter == null) {
+      warn(
+        `Getter is missing for computed property &quot;${key}&quot;.`,
+        vm
+      )
+    }
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后在非服务端渲染的环境下给自己增加订阅者</li>
+</ul>
+<h1></h1>
+<pre><code>//如果不是服务端渲染
+    if (!isSSR) {
+      // create internal watcher for the computed property.
+      // 创建专门针对计算属性的内部watchers,放在vue实例的_computedWatchers上
+      watchers[key] = new Watcher(
+        vm,
+        getter || noop,
+        noop,
+        computedWatcherOptions
+      )
+    }
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后判断如果实例上还没有该key对应的属性则定义</li>
+</ul>
+<h1></h1>
+<pre><code>// component-defined computed properties are already defined on the
+    // component prototype. We only need to define computed properties defined
+    // at instantiation here.
+    // 如果实例上还没有该计算属性相同的key
+    if (!(key in vm)) {
+      //则定义
+      defineComputed(vm, key, userDef)
+    } else if (process.env.NODE_ENV !== 'production') {
+      if (key in vm.$data) {
+        warn(`The computed property &quot;${key}&quot; is already defined in data.`, vm)
+      } else if (vm.$options.props &amp;&amp; key in vm.$options.props) {
+        warn(`The computed property &quot;${key}&quot; is already defined as a prop.`, vm)
+      }
+    }
+</code></pre>
+
+<h1></h1>
+<p>defineComputed的源码如下,主要是给计算属性定义getter和settter，最后通过Object.defineProperty定义到实例上：</p>
+<pre><code>export function defineComputed (
+  target: any,
+  key: string,
+  userDef: Object | Function
+) {
+  //相当于给计算属性加上getter和setter
+  //如果不是服务端渲染，则需要缓存
+  const shouldCache = !isServerRendering()
+  //如果是函数
+  if (typeof userDef === 'function') {
+    //定义get
+    sharedPropertyDefinition.get = shouldCache
+      ? createComputedGetter(key)//如果需要缓存则调用createComputedGetter(key)
+      : userDef//否则直接用
+    sharedPropertyDefinition.set = noop//定义它的setter为空函数
+  } else {
+    //如果不是函数
+    //
+    //
+    //如果存在计算属性本身存在get
+    //  如果非服务端渲染且用户定义了cache属性则调用createComputedGetter(key)
+    //  否则直接使用自身的getuserDef.get
+    //否则设置get为空函数
+    sharedPropertyDefinition.get = userDef.get
+      ? shouldCache &amp;&amp; userDef.cache !== false
+        ? createComputedGetter(key)
+        : userDef.get
+      : noop
+    //如果存在计算属性本身存在set则用自身的set
+    //否则设置set为空函数
+    sharedPropertyDefinition.set = userDef.set
+      ? userDef.set
+      : noop
+  }
+  //开发环境且set是空函数，则给他定义为一个警告函数
+  if (process.env.NODE_ENV !== 'production' &amp;&amp;
+      sharedPropertyDefinition.set === noop) {
+    sharedPropertyDefinition.set = function () {
+      warn(
+        `Computed property &quot;${key}&quot; was assigned to but it has no setter.`,
+        this
+      )
+    }
+  }
+  //定义到实例上
+  Object.defineProperty(target, key, sharedPropertyDefinition)
+}
+</code></pre>
+
+<p>这里面当计算属性不是一个函数的额时候回调用createComputedGetter将它转成一个函数，createComputedGetter的源码如下：</p>
+<pre><code>//创建计算属性的getter
+function createComputedGetter (key) {
+  //返回的是一个函数
+  //因为正常情况下，计算属性应该是个函数
+  //如果不是的话也要将它转成函数
+  return function computedGetter () {
+    //拿到该key对应的watcher
+    const watcher = this._computedWatchers &amp;&amp; this._computedWatchers[key]
+    //如果存在
+    if (watcher) {
+      if (watcher.dirty) {
+        watcher.evaluate()
+      }
+      //依赖收集
+      if (Dep.target) {
+        watcher.depend()
+      }
+      return watcher.value//这个函数返回计算属性的值
+    }
+  }
+}
+</code></pre>
+
+<h4>2.4、methods的初始化</h4>
+<p>methods的初始化源码如下：</p>
+<pre><code>//初始化方法
+function initMethods (vm: Component, methods: Object) {
+  //开发环境下检车vm实例上的methods属性
+  process.env.NODE_ENV !== 'production' &amp;&amp; checkOptionType(vm, 'methods')
+  //拿到属性
+  const props = vm.$options.props
+  for (const key in methods) {
+    if (process.env.NODE_ENV !== 'production') {
+      //如果方法是null(正常情况应该是个函数)，则警告
+      if (methods[key] == null) {
+        warn(
+          `Method &quot;${key}&quot; has an undefined value in the component definition. ` +
+          `Did you reference the function correctly?`,
+          vm
+        )
+      }
+      //如果props中有和方法同名的key，则警告
+      if (props &amp;&amp; hasOwn(props, key)) {
+        warn(
+          `Method &quot;${key}&quot; has already been defined as a prop.`,
+          vm
+        )
+      }
+      //如果method中的key在vm实例上已存在，并且是保留字，则警告
+      if ((key in vm) &amp;&amp; isReserved(key)) {
+        warn(
+          `Method &quot;${key}&quot; conflicts with an existing Vue instance method. ` +
+          `Avoid defining component methods that start with _ or $.`
+        )
+      }
+    }
+    //在实例上定义方法
+    //如果方法不是函数是个null，则设置为空函数，否则绑定到实例上
+    vm[key] = methods[key] == null ? noop : bind(methods[key], vm)
+  }
+}
+</code></pre>
+
+<ul>
+<li>initMethods在开发环境会检查methods是不是对象，不是的话会给出警告</li>
+</ul>
+<h1></h1>
+<pre><code>//开发环境下检车vm实例上的methods属性
+  process.env.NODE_ENV !== 'production' &amp;&amp; checkOptionType(vm, 'methods')
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后会遍历检查key是否冲突</li>
+</ul>
+<h1></h1>
+<pre><code>//拿到属性
+  const props = vm.$options.props
+  for (const key in methods) {
+    if (process.env.NODE_ENV !== 'production') {
+      //如果方法是null(正常情况应该是个函数)，则警告
+      if (methods[key] == null) {
+        warn(
+          `Method &quot;${key}&quot; has an undefined value in the component definition. ` +
+          `Did you reference the function correctly?`,
+          vm
+        )
+      }
+      //如果props中有和方法同名的key，则警告
+      if (props &amp;&amp; hasOwn(props, key)) {
+        warn(
+          `Method &quot;${key}&quot; has already been defined as a prop.`,
+          vm
+        )
+      }
+      //如果method中的key在vm实例上已存在，并且是保留字，则警告
+      if ((key in vm) &amp;&amp; isReserved(key)) {
+        warn(
+          `Method &quot;${key}&quot; conflicts with an existing Vue instance method. ` +
+          `Avoid defining component methods that start with _ or $.`
+        )
+      }
+    }
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后将method绑定到vue实例，这里面如果method的hander是个null则给它设为一个空函数</li>
+</ul>
+<h1></h1>
+<pre><code>//在实例上定义方法
+    //如果方法不是函数是个null，则设置为空函数，否则绑定到实例上
+    vm[key] = methods[key] == null ? noop : bind(methods[key], vm)
+</code></pre>
+
+<h1></h1>
+<h4>2.5、watch的初始化</h4>
+<p>watch的初始化源码如下：</p>
+<pre><code>//初始化watch
+function initWatch (vm: Component, watch: Object) {
+  //开发环境下检车vm实例上的watch属性
+  process.env.NODE_ENV !== 'production' &amp;&amp; checkOptionType(vm, 'watch')
+  //遍历watch对象
+  for (const key in watch) {
+    const handler = watch[key]//拿到对应的hander
+    //如果hander是数组
+    if (Array.isArray(handler)) {
+      //遍历数组，生成watch
+      for (let i = 0; i &lt; handler.length; i++) {
+        //createWatcher函数会调用$watch函数
+        createWatcher(vm, key, handler[i])
+      }
+    } else {
+      //如果不是数组，直接生成
+      createWatcher(vm, key, handler)
+    }
+  }
+}
+</code></pre>
+
+<ul>
+<li>套路一样，会先检查是不是个对象</li>
+</ul>
+<h1></h1>
+<pre><code>//开发环境下检车vm实例上的watch属性
+  process.env.NODE_ENV !== 'production' &amp;&amp; checkOptionType(vm, 'watch')
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后遍历，拿到hander，如果hander是数组则遍历调用createWatcher，实际上就是调用全局的$watch方法</li>
+</ul>
+<h1></h1>
+<pre><code>//遍历watch对象
+  for (const key in watch) {
+    const handler = watch[key]//拿到对应的hander
+    //如果hander是数组
+    if (Array.isArray(handler)) {
+      //遍历数组，生成watch
+      for (let i = 0; i &lt; handler.length; i++) {
+        //createWatcher函数会调用$watch函数
+        createWatcher(vm, key, handler[i])
+      }
+    } else {
+      //如果不是数组，直接生成
+      createWatcher(vm, key, handler)
+    }
+  }
+</code></pre>
+
+<h1></h1>
+<p>createWatcher源码如下：</p>
+<pre><code>function createWatcher (
+  vm: Component,
+  keyOrFn: string | Function,
+  handler: any,
+  options?: Object
+) {
+  //如果回调是一个对象字面量，则直接把这个对象字面量作为options
+  //并且将该对象字面量的hander属性作为hander
+  if (isPlainObject(handler)) {
+    options = handler
+    handler = handler.handler
+  }
+  //如果hander是一个字符串，则在vm实例上找有没有这个方法
+  if (typeof handler === 'string') {
+    handler = vm[handler]
+  }
+  //这下hander有了，options也都有了，再次调用$watch方法，返回unwatch方法
+  return vm.$watch(keyOrFn, handler, options)//再次
+}
+</code></pre>
+
+<p>实际上是调用的$watch完成的绑定，$watch已经在全局API相关博客讲解过了。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

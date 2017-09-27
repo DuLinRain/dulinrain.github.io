@@ -1,0 +1,603 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>ES6中的可调用实体</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之可调用实体（Callble entities）</h2>
+<h3>一、概述</h3>
+<p>本文将包含以下三个方面：</p>
+<ol>
+<li>可调用实体概述</li>
+<li>什么时候该使用什么样的调用</li>
+<li>两种方法调用方式以及它们在ES6中发生了哪些变化。这其中包括以下两个方面：</li>
+</ol>
+<p><strong>(1)分派方法调用（dispatched method calls）。比如说obj.m(x, y)</strong></p>
+<p><strong>(2)直接方法调用(direct method calls)。比如obj.m.call(obj, x, y)</strong></p>
+<h3>二、ES6中的可调用实体</h3>
+<h4>2.1、哪些是可调用实体？</h4>
+<p>在ES6中以下都是可调用实体：</p>
+<ol>
+<li>传统函数（通过函数声明或函数表示式创建）</li>
+<li>Generator function（通过generator函数声明或者generator函数表达式创建）</li>
+<li>箭头函数（箭头函数只可以通过函数表达式创建）</li>
+<li>方法（在对象字面量或者类中定义）</li>
+<li>Generator method（对象字面量或者类中定义的Generator method）</li>
+<li>Class（通过类声明或者类表达式创建）</li>
+</ol>
+<p>注意，我们做了如下区分：</p>
+<ol>
+<li>实体（entity）。比如说传统函数</li>
+<li>创建实体的语法。比如说函数表达式或函数声明</li>
+</ol>
+<p>尽管以上六种可调用实体的行为有很大不同，但归根结底他们都是function。如下：</p>
+<p><img src="http://i.imgur.com/xgP0Y9V.png" /></p>
+<h4>2.2、在ES6中如何进行调用？</h4>
+<p>有些调用可以在任意地方，有些调用却只能限制在特定地方。</p>
+<h5>2.2.1、任何地方都可被调用</h5>
+<p>有三种calls可以发生在任何地方：</p>
+<ol>
+<li>函数调用（function calls）。比如func(x, y)</li>
+<li>方法调用（method calls）。比如obj.method(x, y)</li>
+<li>构造函数调用（constructor calls）。比如new classA()</li>
+</ol>
+<p>对于函数调用需要记住的是，大多数ES6代码都将会散落找各个模块中，而模块是隐式的严格模式。</p>
+<h5>2.2.2、通过super进行的调用只能发生在特定位置</h5>
+<p>有两种calls可以被通过super调用，他们的使用被限制在特定地方：</p>
+<ol>
+<li>
+<p>super-method call(也就是调用父类的方法)：super.method(x, y)</p>
+<p>只允许发生在对象字面量或者类的方法定义中。</p>
+</li>
+<li>
+<p>super-construct call（也就是调用父类的构造函数）。super(x, y)</p>
+<p>只允许发生在派生类的constructor函数中</p>
+</li>
+</ol>
+<h5>2.2.3、no-method functions VS methods</h5>
+<p>在ES6中，非方法函数和方法的区分越来越明显。他们有各自对应的实体，并且有各自的适用场合：</p>
+<ol>
+<li>箭头函数是非方法函数（no-method functions），它们从它们的外围获取this，即this是lexical的</li>
+<li>对象字面量或类中定义的方法是方法（method），它们可以通过super来调用父类的方法或者constructor</li>
+</ol>
+<h4>2.3、传统函数（traditional functions）</h4>
+<p>传统函数就是我们在ES5中比较熟知的函数，有两种方法可以得到：</p>
+<h5>函数声明</h5>
+<pre><code>function foo (x) {...}
+</code></pre>
+
+<h5>函数表达式</h5>
+<pre><code>const foo = function () {...}
+</code></pre>
+
+<h5>this规则：</h5>
+<ol>
+<li>函数调用（function call）。严格模式下this是undefined，松散模式下this指向全局变量（window或global，具体视浏览器还是node来定）</li>
+<li>方法调用（分派或直接）。分派情况下this指向调用者，比如obj.method(x, y),this就指向obj。直接调用的话this就指向call或者apply的第一个参数。</li>
+<li>constructor调用。this指向新创建的实例。</li>
+</ol>
+<h4>2.4、Genrator fucntion</h4>
+<p>generator function的语法和传统函数的语法基本一样，只不过在function后面多了一个星号（*）：</p>
+<h5>generator function声明：</h5>
+<pre><code>function * foo() {...}
+</code></pre>
+
+<h5>generator function 表达式</h5>
+<pre><code>const foo = function* {} {...}
+</code></pre>
+
+<h5>this规则</h5>
+<p><strong>注意，其this永远不会指向generator对象</strong></p>
+<ol>
+<li>函数/方法调用。this的规则与传统函数中this规则一致，调用后的返回结果是一个generator对象</li>
+<li>constructor调用。可以用new调用，但是在constructor中获取this将会报错。返回值是一个generator对象。</li>
+</ol>
+<h4>2.5、方法定义</h4>
+<p>方法定义只允许存在对象字面量或者类中：</p>
+<p><img src="http://i.imgur.com/cdIlDPE.png" /></p>
+<p><strong>注意</strong>对象字面量中如果有多个方法定义时，方法后面要加分号（；）。但是在类中有多个方法定义时是不需要加分号的。</p>
+<p>在说一遍，只有方法定义中才可以调用super，其它任何地方都不可以</p>
+<h5>this规则</h5>
+<ol>
+<li>函数调用（function call）。如果你提取一个方法并调用它，那么this的表现就和普通函数中表现一样。</li>
+<li>方法调用。和传统方法中this表现一致，但是你可以使用super</li>
+<li>constructor调用。将会报错</li>
+</ol>
+<p><img src="http://i.imgur.com/osEQ41O.png" /></p>
+<h4>2.6、generator method定义</h4>
+<p>注意区别于generator function。generator function是function，而generator method是method, method只能存在于对象字面量或者类定义中。</p>
+<p><img src="http://i.imgur.com/9xJggPn.png" /></p>
+<h5>规则：</h5>
+<ol>
+<li>调用generator method将返回generator object</li>
+<li>你可以像在普通method中一样使用this 或 super</li>
+</ol>
+<h5>2.7、箭头函数</h5>
+<p>箭头函数只有函数表达式，没有函数声明：</p>
+<pre><code>[1,2,3].map(x =&gt; x*2)
+</code></pre>
+
+<p>箭头函数中的下面几个变量都具有lexical, 也就是说都从它们的外围获取：</p>
+<ol>
+<li>new.target</li>
+<li>this</li>
+<li>arguments</li>
+<li>super</li>
+</ol>
+<h5>this规则</h5>
+<ol>
+<li>function 调用。this是lexical的</li>
+<li>method 调用。你可以对箭头函数进行method call,但是它的this仍然是lexical的，不管是分派还是直接method call</li>
+<li>constructor call。报错</li>
+</ol>
+<p>什么意思呢？也就是说，不管你采用什么形式调用箭头函数，它的this都是lexical的。而这个this有没有东西则是不管的。证明如下：</p>
+<h5>（1）function调用</h5>
+<p>前面说了，箭头函数只有函数表达式形式，没有函数声明形式，所以箭头函数以函数调用只能采用函数表达式的形式：</p>
+<p><img src="http://i.imgur.com/8LZbSOB.png" /></p>
+<p>可以看到，非严格模式下，this具有lexical，所以指向外面的str。而严格模式下，由于this是undefined,所以是拿不到str的：</p>
+<p><img src="http://i.imgur.com/48aPYGL.png" /></p>
+<p>另一个有趣的现象是，当外面的str是用let声明的时候会出现如下结果：</p>
+<p><img src="http://i.imgur.com/AMHXkEs.png" /></p>
+<p>有人会问，这是在松散模式并且this具有lexical,为什么还是拿不到呢？其实这只是因为，前面我们也说过，let声明的东西是不会挂在window上的，所以虽然this是lexical的，指向window，但是window上并没有挂str属性。</p>
+<h5>（2）method调用以及constructor调用</h5>
+<p><img src="http://i.imgur.com/EkeM75h.png" /></p>
+<h4>2.8、类</h4>
+<p><img src="http://i.imgur.com/Xm9sob6.png" /></p>
+<p>类中的constructor具有特殊的意义，类之所以为类就是因为它。类和它非常相似：</p>
+<p><img src="http://i.imgur.com/Csd41uL.png" /></p>
+<h5>this规则</h5>
+<ol>
+<li>function/method call。报错</li>
+<li>constructor call。父类中，this指向父类实例。子类中需要通过调用super获得this。这也是为什么必须先调用super才能使用this的缘故</li>
+</ol>
+<h3>三、几点思考</h3>
+<h4>3.1、优先使用箭头函数作为回调</h4>
+<p>建议在所有回调函数的地方都是用箭头函数，因为箭头函数的this具有lexical，会带来很多方便。
+举个例子，Element UI有个时间控件，官方给的例子的onClick回调函数是这么写的：</p>
+<p><img src="http://i.imgur.com/M2v5JGu.png" /></p>
+<p>这会导致onClick中的this只能拿到当前对象中的数据，比如text，而拿不到VUE data中定义的其它数据。一个解决办法就是将它改成箭头函数：</p>
+<p><img src="http://i.imgur.com/HyhD5F4.png" /></p>
+<h4>3.2、某些情况下箭头函数不被允许使用的场合解决办法</h4>
+<p>有一些JS API将this作为回调函数的隐式参数，这将导致无法使用箭头函数：</p>
+<p>比如像下面这个例子，回调函数中的this指向的是前面的btn DOM对象，当我们需要在回调函数中操作该DOM对象的classList的时候，采用箭头函数作为函数不太好实现（因为箭头函数的this是lexical的，this将不再指向btn DOM对象）：</p>
+<pre><code>document.querySelector('#btn').addEventListener('click',function(){
+    console.log(this.classList)
+})
+</code></pre>
+
+<p>但这并不意味则我们没法使用箭头函数，因为我们知道，事件的dom对象还可以通过event.target拿到，所以，可以仍然用箭头函数改写该例子如下：</p>
+<pre><code>document.querySelector('#btn').addEventListener('click',(event) =&gt; {
+    console.log(event.target.classList)
+})
+</code></pre>
+
+<h4>3.3、小心使用函数声明</h4>
+<p>只要你不在函数声明中使用this，那么函数都将是安全的非方法函数（non-method function）。</p>
+<pre><code>function (arg1, arg2){
+    ...// 不要使用this
+}
+</code></pre>
+
+<p>函数声明时，你也可以将箭头函数赋给一个const常量，这样你将会拥有lexical的this，但是不推荐这样做。(记住：箭头函数作为函数声明只有函数表达式形式)</p>
+<pre><code>const foo = (arg1, arg2) =&gt; {.....}// 不推荐
+</code></pre>
+
+<h4>3.4、优先使用方法定义</h4>
+<p>方法定义是唯一一种创建可以使用super的方式，它们是对象字面量以及类中最明智的选择。但是当我们需要想一个已经存在的对象上添加方法时，该怎么办呢？
+比如：</p>
+<pre><code>MyClass.prototype.foo = function (arg1, arg2) {
+    ...
+}
+</code></pre>
+
+<p>在ES6中，可以使用一种怪异的（某种程度上脏的）方式来实现：</p>
+<pre><code>Object.assign(MyClass.prototype, {
+    foo (arg1, arg2) {
+        ...
+    }
+})
+</code></pre>
+
+<h4>3.5、方法VS回调</h4>
+<p>一个对象拥有的方法与拥有的回调之前有微妙的差异。</p>
+<h5>3.5.1、对象的属性值是方法</h5>
+<p>由前面的分析我们知道，方法中的this取决于它的调用方式，当以传统函数形式调用时this的表现和传统函数一样，这不论对于方法还是对于回调（属性是箭头函数）而言是一样的。因此这里在比较方法以及回调的时候只是比较他们的调用方式是method call时的差异。
+对于方法，当以method call调用时，this指向接收者（对于分派方法调用，是指.前面的，对于直接方法调用，指向call/apply的第一个参数）。</p>
+<p><img src="http://i.imgur.com/UOogqZB.png" /></p>
+<h5>3.5.2、对象的属性值是回调</h5>
+<p>对象的属性值是回调其实就是指属性值是箭头函数。对于箭头函数，前面已经讲过，它的this永远是lexical的。</p>
+<p><img src="http://i.imgur.com/rVwwPyF.png" /></p>
+<p><img src="http://i.imgur.com/uralH3j.png" /></p>
+<h4>3.6、ES6中避免使用IIFE</h4>
+<p>有很多方法可以避免使用IIFE</p>
+<h5>3.6.1、使用块级作用域替换IIFE</h5>
+<p>ES5中，使用IIFE通常可以使得一个变量成为局部变量：</p>
+<p><img src="http://i.imgur.com/d2cbZYz.png" /></p>
+<p>在ES6中可以使用一个块以及let实现:</p>
+<p><img src="http://i.imgur.com/ZQbhkOm.png" /></p>
+<h5>3.6.2、使用作用module替换IIFE</h5>
+<p>在ES5中，IIFE的一个重要作用是作为一个模块，可以用来提供公有成员、私有成员、特权方法等：</p>
+<p><img src="http://i.imgur.com/TWZfHx0.png" /></p>
+<p>但是在ES6中不再需要这样了，这是因为ES6的module是内置的:</p>
+<p><img src="http://i.imgur.com/25XjqWu.png" /></p>
+<h5>3.6.3、IIAF（立即执行箭头函数）</h5>
+<p>立即执行箭头函数实际上也是立即执行函数表达式（IIFE），前面说了ES6中要避免使用IIFE，这里为什么还要用呢？这是因为某些时候，我们所想导出的结果无法用一条表达式直接完成，可能需要好几条语句才能完成，那么可以考虑使用IIAF（当然也可以是IIFE）：</p>
+<p><img src="http://i.imgur.com/61dPWOq.png" /></p>
+<p>需要注意的是IIAF必须使用（（）=&gt;xxx）（） 而不能使用（（）=&gt;xxx（）） 形式。</p>
+<h4>3.7、使用class</h4>
+<p>ES6中的class并不完美，实际上也有很多反对者，但是我仍然推荐大家使用class,因为它有很多积极地作用，详细将在class这章去讲</p>
+<h3>四、ES5、ES6中的分派方法调用与直接方法调用</h3>
+<p>在JS中，有两种方式进行方法调用：</p>
+<ol>
+<li>分派（dispatch）: obj.method(arg1,...)</li>
+<li>直接（director）: method.call(xxx,arg1,...)</li>
+</ol>
+<p>本节将讲解他们是如何工作的以及为什么在ES6中要避免再使用直接方法调用。在开始介绍之前，我们先回顾一下原型链的知识。</p>
+<h4>4.1、背景：原型链</h4>
+<p>记住，js中的每一个对象都是一个或多个其它对象的链，链条第一个对象从继承后面的对象，比如，对于一个数组['a', 'b'],它的原型链如下：</p>
+<ol>
+<li>数组实例。拥有'a','b'元素</li>
+<li>Array.prototype。 Array构造函数的属性。<code>arr.__proto__ = Array.prototype</code></li>
+<li>Object.prototype。Object构造函数的属性。<code>Array.__proto__.__proto__ = Object.prototype</code></li>
+<li>null. 原型链的末端</li>
+</ol>
+<p><img src="http://i.imgur.com/7wYxlSB.png" /></p>
+<p>原型链前面的方法会覆盖原型链后面的方法，比如Array原型链上实现了自己的toSting方法，它会覆盖后端Object上的toString方法：</p>
+<p><img src="http://i.imgur.com/InRgkkq.png" /></p>
+<h4>4.2、分派方法调用</h4>
+<p>如果你观察一下arr.toString()的调用，你会发现它其实是完成了两个步骤：
+1. 分派。沿着arr的原型链查找第一个属性值为toString的属性。
+2. 调用。调用该属性值并且把arr作为this传进去。</p>
+<p>可以用call方法来更好的描述上面两个步骤：</p>
+<p><img src="http://i.imgur.com/NHCLxwS.png" /></p>
+<h4>4.3、直接方法调用</h4>
+<p>同样有两种方法进行直接方法调用：</p>
+<ol>
+<li>Function.prototype.call(thisValue, arg1, arg2....)</li>
+<li>Function.prototype.apply(thisValue, args)</li>
+</ol>
+<p>不管是call还是apply都是用来调用函数，不同于普通函数调用，他们需要指定this值。call和apply的区别就是前一个接收一个一个的参数，后一个接收一个参数数组。</p>
+<p>分派方法调用存在的一个问题是，该方法必须存在于原型链上面，这样他才能够被分派到。call/apply则允许你通过指定一个this值直接进行方法调用，这意味着你可以从其他对象上借用方法，该方法不需要存在于你自己的原型链上面。比如说，你可以借用Object上的toString方法作用于arr上：</p>
+<p><img src="http://i.imgur.com/FA54IPj.png" /></p>
+<p>如果一个方法不仅仅他自己的实例可以调用，其它的对象也可以调用，那么这个方法被称为generic（通用）。speakingJS这本书列出了所有的通用方法。这个列表包含Array的大多数方法以及Object.prototype的所有方法（Object.prototype上的方法本来就是用来作用域所有对象上的，所以它隐式的就是通用的）</p>
+<h4>4.4、直接方法调用的使用案例</h4>
+<p>本节主要讲直接方法调用的场合，每种场合先介绍ES5中的用法，然后介绍ES6中的用法（ES6中几乎不需要再用到直接方法调用）</p>
+<h5>4.4.1、ES5：通过数组提供参数</h5>
+<p>有些函数接收多个值，但这多个值必须一个参数对应一个值地传进去,不允许以数组的形式传进去，比如Math.max以及Array.push方法：</p>
+<p><img src="http://i.imgur.com/z9nUJgA.png" /></p>
+<p>直接方法调用可以帮你实现以数组的形式传递多个参数进去的愿望：</p>
+<p><img src="http://i.imgur.com/XAGDiro.png" /></p>
+<h5>4.4.2、ES6中展开运算符（...）大部分情况下可替代直接方法调用</h5>
+<p>通过apply进行直接方法调用只不过是因为你想将参数以数组形式传进去，并且将数组转成arguments，这在ES6中可以用展开运算符很容易就实现：</p>
+<p><img src="http://i.imgur.com/c5QXejm.png" /></p>
+<p><strong>更强大的是</strong>展开运算符（...）还可以用在new操作符上，比如：</p>
+<p><img src="http://i.imgur.com/vAILQHO.png" /></p>
+<p>而apply是无法作用在new上的。</p>
+<h5>4.4.3、ES5将类数组转换为数组</h5>
+<p>js中的某些对象和数组很像，它们几乎就是数组，但是他们没有数组所拥有的方法：
+这其中两个重要的场景一个是arguments对象一个是DOM对象（比如NodeList）。要想对他们实施某些复杂的操作，你必须先将他们转换为数组，通常采用的是slice方法：</p>
+<p><img src="http://i.imgur.com/wqebpdM.png" /></p>
+<h5>4.4.4、ES6中类数组不再是负担</h5>
+<p>一方面，ES6中你不再需要用slice进行类数组-数组转换，你可以直接用Array.from就可以搞定：</p>
+<p><img src="http://i.imgur.com/IjXSvHq.png" /></p>
+<p>另一方面，不再需要使用arguments，你完全可以用剩余运算符（...）来取代：</p>
+<p><img src="http://i.imgur.com/2WH5qBX.png" /></p>
+<h5>4.4.5、ES5中安全的使用hasOwnProperty</h5>
+<p>ES5中，使用hasOwnProperty通常用来判断某个属性是否是自有（非继承）属性。</p>
+<p><img src="http://i.imgur.com/ZWkIw7T.png" /></p>
+<p>然而，当采用分派方法去掉用hasOwnProperty，如果hasOwnProperty被覆盖，那么hasOwnProperty的原始功能将无法获取：</p>
+<p><img src="http://i.imgur.com/3NOjEN5.png" /></p>
+<p>当hasOwnProperty不在原型链上的时候，采用分派方法调用hasOwnProperty也会报错：</p>
+<p><img src="http://i.imgur.com/0XFnRoR.png" /></p>
+<p>这两种情况的解决办法都是改为采用直接方法调用：</p>
+<p><img src="http://i.imgur.com/l0pvkSr.png" /></p>
+<h5>4.4.6、ES6很少需要hasOwnProperty</h5>
+<p>hasOwnProperty主要用来通过对象实现Map,ES6中已经有了内置的Map,所以基本上很少用到hasOwnProperty了。</p>
+<h5>4.4.7、ES5：避免中间对象</h5>
+<p>对字符串执行join操作可能需要涉及到一些中间变量（当然其实也不用）：</p>
+<p><img src="http://i.imgur.com/bwIDGOR.png" /></p>
+<p>string是类数组，他可以成为数组通用方法的thisVlaue，这样可以通过直接方法调用实现join：</p>
+<p><img src="http://i.imgur.com/udDaq95.png" /></p>
+<p>类似的，你也可以使用Map来实现：</p>
+<p><img src="http://i.imgur.com/Oy7yISV.png" /></p>
+<p>直接方法调用可能效率更高，但是不是很优雅。看你自己喜欢那种方法喽。</p>
+<h5>4.4.8、ES6：避免中间对象</h5>
+<p>ES6可以通过from并提供一个回调函数来进行类似的操作：</p>
+<p><img src="http://i.imgur.com/BcpAOA7.png" /></p>
+<p>如果分两步的话，可以用map实现：</p>
+<p><img src="http://i.imgur.com/KVb609C.png" /></p>
+<h5>4.4.9、Object.prototype以及Array.prototype的缩写</h5>
+<p>前面经常用到Object.prototype.xxx.call或Array.prototype.xxx.call，实际上，它们可以缩写成如下：</p>
+<p><img src="http://i.imgur.com/69gjZcH.png" /></p>
+<p><img src="http://i.imgur.com/p6vQ7Kh.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
