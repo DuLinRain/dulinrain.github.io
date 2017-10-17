@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JavaScrip中如何正确并优雅地判断undefined</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>JavaScrip中如何正确并优雅地判断undefined？</h2>
+<h3>一、概述</h3>
+<p>js中常常会进行undfiend判断，然后根据参数是否是undefined来做响应的处理。这其中最为普遍的场景就是根据undfined来设置默认值。而普遍判断方法无外乎下面5种：</p>
+<ol>
+<li>取反判断</li>
+<li>直接比较undefined</li>
+<li>三元运算符判断</li>
+<li>||运算符判断</li>
+<li>typeof判断</li>
+</ol>
+<p>那么他们判断undefined的准确性如何呢？</p>
+<ol>
+<li>取反判断（✘）</li>
+<li>直接比较undefined（✘）</li>
+<li>三元运算符判断（✘）</li>
+<li>||运算符判断（✘）</li>
+<li>typeof判断（✔）</li>
+</ol>
+<p>我们分别分析一下这几种判断方法。</p>
+<h3>二、判断方法分析</h3>
+<p>我们先假定有这么一个processUserInfo函数，参数是options对象，包含着用户的某些信息：</p>
+<pre><code>function processUserInfo (options) {
+    //do something
+}
+</code></pre>
+
+<p>我们在写程序时常常会对用户的某个信息进行基本的校验，如果没传某个字段，则给他一个默认值。
+下面我们来具体分析几种普遍的校验方式。</p>
+<h4>2.1、取反判断</h4>
+<p>取反判断的例子如下：</p>
+<pre><code>function processUserInfo (options) {
+    let name = options.name
+    let age = options.age
+    let isMarried = options.isMarried
+    //通过if判断
+    if (!options.age) {
+        age = 10//do something
+    }
+}
+</code></pre>
+
+<p>这种判断方法是通过取反来校验用户是否没有传这个age字段。那么这种判断方式是否准确合理呢？答案是否定的。我们来看看下面这个例子：</p>
+<p><img src="https://i.imgur.com/RTmkdY3.png" /></p>
+<p>可以看到，这种判断将age为0、false、null、''时都认为是没有传递age，而给他设定了默认值。显然是不合理的。</p>
+<h4>2.2、直接比较undefined</h4>
+<p>直接比较undefined的例子如下：</p>
+<pre><code>function processUserInfo (options) {
+    let name = options.name
+    let age = options.age
+    let isMarried = options.isMarried
+    if (options.age === undefined) {
+        //do something
+    }
+}
+</code></pre>
+
+<p>这种方法看起来没有问题。但是仔细想一想一种奇葩的情况，这种写法也会有问题的。举个例子如下：</p>
+<p><img src="https://i.imgur.com/A08hRsJ.png" /></p>
+<p>这是啥情况呢？实际原因是，undefiend在JavaScript中并不是一个关键字，所以它甚至可以是一个变量，当用户有意或无意或非法用户尝试这么做之后可能就会导致我们的程序出现非预期情况了。</p>
+<p>这个问题早期已经有很多人想到并解决了，这通常是在模块模式中出现的。比如其中某段代码的解决方式如下：</p>
+<p><img src="https://i.imgur.com/n7aig39.png" /></p>
+<p>其实就是IIFE本来只需要一个参数，但是我们在定义它的时候给它定义第二个参数，而在IFFE执行的时候我们并没有给它传递值，所以它必然是undefined。</p>
+<p>这种方法虽然保证了此unfined确定为undefined，但是它任然无法阻止IIFE内部无意情况下对undefined的定义和修改。所以并不完美，但已够用。</p>
+<h4>2.3、三元运算符判断</h4>
+<p>三元运算符判断的例子如下：</p>
+<pre><code>function processUserInfo (options) {
+    //通过三元运算符
+    let name = options.name ? options.name : 'linyu'
+    let age = options.age ? options.age : 20
+    let isMarried = options.isMarried ? options.isMarried: true
+}
+</code></pre>
+
+<p>三元运算符是通过该属性是否为ture来判断的，但是这种情况任然会存在问题。我们来看个例子：</p>
+<p><img src="https://i.imgur.com/uX2sxTM.png" /></p>
+<p>可以看到，三元运算符在某些特定条件下任然会导致错误判断。</p>
+<h4>2.4、||运算符判断</h4>
+<p>||运算符判断的例子如下：</p>
+<pre><code>function processUserInfo (options) {
+    //通过||运算符
+    let name = options.name || 'linyu'
+    let age = options.age || 20
+    let isMarried = options.isMarried || true
+}
+</code></pre>
+
+<p>这种方法应该是最普遍使用的一种方法了，但其实它也存在和三元运算符一样的问题：</p>
+<p><img src="https://i.imgur.com/4CuN5Ke.png" /></p>
+<h4>2.5、typeof运算符判断</h4>
+<p>typeof运算符判断的例子如下：</p>
+<pre><code>function processUserInfo (options) {
+    let name = options.name
+    let age = options.age
+    let isMarried = options.isMarried
+    if (typeof options.xxx === &quot;undefined&quot;) {
+        //do something
+    }
+}
+</code></pre>
+
+<p>typeof运算符可以准确的判断undfined，但是这种判断不够优雅，需要重复写typeof。
+所以最终的判断方法可以更新一个：</p>
+<ol>
+<li>取反判断（✘）</li>
+<li>直接比较undefined（✘）</li>
+<li>三元运算符判断（✘）</li>
+<li>||运算符判断（✘）</li>
+<li>typeof判断（✔）</li>
+<li>void判断（✔）</li>
+</ol>
+<p>顺便回顾一下typeof对不同类型的结果：</p>
+<p><img src="https://i.imgur.com/YXS1a1N.png" /></p>
+<p>那么有没有既准确又相对优雅的判断方法呢？当然有，我们可以用void运算符判断。</p>
+<h3>三、void运算符是什么？</h3>
+<p>相信大家肯定在a链接中使用过void(0)来阻止a链接的默认跳转行为，那有没有想过他这个到底是啥原理，或者是啥意思呢？</p>
+<p>我们来看看ECMA-262的描述：</p>
+<p><img src="https://i.imgur.com/aI2cHPk.png" /></p>
+<p>什么意思呢？它其实就是说，不管void后面是什么，这个操作符<strong>总是返回undefiend</strong>。有了这个我们就可以对undefiend判断进行准确又不失优雅的判断了。</p>
+<h3>四、用void改写undefiend判断</h3>
+<p>总体的优化过程可以这样描述：</p>
+<pre><code>function processUserInfo (options) {
+    //if
+    if (options.xxx === void 0) {
+        //do something
+    }
+    //三元运算符
+    let xxx = options.name === void 0 ? 'linyu' : options.name
+    // &amp;&amp; 运算符
+    let xxx = options.name
+    (xxx === void 0) &amp;&amp; (xxx = 'linyu')
+}
+</code></pre>
+
+<p>实际上，上面的代码确保了准确，但任然不够优雅。</p>
+<p>考虑ES6的结构语法我们可以做更多文章。</p>
+<h3>五、ES6解构来替代void 0判断undefiend</h3>
+<p>我们可以用ES6解构语法的默认值来代替void 0来判断undefiend,如下：</p>
+<pre><code>//通过解构+默认值优化
+function processUserInfo (options) {
+    let {name = 'linyu', age = 0, isMarried = true} =options
+}
+</code></pre>
+
+<p>实际上，进一步延伸到参数的默认值，我们还可以这样：</p>
+<pre><code>function processUserInfo ({name = 'linyu', age = 0, isMarried = true}) {
+    //do something
+}
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

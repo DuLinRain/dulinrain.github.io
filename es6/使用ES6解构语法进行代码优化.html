@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>使用ES6解构语法进行代码优化</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>使用ES6解构语法进行代码优化</h2>
+<h3>一、概述</h3>
+<p>本文将介绍ES6解构语法对代码进行优化的方法。具体介绍：</p>
+<ol>
+<li>undefined优化</li>
+<li>对象合并优化</li>
+</ol>
+<h3>二、undefined优化</h3>
+<p>在JavaScript中进行undefiend优化主要有以下几种：</p>
+<ol>
+<li>取反判断（✘）</li>
+<li>直接比较undefined（✘）</li>
+<li>三元运算符判断（✘）</li>
+<li>||运算符判断（✘）</li>
+<li>typeof判断（✔）</li>
+</ol>
+<p>其中只有最后一种可以准确地判断出undfined并实现我们期望的目的。至于为什么，可以看一下另外一篇文章。</p>
+<p>我们先看一下例子：</p>
+<h4>2.1、原始方案</h4>
+<pre><code>//undefined
+function processUserInfo (options) {
+    let name = options.name
+    let age = options.age
+    let isMarried = options.isMarried
+    //通过if判断
+    if (!options.xxx) {
+        name = 'linyu'//do something
+    }
+    // or
+    if (options.xxx === undefined) {
+        //do something
+    }
+    // or
+    if (typeof options.xxx === &quot;undefined&quot;) {
+        //do something
+    }
+}
+</code></pre>
+
+<h4>2.2、通过三元运算符优化</h4>
+<pre><code>function processUserInfo (options) {
+    //通过三元运算符
+    let name = options.name ? options.name : 'linyu'
+    let age = options.age ? options.age : 20
+    let isMarried = options.isMarried ? options.isMarried: true
+}
+</code></pre>
+
+<p>可以看到，代码量变少了，但是任然无法准确判断undefiend</p>
+<h4>2.3、通过||运算符优化</h4>
+<pre><code>function processUserInfo (options) {
+    //通过||运算符
+    let name = options.name || 'linyu'
+    let age = options.age || 20
+    let isMarried = options.isMarried || true
+}
+</code></pre>
+
+<h4>2.4、通过void运算符优化</h4>
+<pre><code>function processUserInfo (options) {
+    //if
+    if (options.xxx === void 0) {
+        //do something
+    }
+    //三元运算符
+    let xxx = options.name === void 0 ? 'linyu' : options.name
+    // &amp;&amp; 运算符
+    let xxx = options.name
+    (xxx === void 0) &amp;&amp; (xxx = 'linyu')
+}
+</code></pre>
+
+<h4>2.5、通过void 0 + 三元运算符优化</h4>
+<pre><code>function processUserInfo (options) {
+    //三元运算符
+    let name = options.name === void 0 ? 'linyu' : options.name
+    let age = options.age === void 0 ? 0 : options.age
+    let isMarried = options.isMarried === void 0 ? true : options.isMarried
+}
+</code></pre>
+
+<h4>2.6、通过void 0 + &amp;&amp;算符优化</h4>
+<pre><code>//通过void 0 + &amp;&amp;运算符优化
+function processUserInfo (options) {
+    // &amp;&amp; 运算符
+    let name = options.name
+    let age = options.age
+    let isMarried = options.isMarried
+    (name === void 0) &amp;&amp; (name = 'linyu')
+    (age === void 0) &amp;&amp; (age = 10)
+    (isMarried === void 0) &amp;&amp; (isMarried = true)
+}
+</code></pre>
+
+<h4>2.7、通过解构 + void优化</h4>
+<pre><code>//通过解构 + void优化
+function processUserInfo (options) {
+    let {name, age, isMarried} =options
+    //if
+    if (xxx === void 0) {
+        //do something
+    }
+    //三元运算符
+    xxx = xxx === void 0 ? 'linyu' : xxx
+    // &amp;&amp; 运算符
+    (xxx === void 0) &amp;&amp; (xxx = 'linyu')
+}
+</code></pre>
+
+<h4>2.8、通过解构 + 三元运算符 + void优化</h4>
+<pre><code>//通过解构 + 三元运算符 + void优化
+function processUserInfo (options) {
+    let {name, age, isMarried} =options
+    name = name === void 0 ? 'linyu' : name
+    age = age === void 0 ? 0 : age
+    isMarried = isMarried === void 0 ? true : isMarried
+}
+</code></pre>
+
+<h4>2.9、通过解构 + &amp;&amp;运算符 + void优化</h4>
+<pre><code>function processUserInfo (options) {
+    let {name, age, isMarried} =options
+    (name === void 0) &amp;&amp; (name = 'linyu')
+    (age === void 0) &amp;&amp; (age = 10)
+    (isMarried === void 0) &amp;&amp; (isMarried = true)
+}
+</code></pre>
+
+<p><strong>void 0 就完美了吗，有没有更优雅的方法,优化成1条代码?</strong></p>
+<h4>2.10、通过解构+默认值优化</h4>
+<pre><code>function processUserInfo (options) {
+    let {name = 'linyu', age = 0, isMarried = true} =options
+}
+</code></pre>
+
+<p><strong>解构+默认值就完美了吗，有没有更优雅的方法,优化成0条代码?</strong></p>
+<pre><code>function processUserInfo ({name = 'linyu', age = 0, isMarried = true}) {
+    //do something
+}
+</code></pre>
+
+<h3>三、对象合并优化</h3>
+<p>假设我们现在有个公共信息对象，需要将它和options的部分信息组成一个新的对象。通常的做法是这样的：</p>
+<pre><code>//公共信息
+const commonInfo = {
+    company: 'BAIDU',
+    address: '西二旗'
+}
+function processUserInfo (options) {
+    //拿基本信息
+    let name = options.name || 'linyu'
+    let age = options.age || 20
+    let isMarried = options.isMarried || true
+
+    //合并基本信息和公共信息
+    let allInfo = {}
+    allInfo.company = commonInfo.company
+    allInfo.address = commonInfo.address
+    allInfo.name = name
+    allInfo.age = age
+    allInfo.isMarried = isMarried
+}
+</code></pre>
+
+<h4>3.1、解构+默认值优化</h4>
+<pre><code>function processUserInfo ({name = 'linyu', age = 0, isMarried = true}) {
+    //合并基本信息和公共信息
+    let allInfo = {}
+    allInfo.company = commonInfo.company
+    allInfo.address = commonInfo.address
+    allInfo.name = name
+    allInfo.age = age
+    allInfo.isMarried = isMarried
+}
+</code></pre>
+
+<p><strong>可不可以优化为一条代码呢？</strong></p>
+<h4>3.2、解构+默认值 + 重构优化为一条代码</h4>
+<pre><code>//解构+默认值 + 重构优化为一条代码
+function processUserInfo ({name = 'linyu', age = 0, isMarried = true}) {
+    //合并基本信息和公共信息
+    let allInfo = {
+        company: commonInfo.company,
+        address: commonInfo.address,
+        name,
+        age,
+        isMarried
+    }
+}
+</code></pre>
+
+<p><strong>这就完美了吗？还能不能优化？</strong></p>
+<pre><code>function processUserInfo ({name = 'linyu', age = 0, isMarried = true}) {
+    let allInfo = { ...commonInfo, name, age, isMarried }
+}
+</code></pre>
+
+<p>其实Object.assing也可以做到</p>
+<pre><code>function processUserInfo (options) {
+    let allInfo = Object.assign({
+        name = 'linyu',
+        age = 0,
+        isMarried = true
+    }, options, commonInfo)
+}
+</code></pre>
+
+<p>若<strong>不考虑默认值</strong>，重构可以更简单</p>
+<pre><code>function processUserInfo (options) {
+    let allInfo = { ...commonInfo, ...options }
+}
+</code></pre>
+
+<h4>2.3、其它思考</h4>
+<p>考虑到</p>
+<ul>
+<li>一方面options中的某个属性可能需要单独拎出来用</li>
+<li>另一方面options中的属性并不是全都需要合并</li>
+</ul>
+<p>所以采用部分解构的方案是最佳的</p>
+<pre><code>function processUserInfo ({name = 'linyu', age = 0, isMarried = true}) {
+    //合并基本信息和公共信息
+    let allInfo = {
+        ...commonInfo,
+        name,
+        age,
+        isMarried
+    }
+    //if need options object
+    //if only need part property of commonInfo
+}
+</code></pre>
+
+<p>但这种存在两个缺点：</p>
+<ol>
+<li>后续可能需要访问options对象</li>
+<li>commonInfo中也可能不是全部需 </li>
+</ol>
+<p>因此可以采用这种方式也可以解构后再重构</p>
+<pre><code>function processUserInfo (options) {
+    let { company } = commonInfo
+    let {name = 'linyu', age = 0, isMarried = true} = options
+    let allInfo = { company, name, age, isMarried }
+}
+</code></pre>
+
+<p>那么是否存在下面这种看起来完美的方式呢？</p>
+<pre><code>function processUserInfo (options) {
+    let allInfo = { company, name = 'linyu' } = {...commonInfo, ...options}
+}
+</code></pre>
+
+<p>答案是否定的，company和name都起到了预期效果，但是allInfo挂了，问题出在哪里呢？</p>
+<p>我们看看let a = b = c真真的实现是怎样的呢？</p>
+<p><img src="https://i.imgur.com/zoOFL1W.png" /></p>
+<p>实际上的结果是最后一种。</p>
+<pre><code>let c = xxx;b=c;a=b
+</code></pre>
+
+<p>和
+	let c=xxx;b=c;a=c</p>
+<p>都是最后一种效果。这样就能理解为什么allInfo没有name属性了。</p>
+<h3>四、对象优化实例</h3>
+<p>我们在用axios请求的时候经常这样写代码：</p>
+<pre><code>axios.post(__QUERY_LIST_PROJECT_LIST__.latestversion_buildlog, qs.stringify({
+    id
+})).then(function (response) {
+    if (response.data.statusCode === '200') {
+        _.tableData = response.data.projecthistoris || []
+        _.total = response.data.num || 0
+    } else if (response.data.statusCode === '302') {
+        window.location.replace(response.data.url)
+    } else {
+        _.showError('构建记录拉取失败！失败原因：' + (response.data.msg || '未知错误'))
+    }
+}).catch(function (error) {
+    _.showError(error.message || '未知错误')
+})
+</code></pre>
+
+<h4>4.1、第一步优化</h4>
+<pre><code>axios.post(__QUERY_LIST_PROJECT_LIST__.latestversion_buildlog, qs.stringify({
+    id
+})).then(function (response) {
+    const res = response.data
+    if (res.statusCode === '200') {
+        _.tableData = res.projecthistoris || []
+        _.total = res.num || 0
+    } else if (res.statusCode === '302') {
+        window.location.replace(res.url)
+    } else {
+        _.showError('构建记录拉取失败！失败原因：' + (res.msg || '未知错误'))
+    }
+}).catch(function (error) {
+    _.showError(error.message || '未知错误')
+})
+</code></pre>
+
+<h4>4.2、第二步优化</h4>
+<pre><code>axios.post(__QUERY_LIST_PROJECT_LIST__.latestversion_buildlog, qs.stringify({
+    id
+})).then(function (response) {
+    const { statusCode, projecthistoris, num, url, msg } = response.data
+    if (statusCode === '200') {
+        _.tableData = projecthistoris || []
+        _.total = num || 0
+    } else if (statusCode === '302') {
+        window.location.replace(url)
+    } else {
+        _.showError('构建记录拉取失败！失败原因：' + (msg || '未知错误'))
+    }
+}).catch(function (error) {
+    _.showError(error.message || '未知错误')
+})
+</code></pre>
+
+<h4>4.3、第三步优化</h4>
+<pre><code>axios.post(__QUERY_LIST_PROJECT_LIST__.latestversion_buildlog, qs.stringify({
+    id
+})).then(function (response) {
+    const {
+        statusCode,projecthistoris = [],num = 0,url,msg = '未知错误'
+    } = response.data
+    if (statusCode === '200') {
+        _.tableData = projecthistoris
+        _.total = num
+    } else if (statusCode === '302') {
+        window.location.replace(url)
+    } else {
+        _.showError('构建记录拉取失败！失败原因：' + msg)
+    }
+}).catch(function (error) {
+    const { message = '未知错误' } = error
+    _.showError(message)
+})
+</code></pre>
+
+<h4>4.4、第四步优化</h4>
+<pre><code>axios.post(__QUERY_LIST_PROJECT_LIST__.latestversion_buildlog, qs.stringify({
+    id
+})).then(function ({data}) {
+    const { statusCode, projecthistoris = [], num = 0, url, msg = '未知错误' } = data
+    if (statusCode === '200') {
+        _.tableData = projecthistoris
+        _.total = num
+    } else if (statusCode === '302') {
+        window.location.replace(url)
+    } else {
+        _.showError('构建记录拉取失败！失败原因：' + msg)
+    }
+}).catch(function ({message = '未知错误'}) {
+    _.showError(message)
+})
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

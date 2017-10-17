@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ES6之模块</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h2>ES6之模块</h2>
+<p>本章将讲述ES6内置的模块是如何工作的</p>
+<h3>一、概述</h3>
+<p>ES6中的模块存储在文件中，一个文件对应着一个模块，一个模块对应着一个文件。你可以通过两种方式导出一个模块，这两种方式可以混合使用，但是最好还是将他们分开使用。</p>
+<h4>1.1、多个命名导出</h4>
+<p>你可以进行多个命名导出：</p>
+<pre><code>//------ lib.js ------
+export const sqrt = Math.sqrt;
+export function square(x) {
+    return x * x;
+}
+export function diag(x, y) {
+    return sqrt(square(x) + square(y));
+}
+//------ main.js ------
+import { square, diag } from 'lib';
+console.log(square(11)); // 121
+console.log(diag(4, 3)); // 5
+</code></pre>
+
+<p>你也可以将整个模块导出：</p>
+<pre><code>//------ main.js ------
+import * as lib from 'lib';
+console.log(lib.square(11)); // 121
+console.log(lib.diag(4, 3)); // 5
+</code></pre>
+
+<h4>1.2、单个默认导出</h4>
+<p>也可以单个默认导出，比如说导出一个函数：</p>
+<pre><code>//------ myFunc.js ------
+export default function () { ··· } // no semicolon!
+//------ main1.js ------
+import myFunc from 'myFunc';
+myFunc();
+</code></pre>
+
+<p>或者说导出一个类：</p>
+<pre><code>//------ MyClass.js ------
+export default class { ··· } // no semicolon!
+//------ main2.js ------
+import MyClass from 'MyClass';
+let inst = new MyClass();
+</code></pre>
+
+<p><strong>注意</strong>：当你默认单个导出类或者函数(都是匿名的)的时候，最后面是不需要分号结尾的。</p>
+<h4>1.3、浏览器：脚本VS模块</h4>
+<p><img src="https://i.imgur.com/R5kG0Y6.png" /></p>
+<h3>二、JavaScript中的模块</h3>
+<p>尽管JS从来没有过内置的模块，但是社区创造了一种简单形式的模块，这种形式被ES5以及之前的库支持。这种形式也被ES6采纳：</p>
+<ul>
+<li>每一个模块都是一小段代码，当模块被加载时，这段代码被执行</li>
+<li>在这段代码中，可能会有声明(包括变量声明和函数声明等等)。默认情况下，这些声明都是局部的，作用域只限于模块。你可以将他们中的一些导出，这样其它模块就可以引用他们了。</li>
+<li>一个模块可以从其它模块引入东西。你可以通过模块标识符来引用他们。1、相对路径('../model/user')：这个路径表示待引入模块所处的路径，文件的扩展名.js可以省略。2、绝对路径('/lib/helpers'):直接指向文件所在的路径。3、名称('util')。所引用的名称需要先进行配置。</li>
+<li>模块是单体，即使一个模块被引用了多次，也只会存在一个实例。</li>
+</ul>
+<p>这种模块引入方式避免了全局变量，唯一的全局变量就是模块标识符。</p>
+<h4>2.1、ES5中的模块系统</h4>
+<p>在无语言支持的情况下，ES5的模块系统还能这么好的工作真的是给人留下很深的印象。两个非常有名（但互不兼容）的模块系统标准是：</p>
+<ul>
+<li><strong>CommonJS Module</strong>：主要的应用是在Node.js中（Node.js中有些特性是超出CommonJS范畴的）。主要特性：<strong>紧凑的语法、同步加载、主要用于服务端</strong>。</li>
+<li><strong>Asynchronous Module Definition(AMD)</strong>.最有名的实现是Require.js。主要特性：<strong>稍微更复杂的语法，允许AMD使用eval()、为异步加载设置、主要用于浏览器端</strong>。</li>
+</ul>
+<p>上面只是一个关于ES5模块很简单的描述，如果你想更深入的了解，可以看看Addy Osmani写的 “<strong>Writing Modular JavaScript With AMD, CommonJS &amp; ES Harmony³</strong>” 这篇文章。</p>
+<h4>2.2.ECMAScript2016模块</h4>
+<p>ES6模块的目标是创造一种新的模块形式让AMD和CommonJS的人用起来都爽：</p>
+<ul>
+<li>与CommonJS类似，它也拥有紧凑的语法，并且推荐使用单个导出，且支持循环依赖。</li>
+<li>与AMD类似，它直接支持异步加载和可配置的模块加载。</li>
+</ul>
+<p>作为一种内置的语言特性，ES6的模块当然有它超出AMD和CommonJS之外的优点(具体在稍后描述)：</p>
+<ul>
+<li>它的语法比CommonJS更加紧凑</li>
+<li>它的结构可以被静态分析(静态检查、优化等等)</li>
+<li>它对循环依赖的支持优于CommonJS</li>
+</ul>
+<p>ES6的模块标准主要由两大部分组成：</p>
+<ul>
+<li>声明式语法(引入和导出)</li>
+<li>编程式加载API：用来配置模块如何被加载以及如何条件加载</li>
+</ul>
+<h3>三、ES6模块基础</h3>
+<p>有两种导出形式：命名导出(一个模块导出多个)和默认导出(一个模块只导出一个)</p>
+<h4>3.1、命名导出(一个模块导出多个)</h4>
+<p>一个模块可以在通过在内容的前面加上export关键字来导出多个东西，这样的导出通过他们的名字来区分，所以说被称为命名导出：</p>
+<pre><code>//------ lib.js ------
+export const sqrt = Math.sqrt;
+export function square(x) {
+    return x * x;
+}
+export function diag(x, y) {
+    return sqrt(square(x) + square(y));
+}
+//------ main.js ------
+import { square, diag } from 'lib';
+console.log(square(11)); // 121
+console.log(diag(4, 3)); // 5
+</code></pre>
+
+<p>也有其他的方式用来表示命名导出，但是我发现这种导出非常方便：直接像正常那样写你的代码然后在任何你想导出的东西的前面添加export关键字。</p>
+<p>实际上，前面在导入的时候是采用的对象解构的模式，如果你愿意，你也可以直接将整个模块导入为一个对象然后通过属性来引用你想要的各个部分：</p>
+<pre><code>//------ main.js ------
+import * as lib from 'lib';
+console.log(lib.square(11)); // 121
+console.log(lib.diag(4, 3)); // 5
+</code></pre>
+
+<p><strong>CommonJS中的写法：</strong>
+有一段时间我在Node.js中尝试了各种聪明的写法力求更简洁地导出我的模块，现在我喜欢用下面这种简洁明了的写法来完成：</p>
+<pre><code>//------ lib.js ------
+var sqrt = Math.sqrt;
+function square(x) {
+    return x * x;
+}
+function diag(x, y) {
+    return sqrt(square(x) + square(y));
+}
+module.exports = {
+    sqrt: sqrt,
+    square: square,
+    diag: diag,
+};
+//------ main.js ------
+var square = require('lib').square;
+var diag = require('lib').diag;
+console.log(square(11)); // 121
+console.log(diag(4, 3)); // 5
+</code></pre>
+
+<h4>3.2、默认导出(一个模块导出一个)</h4>
+<p>在Node.js社区，一个模块只导出一个值是非常普遍的。但是这种情况你在前端开发中也是非常普遍的，比如说一个模块或一个组件对应一个类。ES6模块支持默认导出，默认导出特别容易引入。</p>
+<p>下面的ES6模块是一个单独的函数：</p>
+<pre><code>//------ myFunc.js ------
+export default function () {} // no semicolon!
+//------ main1.js ------
+import myFunc from 'myFunc';
+myFunc();
+</code></pre>
+
+<p>下面的是默认导出一个类：</p>
+<pre><code>//------ MyClass.js ------
+export default class {} // no semicolon!
+//------ main2.js ------
+import MyClass from 'MyClass';
+let inst = new MyClass();
+</code></pre>
+
+<p>默认导出有两种导出形式：</p>
+<ul>
+<li>声明标签</li>
+<li>直接导出值(由表达式产生)</li>
+</ul>
+<h5>3.2.1、默认导出形式1：标签声明</h5>
+<p>你可以通过在任何函数声明(或generator函数声明)或类声明前面加上<code>export default</code>关键字让它成为默认导出：</p>
+<pre><code>export default function foo() {} // no semicolon!
+export default class Bar {} // no semicolon!
+</code></pre>
+
+<p>你甚至可以省略声明的名字，这是得默认导出成为JavaScript中<strong>唯一存在</strong>匿名函数声明和类声明的场合。</p>
+<pre><code>export default function () {} // no semicolon!
+export default class {} // no semicolon!
+</code></pre>
+
+<h6>3.2.1.1、为什么是匿名函数声明而不是匿名函数表达式？</h6>
+<p>当你看上面两行代码的时候你可能会期待export default后面的操作数也可以是表达式。实际上他们是声明而不是表达式只是为了一致性：操作数可以是命名声明，而将他们的匿名版本解释成表达式为带来迷惑。也就是说匿名版本要和命名版本要表意一致，即都被视为声明。实际上，如果你非得要操作数被视为表达式，你需要用括号将它们包起来：</p>
+<pre><code>export default (function () {});
+export default (class {});
+</code></pre>
+
+<h5>3.2.2、直接导出值</h5>
+<p>值是通过表达式导出的：</p>
+<pre><code>export default 'abc';
+export default foo();
+export default /^xyz$/;
+export default { no: false, yes: true };
+export default 5 * 7;
+</code></pre>
+
+<p>上面的每一种导出都是用的下面这种语法结构：</p>
+<pre><code>export default «expression»;
+</code></pre>
+
+<p>它和下面这种语法是等价的：</p>
+<pre><code>const __default__ = «expression»;
+export { __default__ as default }; // (A)
+</code></pre>
+
+<p>A行的声明是导出语句，将在稍后讲述：</p>
+<h6>3.2.2.1、为什么会有两种导出形式呢？</h6>
+<p>出现第二种导出形式的原因是当连续声明多个变量的时候不太好被当做默认导出：</p>
+<pre><code>export default const foo = 1, bar = 2, baz = 3; // not legal JavaScript!
+</code></pre>
+
+<p>这三个变量到底哪个会被导出呢？</p>
+<h4>3.3、导入(import)具有提升性</h4>
+<p>模块导入具有提升性(内部会将它提升到当前作用域的开头)，所以你在模块内部的哪个位置申明它并不重要，下面的代码不会有任何问题：</p>
+<pre><code>foo();
+import { foo } from 'my_module';
+</code></pre>
+
+<h4>3.4、导入是导出的只读视图(readonly views)</h4>
+<p>ES6模块导入是导出实体的只读视图。这意味着外部与模块内部的连接任然是存活的，下面的例子证明了这一点：</p>
+<pre><code>//------ lib.js ------
+export let counter = 3;
+export function incCounter() {
+    counter++;
+}
+//------ main.js ------
+import { counter, incCounter } from './lib';
+// The imported value `counter` is live
+console.log(counter); // 3
+incCounter();
+console.log(counter); // 4
+</code></pre>
+
+<p>在底层它是如何工作的我们稍后会讲。</p>
+<p>将导入作为视图有以下优势：</p>
+<ul>
+<li>支持循环依赖，即使是低质量引入(下一章节将介绍)</li>
+<li>高质和低质的引入工作的效果是一样的</li>
+<li>你可以将代码分割在多个模块，它们也能够正确工作</li>
+</ul>
+<h4>3.5、支持循环依赖</h4>
+<p>如果两个模块A和B互相直接或间接的import了对方，那么称模块A和B循环依赖。如果有可能的话应该尽量避免循环依赖，因为这会导致A模块和B模块紧耦合——它们只能一起使用和演化。</p>
+<p>那么为什么我们还要支持循环依赖呢？因为通常我们绕不开它，这也是为什么支持循环依赖是一个重要特性的原因。稍后的章节会有更多的信息。</p>
+<p>让我们来看看CommonJS和ES6是如何来处理循环依赖的。</p>
+<h5>3.5.1、CommonJS中的循环依赖</h5>
+<p>下面的CommonJS代码能够正确处理a、b模块的循环依赖</p>
+<pre><code>//------ a.js ------
+var b = require('b');
+function foo() {
+    b.bar();
+}
+exports.foo = foo;
+//------ b.js ------
+var a = require('a'); // (i)
+function bar() {
+    if (Math.random()) {
+        a.foo(); // (ii)
+    }
+}
+exports.bar = bar;
+</code></pre>
+
+<p>如果模块a先导入，那么在第(i)行，模块b获得了a的导出对象，尽管这时候a还没有被导出。因此这个时候b是拿不到a.foo的，但是一旦模块a执行结束，a上就有foo这个属性了。如果bar函数在随后调用，那么这时候第(ii)行的a.foo()是可以正常工作的。</p>
+<p>作为一个通用的准则，在循环依赖中你需要遵守的是你不能在模块体里面导入。这在ES6模块系统中也是这个准则。</p>
+<p>CommonJS模块的限制主要有：</p>
+<p><strong>1、</strong>Node.js单值导出不能正常工作。在Node.js中你导出单个值而不是一个对象：</p>
+<pre><code>module.exports = function () { ··· };
+</code></pre>
+
+<p>如果你在模块a中这么做了，那么当a被赋值时，模块b中的变量a将不会得到更新。它任然会指向最初的导出对象。</p>
+<p><strong>2、</strong>你不能像下面这样使用命名导出</p>
+<pre><code>var foo = require('a').foo;
+</code></pre>
+
+<p>foo将会是undefined。换句话说，你别无选择只能够使用a.foo这种形式。</p>
+<p>上述限制意味着导入者和导出者都必须小心循环依赖，并且对他们提供显式地支持。</p>
+<h5>3.5.2、ES6中的循环依赖</h5>
+<p>ES6自动地支持循环依赖。也就是说，它不存在上一小节中提到的那两个限制：默认导出和低质量的命名导出(下面代码中i和iii行)都能工作。因此你的模块可以像下面这样循环依赖：</p>
+<pre><code>//------ a.js ------
+import {bar} from 'b'; // (i)
+export function foo() {
+    bar(); // (ii)
+}
+//------ b.js ------
+import {foo} from 'a'; // (iii)
+export function bar() {
+    if (Math.random()) {
+        foo(); // (iv)
+    }
+}
+</code></pre>
+
+<p>上述代码可以正常工作，这是因为，正如前面小节所述，导入只是导出的视图。那意味着第ii和iv行的bar和foo都间接地引用着原始数据。因此，在循环依赖中，无所谓你是用一个低质量导出还是通过模块导出获得一个命名导出：他们之间有着间接的联系并且总能正常工作。</p>
+<h4>3.6、模块文件是普通的JavaScript文件</h4>
+<p>下面这几种文件都有.js的扩展名：</p>
+<pre><code>1. ECMAScript2016模块
+2. CommonJS模块
+3. AMD模块
+4. 脚本文件(通过HTML文件中的&lt;script&gt;标签引入)
+</code></pre>
+
+<p>也就是说，所有上述文件都只是js文件，至于他问是被当做模块或者是普通js文件来解释取决于他们所处的环境。</p>
+<h4>3.7、当心ES6的转译器</h4>
+<p>像Babel这样的转译器会将ES6模块转译成ES5模块。通过普通的js来实现“将引入视为视图
+是需要些技巧的。但是与现有的模块系统整合是相当困难的。因此我建议将事情尽量保持简单，并且在涉及到ES6模块中的特殊部分时要异常小心。</p>
+<h3>四、导入和导出详述</h3>
+<h4>4.1、导入方式</h4>
+<p>ES6支持多种导入方式：</p>
+<ul>
+<li>默认导入</li>
+</ul>
+<h1></h1>
+<pre><code>import localName from 'src/my_lib';
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>命名空间导入(将模块导入为一个对象，每个导出作为对象的一个属性)</li>
+</ul>
+<h1></h1>
+<pre><code>import * as my_lib from 'src/my_lib';
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>命名导入</li>
+</ul>
+<h1></h1>
+<pre><code>import { name1, name2 } from 'src/my_lib';
+</code></pre>
+
+<p>你可以重命名导入名字：</p>
+<pre><code>// Renaming: import `name1` as `localName1`
+import { name1 as localName1, name2 } from 'src/my_lib';
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>空导入。只加载模块，不导入任何东西。第一次这样的导入会执行模块体。</li>
+</ul>
+<h1></h1>
+<pre><code>import 'src/my_lib';
+</code></pre>
+
+<h1></h1>
+<p>有两种方式可以将上面这几种样式以及他们的导出顺序结合起来：</p>
+<ul>
+<li>默认导入&amp;命名空间导入</li>
+</ul>
+<h1></h1>
+<pre><code>import theDefault, * as my_lib from 'src/my_lib';
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>默认导入&amp;命名导入</li>
+</ul>
+<h1></h1>
+<pre><code>import theDefault, { name1, name2 } from 'src/my_lib';
+</code></pre>
+
+<h1></h1>
+<h4>4.2、导出样式：内联VS语句</h4>
+<p>你可以采用两种方式将当前模块的东西导出。一方面你可以用关键字export声明：</p>
+<pre><code>export var myVar1 = ···;
+export let myVar2 = ···;
+export const MY_CONST = ···;
+export function myFunc() {
+···
+}
+export function* myGeneratorFunc() {
+···
+}
+export class MyClass {
+···
+}
+</code></pre>
+
+<h1></h1>
+<pre><code>export default 123;
+export default function (x) {
+    return x
+}
+export default x =&gt; x;
+export default class {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+</code></pre>
+
+<p>另一方面，你可以将所有想导出的东西列在模块的最后：</p>
+<pre><code>const MY_CONST = ···;
+function myFunc() {
+    ···
+}
+export { MY_CONST, myFunc };
+</code></pre>
+
+<p>你也可以用不同的别名导出：</p>
+<pre><code>export { MY_CONST as FOO, myFunc };
+</code></pre>
+
+<h4>4.3、再次导出</h4>
+<p>再次导出意味着将一个其他模块在当前模块导出。你可以将其它模块的所有导出在当前模块导出：</p>
+<pre><code>export * from 'src/other_module';
+</code></pre>
+
+<p>默认导出会被export *忽略</p>
+<p>或者你也可以选择性地导出一部分：</p>
+<pre><code>export { foo, bar } from 'src/other_module';
+</code></pre>
+
+<p>也可以在将另一个模块的导出在当前模块导出时进行重命名：</p>
+<pre><code>// Renaming: export other_module’s foo as myFoo
+export { foo as myFoo, bar } from 'src/other_module';
+</code></pre>
+
+<h5>4.3.1、讲一个再次导出作为默认导出</h5>
+<p>下面这条语句将foo模块的默认导出作为当前模块的默认导出：</p>
+<pre><code>export { default } from 'foo';
+</code></pre>
+
+<p>下面这条语句将foo模块中的命名导出作为当前模块的默认导出：</p>
+<pre><code>export { myFunc as default } from 'foo';
+</code></pre>
+
+<h4>4.4、所有的导出形式</h4>
+<p>ES6提供了多种多样的导出形式：</p>
+<ul>
+<li>再次导出(Re-exporting)</li>
+</ul>
+<h1></h1>
+<ul>
+<li>再次导出除默认导出外的所有东西：</li>
+</ul>
+<h1></h1>
+<pre><code>export * from 'src/other_module';   
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>通过语句再次导出</li>
+</ul>
+<h1></h1>
+<pre><code>export { foo as myFoo, bar } from 'src/other_module';
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>通过语句导出</li>
+</ul>
+<h1></h1>
+<pre><code>export { MY_CONST as FOO, myFunc };
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>内联导出</li>
+</ul>
+<h1></h1>
+<ul>
+<li>变量声明</li>
+</ul>
+<h1></h1>
+<pre><code>export var foo;
+export let foo;
+export const foo;
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>函数声明</li>
+</ul>
+<h1></h1>
+<pre><code>export function myFunc() {}
+export function* myGenFunc() {}
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>类声明</li>
+</ul>
+<h1></h1>
+<pre><code>export class MyClass() {}
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>默认导出</li>
+</ul>
+<h1></h1>
+<ul>
+<li>函数声明(可以是匿名函数,但是只能在这里)</li>
+</ul>
+<h1></h1>
+<pre><code>export default function myFunc() {}
+export default function () {}
+export default function* myGenFunc() {}
+export default function* () {}
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>类声明(可以是匿名函的,但是只能在这里)</li>
+</ul>
+<h1></h1>
+<pre><code>export default class MyClass() {}
+export default class () {}
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>表达式(导出值，注意末尾的分号)</li>
+</ul>
+<h1></h1>
+<pre><code>export default foo;
+export default 'Hello world!';
+export default 3 * 7;
+export default (function () {});
+</code></pre>
+
+<h1></h1>
+<h4>4.5、在一个模块中同时存在命名导出和默认导出</h4>
+<p>下面这种场景在通常的JS中是很奇特的：一个库是一个单个的函数，但是呢一些其它的服务通过这个函数的属性来提供。这样的例子有Jquery和Underscore.js。下面是Underscore.js作为CommonJS模块的基本骨架：</p>
+<pre><code>//------ underscore.js ------
+var _ = function (obj) {
+    ···
+};
+var each = _.each = _.forEach =
+function (obj, iterator, context) {
+    ···
+};
+module.exports = _;
+//------ main.js ------
+var _ = require('underscore');
+var each = _.each;
+···
+</code></pre>
+
+<p>从ES6的视角来看，_就是默认导出，each和forEach就是命名导出。这也就说明了你可以在一个模块中同时存在命名导出和默认导出。比如说，上面这个例子，如果用ES6模块的语法来写的话长这个样子：</p>
+<pre><code>//------ underscore.js ------
+export default function (obj) {
+···
+}
+export function each(obj, iterator, context) {
+···
+}
+export { each as forEach };
+//------ main.js ------
+import _, { each } from 'underscore';
+···
+</code></pre>
+
+<p>注意到，CommonJS版本和ES6版本大体上是一样的。后者拥有扁平化的结构而前者拥有嵌套式的结构。</p>
+<p>对于ES6模块而言，我通常推荐在一个模块中只有默认导出或者只有命名导出。也就是说，你最好不要将他们混用在一个模块中。</p>
+<h5>4.5.1、默认导出只不过是另外一种形式的命名导出</h5>
+<p>默认导出只不过是一种特殊的命名导出，只不过名字是default，也就是说下面的两种语法是等价的：</p>
+<pre><code>import { default as foo } from 'lib';
+import foo from 'lib';
+</code></pre>
+
+<p>类似的，下面的两种模块拥有同样的导出：</p>
+<pre><code>//------ module1.js ------
+export default function foo() {} // function declaration!
+//------ module2.js ------
+function foo() {}
+export { foo as default };
+</code></pre>
+
+<h5>4.5.2、default作为导出名字是OK的，但是作为变量名字是不行的</h5>
+<p>你不能用dedault或new这样的保留字作为变量的名字，但是你可以将他们作为导出名字(在ES5中你还可以用他们作为属性名)。如果你想直接使用这样的导出，你必须在导入的时候对他们进行重命名。</p>
+<p>那也就意味着dedault只能作为导入时重命名表达式的左边，不能作为右边：</p>
+<pre><code>import { default as foo } from 'some_module';
+</code></pre>
+
+<p>并且它也只能用于导出时重命名表达式的右边：</p>
+<pre><code>export { foo as default };
+</code></pre>
+
+<p>在“再次导出”导出形式中，重命名表达式的左右两边都是导出，也就是说左右两边都可以是default:</p>
+<pre><code>// The following two statements are equivalent:
+export { default } from 'foo';
+export { default as default } from 'foo';
+export { myFunc as default } from 'foo';
+export { default as otherFunc } from 'foo';
+</code></pre>
+
+<h3>五、ES6模块加载API</h3>
+<p>除了声明式语法外你也可以使用编程式语法API。你可以用它来：</p>
+<ul>
+<li>编程式地使用ES6模块</li>
+<li>配置ES6模块</li>
+</ul>
+<p>注意：模块加载API并不是ES6的标准，这个在“JavaScript Loader Standard”这一节将会有超出标准之外更加详尽的说明。它是这么解释的：</p>
+<blockquote>
+<p>[The JavaScript Loader Standard] consolidates work on the ECMAScript
+module loading semantics with the integration points of Web browsers, as
+well as Node.js.</p>
+</blockquote>
+<p>模块加载API任然还没有定案，你在这里看到的所有内容都可能只是暂时的。如果想对此有更深入的了解可以移步Github上的“ the ES6 Module Loader Polyfill”</p>
+<h4>5.1、加载器</h4>
+<p>加载器处理解析模块标识符(import xx from中from后面的内容)、加载模块等等工作。它的构造函数是Reflect.Loader。每一种平台都在全局变量System(系统加载器)下保存一个加载器实例，该实例实现了模块加载的标准。</p>
+<h4>5.2、加载器方法——导入模块</h4>
+<p>你可以基于Promise编程式地导入模块：</p>
+<pre><code>System.import('some_module')
+.then(some_module =&gt; {
+// Use some_module
+})
+.catch(error =&gt; {
+···
+});
+</code></pre>
+
+<p>System.import允许你：</p>
+<ul>
+<li>在<code>&lt;script&gt;</code>元素(在这里是没法使用模块语法的，参考<strong>module VS script</strong>对比那一小结)间使用模块。</li>
+<li>条件式地加载模块</li>
+</ul>
+<p>System.import只是加载单个模块，你可以使用System.all加载所有模块：</p>
+<pre><code>Promise.all(
+['module1', 'module2', 'module3']
+.map(x =&gt; System.import(x)))
+.then(([module1, module2, module3]) =&gt; {
+// Use module1, module2, module3
+});
+</code></pre>
+
+<h4>5.3、更多模块加载方法</h4>
+<p>加载器有更多的方法，其中比较重要的三个是：</p>
+<ul>
+<li>System.module(source, options?)。将source中的js代码弄成一个模块（通过promise异步完成的）</li>
+<li>System.set(name, module)。注册一个模块(当你使用System.module(source, options?)完事之后)。</li>
+<li>System.define(name, source, options?)。同时完成上述两个函数完成的工作。</li>
+</ul>
+<h4>5.4、配置模块加载</h4>
+<p>模块加载API提供了各式各样的钩子函数用来配置模块加载过程，常用的例子如：</p>
+<ul>
+<li>引入模块的时候进行Lint(比如通过JSLint或JSHint)</li>
+<li>模块导入时自动转译模块（可能使用CoffeeScript或TypeScript写的）</li>
+<li>使用以前的模块(AMD,Node.js)</li>
+</ul>
+<p>配置模块是Node.js和CommonJS所办不到的。</p>
+<h3>六、在浏览器中使用ES6模块</h3>
+<p>让我们看看浏览器是如何支持ES6模块的。</p>
+<p>注意：浏览器对ES6的支持任然还没有定案。和模块加载类似，ES6模块浏览器支持这一块也最终还没有定案，所以你在这里看到的所有东西可能都会变。</p>
+<h4>6.1、浏览器：异步模块VS同步脚本</h4>
+<p>在浏览器中有两种主要的实体：脚本和模块。他们的语法稍有不同、工作方式也不同。这是他们的主要区别，详细的在后面描述：</p>
+<p><img src="https://i.imgur.com/xLFOKiq.png" /></p>
+<h5>6.1.1、脚本</h5>
+<p>脚本是一种传统的，用来嵌入Javascript以及外部Javascript文件。拥有网络媒介类型的脚本主要用于：</p>
+<h3>七、细节：作为视图导入</h3>
+<p>CommonJS和ES6中的导入是以不同的方式工作的：</p>
+<ul>
+<li>在CommonJS中，导入是导出值的副本</li>
+<li>在ES6中，导入是导出值的只读视图</li>
+</ul>
+<p>下面的小节将详细讲解这是什么意思。</p>
+<h4>7.1、在CommonJS中，导入是导出值的副本</h4>
+<p>在CommonJS(Node.js)中，模块的工作对我们而言相对熟悉。</p>
+<p>如果你导入一个值为一个变量，这个值被复制了两次：一次在导出的时候(A)，一次在导入的时候(B)：</p>
+<pre><code>//------ lib.js ------
+var counter = 3;
+function incCounter() {
+    counter++;
+}
+module.exports = {
+    counter: counter, // (A)
+    incCounter: incCounter,
+};
+//------ main1.js ------
+var counter = require('./lib').counter; // (B)
+var incCounter = require('./lib').incCounter;
+// The imported value is a (disconnected) copy of a copy
+console.log(counter); // 3
+incCounter();
+console.log(counter); // 3
+// The imported value can be changed
+counter++;
+console.log(counter); // 4
+</code></pre>
+
+<p>如果你通过对象导出的形式拿值得话，它仍然被复制了一次：</p>
+<pre><code>//------ main2.js ------
+var lib = require('./lib');
+// The imported value is a (disconnected) copy
+console.log(lib.counter); // 3
+lib.incCounter();
+console.log(lib.counter); // 3
+// The imported value can be changed
+lib.counter++;
+console.log(lib.counter); // 4
+</code></pre>
+
+<p>上述两段代码说明了什么呢？</p>
+<ol>
+<li>第一段代码那种导入导出形式会导致复制两次。而第二段代码只有在导出时会复制一次，导入时是不会复制的。</li>
+<li>CommonJS的导入只是对导出的复制。也就是说，导入的东西和导出的东西是两个完全独立的东西，互不打扰。</li>
+<li>导出的东西自身也是可以改变的，也就是说不是只读的。</li>
+</ol>
+<h4>7.2、在ES6模块中，导入是导出值的活的、只读的视图</h4>
+<p>与CommonJS相反，ES6模块中的导出是导入的视图。换句话说，导出是导入的活连接。导出也是只读的：</p>
+<ul>
+<li>低质量的导入(import x from 'foo')就像是const声明一样。也就是说x就像是用const声明的效果。</li>
+<li>模块对象foo(import * as foo from 'foo')的属性就像是frozen object的属性，也就是说没法改。</li>
+</ul>
+<p>下面的代码证明了导入与视图有多像：</p>
+<pre><code>//------ lib.js ------
+export let counter = 3;
+export function incCounter() {
+    counter++;
+}
+//------ main1.js ------
+import { counter, incCounter } from './lib';
+// The imported value `counter` is live
+console.log(counter); // 3
+incCounter();
+console.log(counter); // 4
+// The imported value can’t be changed
+counter++; // TypeError
+</code></pre>
+
+<p>如果你用星号(*)导入整个模块，你能得到同样的结果。</p>
+<pre><code>//------ main2.js ------
+import * as lib from './lib';
+// The imported value `counter` is live
+console.log(lib.counter); // 3
+lib.incCounter();
+console.log(lib.counter); // 4
+// The imported value can’t be changed
+lib.counter++; // TypeError
+</code></pre>
+
+<p>为什么要从现有的实践中演化出这么一套复杂的机制呢？</p>
+<ul>
+<li>循环依赖。最主要的优势是它支持循环依赖，即使对于低质量导入。</li>
+<li>低质量和正常的引入一样地工作。在CommonJS中则不是：一个qualified引入直接地获取模块对象的属性，而unqualified导入则是复制。</li>
+<li>你可以将代码分割在各个模块，他们也能够正确的工作（只要你不尝试改变导入的值）</li>
+</ul>
+<p>注意：尽管你没法改变导入的值，但是你可以改变他们所引用的对象，这个和const的作用类似(不能瞎指，但指向的东西不能变)：</p>
+<pre><code>//------ lib.js ------
+export let obj = {};
+//------ main.js ------
+import { obj } from './lib';
+obj.prop = 123; // OK
+obj = {}; // TypeError
+</code></pre>
+
+<p>回顾一下const的涵义，打个比方，const的意思就像，你只能娶一个老婆，从一而终，即使她老了丑了也不准离婚娶别人。这个是恒定的(const)，但是呢，并不是意味着你不能做出改变，你可以改变你的老婆，比如打扮、化妆等等让它更漂亮。</p>
+<h4>7.3、视图是如何实现的？</h4>
+<p>导入作为导出的视图在底层是如何实现的呢？导出是通过<code>export entry</code>这么一个数据结构来管理的。所有的export entries(除了“再次导出”)都拥有下面两个名字：</p>
+<ul>
+<li>Local name(本地名):该名字存储着该导出在模块内的名字</li>
+<li>Export name(导出名):导入模块需要用这个名字去获取导出模块导出的东西</li>
+</ul>
+<p>当你导入一个实体后，这个实体总是可以通过一个拥有<code>module</code>和<code>local name</code>这两个组件的指针访问到。换句话说，这个指针和模块内部进行了绑定。</p>
+<p>让我们看一下在各种导出形式下的Export name和Local name，下面这个表给出了一个大概，稍后章节会详细讲述：</p>
+<p><img src="https://i.imgur.com/JuJY2SG.png" /></p>
+<h4>7.3.1、导出语句</h4>
+<pre><code>function foo() {}
+export { foo };
+</code></pre>
+
+<ul>
+<li>Local name(本地名):foo</li>
+<li>Export name(导出名):foo</li>
+</ul>
+<h1></h1>
+<pre><code>function foo() {}
+export { foo as bar };
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>Local name(本地名):foo</li>
+<li>Export name(导出名):bar</li>
+</ul>
+<h4>7.3.2、内联导出</h4>
+<p>下面是内联导出：</p>
+<pre><code>export function foo() {}
+</code></pre>
+
+<p>它等价于下面：</p>
+<pre><code>function foo() {}
+export { foo };
+</code></pre>
+
+<p>因此有下面：</p>
+<h1></h1>
+<ul>
+<li>Local name(本地名):foo</li>
+<li>Export name(导出名):foo</li>
+</ul>
+<h4>7.3.3、默认导出</h4>
+<p>有两种形式的默认导出：</p>
+<ul>
+<li>声明提升的默认导出(函数声明和generator函数声明)以及类声明</li>
+<li>任何其他的默认导出都意味着导出表达式的结果</li>
+</ul>
+<h5>7.3.3.1、默认导出表达式。下面的默认导出会导出表达式的值123。</h5>
+<pre><code>export default 123;
+</code></pre>
+
+<p>它等价于：</p>
+<pre><code>const *default* = 123; // *not* legal JavaScript
+export { *default* as default };
+</code></pre>
+
+<p>如果你默认导出一个表达式，你将得到：</p>
+<h1></h1>
+<ul>
+<li>Local name(本地名):<code>*default*</code></li>
+<li>Export name(导出名):<code>default</code></li>
+</ul>
+<p>选这个本地名字这样它就不会与任何其他本地名字冲突。</p>
+<p>注意到，default export任然会导致创建一个绑定。但是由于<code>*default*</code>不是一个合法的标识符，你没法在模块中访问它。</p>
+<h5>7.3.3.2、默认导出提升声明和类声明。下面的默认导出函数声明。</h5>
+<pre><code>export default function foo() {}
+</code></pre>
+
+<p>它等价于：</p>
+<pre><code>function foo() {}
+export { foo as default };
+</code></pre>
+
+<p>将会有：</p>
+<h1></h1>
+<ul>
+<li>Local name(本地名):<code>foo</code></li>
+<li>Export name(导出名):<code>default</code></li>
+</ul>
+<p>这意味着，你可以在模块内通过给foo赋一个新值来改变它。当且仅当默认导出时，你还可以省略函数声明的名字：</p>
+<pre><code>export default function () {}
+</code></pre>
+
+<p>它和下面是等价的：</p>
+<pre><code>function *default*() {} // *not* legal JavaScript
+export { *default* as default };
+</code></pre>
+
+<p>因此有：</p>
+<h1></h1>
+<ul>
+<li>Local name(本地名):<code>*default*</code></li>
+<li>Export name(导出名):<code>default</code></li>
+</ul>
+<p>默认导出generator声明、类声明和默认导出函数声明是类似的。</p>
+<h4>7.4、js标准中的导入作为视图</h4>
+<p>本节指向ES6标准：</p>
+<p>管理导入的有：</p>
+<ul>
+<li>CreateImportBinding()为导入创建本地绑定</li>
+<li>GetBindingValue()用来获取他们</li>
+<li>ModuleDeclarationInstantiation()设置模块的环境(参照: FunctionDeclarationInstantiation()²⁵, BlockDeclarationInstantiation())</li>
+</ul>
+<p>各式各样导出创建的导出名字和本地名字在“Source Text Module Records²⁸”这一节的表42中，“Static Semantics: ExportEntries²⁹” 这一小节中有更详尽的描述。你将看到导出实体被静态的设置(在计算和模块化之前)，计算导出声明在“Runtime Semantics: Evaluation³⁰”这一章讲述。</p>
+<h3>八、ES6模块的设计目标</h3>
+<p>如果你想理解ES6模块，那么了解它当初的设计目标是有帮助的。主要的目标是：</p>
+<ul>
+<li>支持默认导出</li>
+<li>静态模块结构</li>
+<li>同时支持同步和异步加载</li>
+<li>支持模块间的循环依赖</li>
+</ul>
+<p>下面的几个小节详述这几个目标。</p>
+<h4>8.1、支持默认导出</h4>
+<p>模块语法认为模块的默认导出是该模块会看起来很奇怪，但是如果你考虑到一个主要的目标是让默认导出尽可能的方便你就不会感到奇怪了。引用David Herman的话：</p>
+<blockquote>
+<p>ECMAScript 6 favors the single/default export style, and gives the sweetest syntax to
+importing the default. Importing named exports can and even should be slightly less
+concise.</p>
+</blockquote>
+<h4>8.2、静态模块结构</h4>
+<p>在当前的JS模块系统中，你需要执行代码之后你才能知道导入和导出是什么。这是ES6打破原有模块系统的一个主要原因：将模块系统与js语言本省进行绑定，你可以在语法上强制一个静态模块结构。让我们先看看这意味着什么，然后再看看这能带来什么好处。</p>
+<p>一个模块的结构是静态的意味着你可以在你编译(静态)的时候就决定导入和导出。你只需要看看源代码，你不用执行它。下面是两个CommonJS让它成为可能的例子：</p>
+<pre><code>var my_lib;
+if (Math.random()) {
+    my_lib = require('foo');
+} else {
+    my_lib = require('bar');
+}
+</code></pre>
+
+<p>在第二个例子中，你需要执行完之后才确定它导出的是什么：</p>
+<pre><code>if (Math.random()) {
+    exports.baz = ···;
+}
+</code></pre>
+
+<p>ES6模块可以较少的自由度，强制静态化。作为结果，你将得到一些好处，在下面讲述。</p>
+<h5>8.2.1、好处1：快速查询</h5>
+<p>如果你在CommonJS中引入一个模块，你得到一个对象：</p>
+<pre><code>var lib = require('lib');
+lib.someFunc(); // property lookup
+</code></pre>
+
+<p>也就是说，访问一个命名导出someFunc意味着你需要进行属性查询。这会很慢，因为他是动态的。</p>
+<p>相反，如果你使用ES6模块，你静态的就知道它的内容，然后可以优化访问：</p>
+<pre><code>import * as lib from 'lib';
+lib.someFunc(); // statically resolved
+</code></pre>
+
+<h5>8.2.2、好处2：变量检查</h5>
+<p>有了静态模块结构，你总是知道模块中的某个变量在任意位置的可见性。</p>
+<ul>
+<li>全局变量。唯一的全局变量只来自于语言本身。其它所有的都来自于模块(包括标准库以及浏览器中的函数)。也就是说，你静态的知道所有的全局变量</li>
+<li>模块导入。你也静态的知道所有。</li>
+<li>模块本地变量。可以通过静态检查确定</li>
+</ul>
+<p>这极大地帮助检查某个给定的标识符是否拼写正确。这种检查在JSLint 和 JSHint中非常流行。在ES6中，大多数这种检查可以通过浏览器引擎完成。</p>
+<p>而且，所有命名导入(例如 lib.foo)都可以被静态检查。</p>
+<h5>8.2.3、好处3：为宏做准备</h5>
+<p>宏仍然处于JS未来特性的路上。如果js引擎支持宏的话，你可以通过一个库给他增添新的语法。Sweet.js是一个Javascript宏的实验性的库,下面是它官网上的类的宏的代码：</p>
+<pre><code>// Define the macro
+macro class {
+    rule {
+        $className {
+        constructor $cparams $cbody
+            $($mname $mparams $mbody) ...
+        }
+    } =&gt; {
+    function $className $cparams $cbody
+        $($className.prototype.$mname
+        = function $mname $mparams $mbody; ) ...
+    }
+}
+// Use the macro
+class Person {
+    constructor(name) {
+        this.name = name;
+    }
+    say(msg) {
+        console.log(this.name + &quot; says: &quot; + msg);
+    }
+}
+var bob = new Person(&quot;Bob&quot;);
+bob.say(&quot;Macros are sweet!&quot;);
+</code></pre>
+
+<p>对于宏，JS引擎在编译前会有一个预处理步鄹。如果解析器token流中提供的token与宏的模式匹配，就会被宏所替换，只有当你能够静态地找到宏定义的时候预处理才能工作。因此，如果你想通过模块引入宏，模块就必须拥有静态结构。</p>
+<h5>8.2.4、好处4：为强类型做准备</h5>
+<p>静态类型检查与宏有着类似的约束：只有当类型定义能静态找到的话静态类型检查才能工作。再次的，只有当模块是静态的话类型才能被导入。</p>
+<p>强类型是很迷人的，因为他可以快速的进行静态类型检查。其中一个这样的东西是Low-Level JavaScript，他被编译成了asm.js</p>
+<h5>8.2.5、好处5：支持其他语言</h5>
+<p>如果你想要支持拥有宏和强类型的编译语言，那么JS模块就必须是静态结构的。原因就是上述两小节讲的。</p>
+<h4>8.3、同时支持同步和异步加载</h4>
+<p>ES6模块必须独立的工作，无论引擎同步（服务器端）还是异步（浏览器端）地加载，它的语法和同步加载非常匹配，异步加载是通过它的静态结构进行支持：你可以静态的决定所有的导入，你可以直到检查完整个模块后再加载它（类似于AMD）。</p>
+<h4>8.4、支持模块间的循环依赖</h4>
+<p>循环依赖是ES6模块的关键目标</p>
+<p>循环依赖并不总是魔鬼，尤其是对于对象，有时候你恰恰需要这样的依赖。比如说在DOM树种，父亲引用孩子，孩子同时引用父亲。在库中，你通常可以小心的设计从而避免循环依赖。但是在大型系统中却很难避免，尤其是在重构的时候。因此，对他的支持就尤为重要，这样你在重构的时候就不会破坏系统。</p>
+<p>Node.js文档认可了循环依赖的重要性，并且Rob Sayre提供了一些其它的观点支持：</p>
+<blockquote>
+<p>Data point: I once implemented a system like [ECMAScript 6 modules] for Firefox. I
+got asked³⁸ for cyclic dependency support 3 weeks after shipping.
+That system that Alex Fritze invented and I worked on is not perfect, and the syntax isn’t
+very pretty. But it’s still getting used³⁹ 7 years later, so it must have gotten something
+right.</p>
+</blockquote>
+<h3>九、常见问题：模块</h3>
+<h4>9.1、我可以用变量表示我想从哪里引用模块吗？</h4>
+<p>导入语法是完全静态的，它的模块标识符是固定的，如果你想动态的决定加载哪个模块，你需要用到模块加载API：</p>
+<pre><code>let moduleSpecifier = 'module_' + Math.random();
+System.import(moduleSpecifier)
+.then(the_module =&gt; {
+// Use the_module
+})
+</code></pre>
+
+<h4>9.2、我可否条件引用/在需要时引用模块？</h4>
+<p>模块导入语句必须总是在模块的顶部，那就意味着你没法将他们嵌入在if语句、函数等等中，因此，如果你想要这样的话你还是必须使用模块加载API：</p>
+<pre><code>if (Math.random()) {
+    System.import('some_module')
+    .then(some_module =&gt; {
+    // Use some_module
+    })
+}
+</code></pre>
+
+<h4>9.3、在模块导入时可否使用解构语法？</h4>
+<p>不允许，导入语句只是有点类似于解构，但它是完全不同的（静态的、视图）。这意味着你没法像这样使用：</p>
+<pre><code>var bar = require('some_module').foo.bar;
+</code></pre>
+
+<h4>9.4、命名导出是否必要？何不使用默认导出呢？</h4>
+<p>你可能会想，我们明明可以直接导出一个object（就像CommonJS一样），为什么我们还需要命名导出呢？答案是你不能通过一个对象强制静态结构并且丢失所有的优点：</p>
+<h4>9.5、我可以eval()一个模块吗？</h4>
+<p>不行。对eval而言模块是相当高级的结构。模块加载API提供了通过字符串创建模块的方法。语法上来说，eval接收脚本而非模块</p>
+<h3>十、ES6模块的好处</h3>
+<p>第一眼，将模块作为js语言的内置特性是厌烦的——毕竟我们已经有了若干优秀的模块系统。但是ES6的模块拥有库提供不了的特性，比如更紧凑的语法以及静态结构（有助于优化和代码检查等等），他们还很有希望终结AMD和CommomJS的主导。
+- 不再需要UMD(Universal Module Definition)。UMD是一种命名模式，用来使得模块既能被AMD加载也能被CommonJS加载，一旦ES6模块成为唯一的标准，那么UMD也就废弃了
+- 新的浏览器API成为模块而不是全局变量或者navigator的属性
+- 不再需要对象-命名空间。ES5中像Math和JSON这样的对象被作为命名空间来使用，未来，这样的功能可以通过模块来提供。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
