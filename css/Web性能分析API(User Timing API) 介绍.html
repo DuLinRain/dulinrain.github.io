@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Web性能分析API(User Timing API) 介绍</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>Web性能分析API(User Timing API) 介绍</h1>
+<h3>一、概述</h3>
+<p>高性能的Web应用程序对于优秀的用户体验至关重要。 随着Web应用程序变得越来越复杂，了解性能影响对于创建令人信服的体验至关重要。 在过去几年中，浏览器中出现了许多不同的API，以帮助分析网络的性能，加载时间等，但是这些API不一定能提供足够的灵活性来查找什么会减慢应用程序的运行速度。 User Timing API提供了一种机制，可以用来测试您的Web应用程序，以确定您的应用程序在哪里花费时间。 在本文中，我们将介绍API以及如何使用它的示例。</p>
+<h3>二、你无法优化你无法衡量的东西</h3>
+<p>加速缓慢的Web应用程序的第一步是弄清楚在哪里花费的时间。测量Javascript代码区域的时间影响是识别耗时点的理想方法，这是找到如何提高性能的第一步。幸运的是，Timing API提供了一种方法，可以在Javascript的不同部分插入API调用，然后提取可用于帮助优化的详细计时数据。</p>
+<h3>三、高分辨率计时和<code>now()</code></h3>
+<p>精准时间测量的一个基础是精度。 在过去，我们有毫秒级的测量时序，这是可以的，但是建立一个无干扰的60 FPS(每秒传输帧数)站点意味着每帧需要在16ms内绘制。 所以当你只有毫秒级的准确度时，它缺少良好分析所需的精度。User Timing API是现代浏览器内置的一种新的定时类型。高分辨率时间为我们提供了浮点时间戳，精确到微秒的分辨率——比以前好上千倍。</p>
+<p>要在Web应用程序中获取当前时间，请调用构成Performance接口扩展的“now()”方法。 以下代码显示了如何做到这一点：</p>
+<pre><code>var myTime = window.performance.now();
+</code></pre>
+
+<p>还有一个名为PerformanceTiming的接口，它提供了许多与Web应用程序加载有关的不同times。now()方法返回PerformanceTiming中的navigationStart发生时所经过的时间。</p>
+<p>User Timing规范还提供了以下自带的属性用于计时：</p>
+<pre><code>interface PerformanceTiming {
+  readonly attribute unsigned long long navigationStart;
+  readonly attribute unsigned long long unloadEventStart;
+  readonly attribute unsigned long long unloadEventEnd;
+  readonly attribute unsigned long long redirectStart;
+  readonly attribute unsigned long long redirectEnd;
+  readonly attribute unsigned long long fetchStart;
+  readonly attribute unsigned long long domainLookupStart;
+  readonly attribute unsigned long long domainLookupEnd;
+  readonly attribute unsigned long long connectStart;
+  readonly attribute unsigned long long connectEnd;
+  readonly attribute unsigned long long secureConnectionStart;
+  readonly attribute unsigned long long requestStart;
+  readonly attribute unsigned long long responseStart;
+  readonly attribute unsigned long long responseEnd;
+  readonly attribute unsigned long long domLoading;
+  readonly attribute unsigned long long domInteractive;
+  readonly attribute unsigned long long domContentLoadedEventStart;
+  readonly attribute unsigned long long domContentLoadedEventEnd;
+  readonly attribute unsigned long long domComplete;
+  readonly attribute unsigned long long loadEventStart;
+  readonly attribute unsigned long long loadEventEnd;
+};
+</code></pre>
+
+<p>规范对各个属性的定义如下：</p>
+<ul>
+<li>navigationStart属性。此属性必须在用户代理完成提示卸载以前的文档后立即返回时间。 如果没有以前的文档，则此属性必须返回与fetchStart相同的值。</li>
+<li>unloadEventStart属性。如果前一个文档和当前文档具有相同的来源[IETF RFC 6454]，则此属性必须返回用户代理启动之前文档的卸载事件之前的时间。 如果没有以前的文档或者以前的文档与当前文档不同，则该属性必须返回零。</li>
+<li>unloadEventEnd属性。如果前一个文档和当前文档具有相同的来源，则此属性必须在用户代理完成上一个文档的卸载事件后立即返回时间。如果没有以前的文档或以前的文档与当前文档有不同的来源或卸载尚未完成，则此属性必须返回零。如果在导航时存在HTTP重定向或等效项，并且并非所有重定向或等效项来自同一个源，则unloadEventStart和unloadEventEnd都必须返回零。</li>
+<li>redirectStart属性。如果在导航时存在HTTP重定向或等效项，并且所有重定向或等效项来自同一个源，则此属性必须返回启动重定向的提取的开始时间。否则，该属性必须返回零。</li>
+<li>redirectEnd属性。如果在导航时存在HTTP重定向或等效项，并且所有重定向和等价项来自同一个源，则此属性必须在收到最后一个重定向响应的最后一个字节后立即返回时间。否则，该属性必须返回零。</li>
+<li>fetchStart属性。如果要使用HTTP GET或等价的方式获取新资源，则fetchStart必须在用户代理开始检查任何相关应用程序缓存之前立即返回时间。否则，它必须返回用户代理开始获取资源的时间。</li>
+<li>domainLookupStart属性。此属性必须返回用户代理启动当前文档的域名查找之前的时间。如果使用持久性连接[RFC 2616]，或者从相关应用程序缓存或本地资源检索当前文档，则此属性必须返回与fetchStart相同的值。</li>
+<li>domainLookupEnd属性。此属性必须在用户代理完成当前文档的域名查找后立即返回时间。 如果使用持久性连接[RFC 2616]，或者从相关应用程序缓存或本地资源检索当前文档，则此属性必须返回与fetchStart相同的值。比如，如果用户代理已在缓存中拥有域信息，则domainLookupStart和domainLookupEnd表示用户代理启动和结束从缓存中检索域数据的时间。</li>
+<li>connectStart属性。此属性必须返回用户代理开始建立与服务器的连接以检索文档之前的时间。如果使用持久性连接[RFC 2616]或从相关应用程序缓存或本地资源检索当前文档，则此属性必须返回domainLookupEnd的值。</li>
+<li>connectEnd属性。此属性必须在用户代理完成建立与服务器的连接以检索当前文档之后立即返回时间。如果使用持久性连接[RFC 2616]或从相关应用程序缓存或本地资源检索当前文档，则此属性必须返回domainLookupEnd的值。如果传输连接失败并且用户代理重新打开连接，则connectStart和connectEnd应该返回新连接的相应值。connectEnd必须包含建立传输连接的时间间隔以及其他时间间隔，如SSL握手和SOCKS身份验证。</li>
+<li>secureConnectionStart属性。该属性是可选的。不具有此属性的用户代理必须将其设置为未定义。当此属性可用时，如果当前页面的方案是HTTPS，则此属性必须返回用户代理启动握手过程之前的时间，以确保当前连接的安全。如果此属性可用，但未使用HTTPS，则此属性必须返回零。</li>
+<li>requestStart属性。此属性必须返回用户代理开始从服务器，相关应用程序缓存或本地资源请求当前文档之前的时间。如果发送请求后，传输连接失败，并且用户代理重新打开连接并重新发送请求，则requestStart应返回新请求的相应值。</li>
+<li>responseStart属性。此属性必须在用户代理收到来自服务器，相关应用程序缓存或本地资源的响应的第一个字节后立即返回时间。</li>
+<li>responseEnd属性。此属性必须在用户代理收到当前文档的最后一个字节后立即返回时间，或者在传输连接关闭之前（以先到者为准）。这里的文档可以从服务器，相关应用程序缓存或本地资源中接收。</li>
+<li>domLoading属性。此属性必须返回用户代理将当前文档就绪状态设置为“加载”之前的时间。</li>
+<li>domInteractive属性。此属性必须返回用户代理程序将当前文档就绪状态设置为“交互式”之前的时间。</li>
+<li>domContentLoadedEventStart属性。此属性必须返回用户代理在Document上触发DOMContentLoaded事件之前的时间。</li>
+<li>domContentLoadedEventEnd属性。该属性必须在文档的DOMContentLoaded事件完成后立即返回时间。</li>
+<li>domComplete属性。此属性必须返回用户代理将当前文档就绪状态设置为“完成”之前的时间。如果当前文档就绪状态多次变为相同状态，则domLoading，domInteractive，domContentLoadedEventStart，domContentLoadedEventEnd和domComplete必须返回第一次出现相应文档准备就绪变化的时间。</li>
+<li>loadEventStart属性。此属性必须返回当前文档的加载事件触发之前的时间。当负载事件尚未被触发时，它必须返回零。</li>
+<li>loadEventEnd属性。此属性必须返回当前文档的加载事件完成时的时间。加载事件未被触发或未完成时，它必须返回零。</li>
+</ul>
+<p>window中performance接口的定义如下：</p>
+<pre><code>interface Performance {
+  readonly attribute PerformanceTiming timing;
+  readonly attribute PerformanceNavigation navigation;
+};
+
+partial interface Window {
+  [Replaceable] readonly attribute Performance performance;
+};
+</code></pre>
+
+<p>可以看到它有timing和navigation两个属性，我们来看一下：</p>
+<ul>
+<li>timing属性。定时属性表示自上次非重定向导航以来与浏览上下文有关的定时信息。 该属性由PerformanceTiming接口定义。这个我们在前面已经讲过了。</li>
+<li>navigation属性。navigation属性由PerformanceNavigation接口定义。</li>
+</ul>
+<p>我们接下来看看PerformanceNavigation接口定义：</p>
+<pre><code>interface PerformanceNavigation {
+  const unsigned short TYPE_NAVIGATE = 0;
+  const unsigned short TYPE_RELOAD = 1;
+  const unsigned short TYPE_BACK_FORWARD = 2;
+  const unsigned short TYPE_RESERVED = 255;
+  readonly attribute unsigned short type;
+  readonly attribute unsigned short redirectCount;
+};
+</code></pre>
+
+<p><strong>type属性</strong></p>
+<p>此属性必须返回当前浏览上下文中最后一个非重定向导航的类型。它必须具有以下导航类型值之一。</p>
+<ul>
+<li>TYPE_NAVIGATE。导航通过单击链接开始，或通过在用户代理的地址栏中输入URL或表单提交，或者通过脚本操作初始化，而不是TYPE_RELOAD和TYPE_BACK_FORWARD使用的脚本操作，如下所示。</li>
+<li>TYPE_RELOAD。通过重载操作或location.reload（）方法导航。</li>
+<li>TYPE_BACK_FORWARD。通过历史遍历操作进行导航。</li>
+<li>TYPE_RESERVED。任何导航类型不是由上面的值定义。客户端重定向（如使用Refresh pragma指令的重定向）不被视为HTTP重定向或本规范的等效重定向。在这些情况下，type属性应返回适当的值，如重新加载当前页面时的TYPE_RELOAD;如果导航到新的URL，则返回TYPE_NAVIGATE。</li>
+</ul>
+<p><strong>redirectCount属性</strong></p>
+<p>此属性必须返回自当前浏览上下文中最后一次非重定向导航以来的重定向次数。如果没有重定向，或者有与目标文档不同的重定向，则此属性必须返回零。</p>
+<p>下图分别说明了PerformanceTiming接口和PerformanceNavigation接口定义的定时属性，带有或不带重定向。 带有下划线的属性在涉及不同来源的文档的导航中可能不可用。 用户代理可以在定时之间执行内部处理，这允许定时之间的非规范间隔。</p>
+<p><img src="/assets/img/6.png" />
+<img src="https://i.imgur.com/Nt991D7.png" /></p>
+<h4>3.1 DOMHighResTimeStamp 类型</h4>
+<p>在过去尝试计时Web应用程序的时候，你会使用类似Date.now()的东西来返回一个DOMTimeStamp。 DOMTimeStamp返回一个整数毫秒作为它的值。 为了提供高分辨率所需的更高精度，引入了一种名为DOMHighResTimeStamp的新类型。 这种类型是一个浮点值，它也返回以毫秒为单位的时间。 但是由于它是浮点数，因此该值可以表示小数毫秒，因此可以产生千分之一毫秒的精度。</p>
+<h3>四、 User Timing 接口</h3>
+<p>所以现在我们有了高分辨率的时间戳，让我们使用User Timing接口来提取时间信息。User Timing接口提供的功能让我们可以在应用程序的不同位置调用方法，可以提供Hansel和Gretel风格的面包屑轨迹，让我们跟踪时间花费在哪里。</p>
+<h4>4.1 使用<code>mark()</code></h4>
+<p><code>mark()</code>方法是我们的时序分析工具包中的主要工具。<code>mark()</code>方法所做的是为我们存储一个时间戳。<code>mark()</code>更高级的用处在于我们可以给这个时间戳起个名字，并且这个API可以记住这个名字并将它作为一个独立的单元。</p>
+<p>在应用程序中的不同位置调用mark()可以让您计算出在Web应用程序中触发<code>mark()</code>所需的时间。</p>
+<p>规范提出了一些建议的mark名称，这些mark可能是有趣的，而且是相当顾名思义的。比如<code>mark_fully_loaded</code>, <code>mark_fully_visible</code>, <code>mark_above_the_fold</code>等等。</p>
+<p>例如，我们可以使用下面的代码为应用程序完全加载时设置一个标记：</p>
+<pre><code>window.performance.mark('mark_fully_loaded');
+</code></pre>
+
+<p>通过在我们的Web应用程序中设置命名标记，我们可以收集大量计时数据，并在空闲时间对其进行分析，以确定应用程序在做什么以及何时进行。</p>
+<h4>4.2 用<code>measure()</code>计算测量值</h4>
+<p>一旦你设置了一打的标记，你将会想知道他们之间消耗的时间。你可以使用<code>measure()</code>方法来做这件事情。</p>
+<p>measure()方法计算标记之间的时间间隔，也可以测量标记与PerformanceTiming接口中任何已知事件名称之间的时间间隔。</p>
+<p>例如，您可以通过使用如下代码来计算从DOM完成到应用程序状态完全加载的时间：</p>
+<pre><code>window.performance.measure('measure_load_from_dom',
+ 'domComplete', 'mark_fully_loaded');
+</code></pre>
+
+<blockquote>
+<p>注意：在这个例子中，我们传递了PerformanceTiming接口中众所周知的名称“domComplete”。</p>
+</blockquote>
+<p>当您调用measure()时，它将存储您设置的标记的结果，以便稍后检索它们。通过在应用程序运行时存储时间，应用程序任然保持响应，您可以在应用程序完成一些工作后将所有数据转储出来，以便日后分析。</p>
+<h4>4.3 用clearMarks()丢弃标记</h4>
+<p>有时候能够丢弃你设置的一些标记是有用的。例如，您可能会在您的Web应用程序上执行批处理，因此您希望每次运行都重新开始。</p>
+<p>通过调用clearMarks()来清除已经设置的标记是很容易的。</p>
+<p>因此，下面的示例代码会清除您现有的所有标记，以便您可以再次设置定时运行如果你想这么做的话。</p>
+<pre><code>window.performance.clearMarks();
+</code></pre>
+
+<p>当然，在某些情况下，您可能不想清除所有标记。 所以，如果你想清除特定的标记，你可以传递你想要删除的标记的名称。 例如，下面的代码：</p>
+<pre><code>window.peformance.clearMarks('mark_fully_loaded');
+</code></pre>
+
+<p>丢弃我们在第一个例子中设置的标记，同时留下任何其他我们设置的标记。</p>
+<p>你可能想要清除你所做的任何measure，有一个相应的方法来做，这个方法叫做clearMeasures()。 它和clearMarks()用法完全一样，但是可以处理你所做的任何测量(measure)。 例如，代码：</p>
+<pre><code>window.performance.clearMeasures('measure_load_from_dom');
+</code></pre>
+
+<p>这段代码将删除我们在上面的measure()例子中所做的计时测量。 如果你想删除所有的措施，它的作用就和clearMarks()一样——你只需要调用clearMeasures()而不需要参数。</p>
+<h3>五、将计时数据取出来</h3>
+<p>设置标记和测量间隔是非常好的，但是在某个时间点，您想要获得该时间点的数据来进行一些分析。 这也很简单，你只需要使用PerformanceTimeline接口。</p>
+<p>例如，getEntriesByType()方法可以让我们获得所有的标记或者测量时间的列表的形式，所以我们可以迭代它并处理这些数据。 好的是，按照时间顺序返回列表，所以你可以以他们在你的Web应用程序命中触发标记的顺序看到他们。</p>
+<p>下面的代码：</p>
+<pre><code>var items = window.performance.getEntriesByType('mark');
+</code></pre>
+
+<p>向我们返回在我们的Web应用程序中已经被触发的所有标记的列表，而代码：</p>
+<pre><code>var items = window.performance.getEntriesByType('measure');
+</code></pre>
+
+<p>返回给我们一个我们所做的所有计时测量的列表。</p>
+<p>您也可以使用您提供的特定名称取回列表。 所以例如，代码：</p>
+<pre><code>var items = window.performance.getEntriesByName('mark_fully_loaded');
+</code></pre>
+
+<p>会返回一个包含startTime属性中<code>mark_fully_loaded</code>时间戳的项目的列表。</p>
+<h3>六、计时XHR请求 (例子)</h3>
+<p>现在我们已经对User Timing API有了一个很好的讲述，我们可以用它来分析我们所有的XMLHttpRequests在我们的Web应用程序中所占的时间。</p>
+<p>首先，我们将修改所有send()请求，以发出设置标记的函数调用，同时通过函数调用更改我们的成功回调函数，并设置另一个标记，然后生成请求多长时间的测量。</p>
+<p>所以通常我们的XMLHttpRequest看起来像这样：</p>
+<pre><code>var myReq = new XMLHttpRequest();
+myReq.open('GET', url, true);
+myReq.onload = function(e) {
+  do_something(e.responseText);
+}
+myReq.send();
+</code></pre>
+
+<p>对于我们的例子，我们将添加一个全局计数器来跟踪请求的数量，并使用它来存储每个请求耗时的测量值。 执行此操作的代码如下所示：</p>
+<pre><code>var reqCnt = 0;
+
+var myReq = new XMLHttpRequest();
+myReq.open('GET', url, true);
+myReq.onload = function(e) {
+  window.performance.mark('mark_end_xhr');
+  reqCnt++;
+  window.performance.measure('measure_xhr_' + reqCnt, 'mark_start_xhr', 'mark_end_xhr');
+  do_something(e.responseText);
+}
+window.performance.mark('mark_start_xhr');
+myReq.send();
+</code></pre>
+
+<p>上面的代码为我们发送的每个XMLHttpRequest生成一个具有唯一名称值的测量。 我们假设这些请求是按顺序运行的——并行请求的代码在处理不按顺序返回的请求时需要更复杂一些，我们将其作为读者的练习。</p>
+<p>一旦Web应用程序完成了一堆请求，我们可以使用下面的代码将它们全部输出到控制台：</p>
+<pre><code>var items = window.performance.getEntriesByType('measure');
+for (var i = 0; i &lt; items.length; ++i) {
+  var req = items[i];
+  console.log('XHR ' + req.name + ' took ' + req.duration + 'ms');
+}
+</code></pre>
+
+<h3>七、结论</h3>
+<p>User Timing API为您提供了许多优秀的工具来应用于您的Web应用程序的任何方面。 减少应用程序中的耗时点可以通过在您的Web应用程序中调用API调用，并对生成的计时数据进行后处理来轻松实现，从而清楚地了解所花的时间。 但是如果你的浏览器不支持这个API呢？ 没问题，你可以在这里找到一个很好的<a href="https://gist.github.com/pmeenan/5902672">polyfill</a>，它很好的模拟了API，并很好的用于了<a href="http://www.webpagetest.org/">webpagetest.org</a>。 你还在等什么？ 现在就试用一下你的应用程序中的User Timing API，你将会研究如何加速它们，你的用户会感谢你使他们的体验变得更好。</p>
+<p>本文翻译自下面这位，在原文的基础上做了一定的补充：</p>
+<p><img src="/assets/img/7.png" /></p>
+<p><img src="https://i.imgur.com/VedHdTW.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

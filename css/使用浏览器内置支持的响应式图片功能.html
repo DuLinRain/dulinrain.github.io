@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>使用浏览器内置支持的响应式图片功能</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>浏览器内置支持响应式图片</h1>
+<h3>1.1 <code>&lt;picture&gt;</code>元素介绍</h3>
+<p><code>&lt;picture&gt;</code>元素为图像资源加载提供了一种声明性方法。web开发人员不再需要写CSS和JavaScript来处理响应式设计。用户可以从原生优化过的图像资源加载中受益，这对于移动互联网速度较慢的用户尤其重要。</p>
+<p>除了最近添加到<img>的新的srcset和sizes属性外，<picture>元素还为web开发人员指定图像资源提供了更大的灵活性。编写清晰的HTML标记，让浏览器单独或联合检测以下任何情况，以支持响应式设计并改善网页加载时间：</p>
+<ul>
+<li><strong>基于设备朝向的选择。</strong>该移动设备是以横向还是纵向显示？加载针对给定屏幕尺寸进行了优化的图像。</li>
+<li><strong>基于设备像素比选择。</strong>该设备是否具有较高的DPI(Dots Per Inch，每英寸点数,也就是常说的屏幕分辨率)显示？</li>
+<li><strong>基于视口选择。</strong>图像是否总是按视口的固定比例填充？</li>
+<li><strong>基于图片格式选择。</strong>浏览器是否支持有助于提升性能的其他图像文件格式，例如文件较小的格式？</li>
+</ul>
+<h4>1.1.1 基于设备朝向的应用</h4>
+<p><picture>元素最常用的场合是用于响应设计中的“设备朝向”。不同于根据视口宽度放大或缩小一个图像，你可以设计多个图像来更合适地填充浏览器视口。</p>
+<p><img src="/assets/img/1.png" /></p>
+<p><img src="https://i.imgur.com/On4NwgA.png" /></p>
+<h4>1.1.2 提升资源加载性能</h4>
+<p>当使用带有srcset和sizes属性的<code>&lt;picture&gt;</code>或<code>&lt;img&gt;</code>元素时，浏览器将只下载匹配场景明确指定的图像。 这个原生实现与HTML解析器兼容，并可以利用浏览器的图像缓存和预加载功能。</p>
+<h3>1.2 看一个在线例子</h3>
+<p>这是一个事实，一个用来加载猫的网页被创建。 使用<code>&lt;img&gt;</code>元素，我们可以模仿猫的惊人的能力来根据给予他们的空间来调整，无论多大和多小。</p>
+<p><img src="/assets/img/5.png" /></p>
+<p><img src="https://i.imgur.com/yRjQVsz.png" /></p>
+<p>使用Chrome 38或更高版本浏览器在新标签中打开<a href="https://googlechrome.github.io/samples/picture-element/">Demo</a>。 调整视口大小以查看猫的行为。</p>
+<p>作为一个起步，这个演示只展示了<code>&lt;picture&gt;</code>提供的最少的功能。 现在让我们深入它的语法。</p>
+<h3>1.3 <code>&lt;picture&gt;</code>语法</h3>
+<p>下面的HTML和CSS片段是用来实现Demo的一切：</p>
+<pre><code>&lt;style&gt;
+  img {display: block; margin: 0 auto;}
+&lt;/style&gt;
+
+&lt;picture&gt;
+  &lt;source 
+    media=&quot;(min-width: 650px)&quot;
+    srcset=&quot;images/kitten-stretching.png&quot;&gt;
+  &lt;source 
+    media=&quot;(min-width: 465px)&quot;
+    srcset=&quot;images/kitten-sitting.png&quot;&gt;
+  &lt;img 
+    src=&quot;images/kitten-curled.png&quot; 
+    alt=&quot;a cute kitten&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
+
+<p>请注意，这不涉及JavaScript，也没有第三方库。 CSS<code>&lt;style&gt;</code>块仅用于设置img元素的样式，不包含媒体查询。 <code>&lt;picture&gt;</code>元素的原生实现意味着您可以仅使用HTML声明您的响应式图像。</p>
+<h4>1.3.1 使用 <code>&lt;source&gt;</code> 元素</h4>
+<p><code>&lt;picture&gt;</code>元素没有自己的独有属性。 当<code>&lt;picture&gt;</code>被用作<code>&lt;source&gt;</code>的容器时，会发生奇迹。</p>
+<p>用于加载媒体（如视频和音频）的<code>&lt;source&gt;</code>元素已更新，用于加载图像，并添加了这些新属性：</p>
+<ul>
+<li><strong>srcset</strong> (必须的)。接收单个图像路径(比如srcset=&quot;kitten.png&quot;)，或者带像素密度描述的图像路径列表，中间用逗号分隔(比如srcset=&quot;kitten.png, kitten@2X.png 2x&quot;)。如果没有指定像素密度描述，则默认为是1x。</li>
+<li><strong>media</strong> (可选的)。接收任何你可能在CSS中看到的有效的media query(例如，media =&quot;（max-width：30em）&quot;)</li>
+<li><strong>sizes</strong> (可选的)。接受单个的宽度描述符(例如，size =&quot;100vw&quot;)或者具有宽度描述符的media query(size =&quot;（max-width：30em）100vw&quot;)。或者逗号分隔的media query列表(比如：sizes=&quot;(max width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)&quot;)，最后一个作为默认的。</li>
+<li><strong>type</strong> (可选的)。接受支持的MIME类型（例如type =&quot;image/webp&quot; 或 type=&quot;image/vnd.ms-photo&quot;）。</li>
+</ul>
+<p>浏览器将使用传入的提示作为属性值来加载最合适的图像资源。 标签的列表顺序很重要！ 浏览器将使用第一个匹配的<code>&lt;source&gt;</code>元素，并忽略任何后续的<code>&lt;source&gt;</code>标记。</p>
+<h4>1.3.2 增加最后的<code>&lt;img&gt;</code>元素</h4>
+<p><code>&lt;img&gt;</code>元素也做了更新用于在<code>&lt;picture&gt;</code>中用作后备元素，如果浏览器不支持img元素，或者没有匹配source元素标签，那么。 在<code>&lt;picture&gt;</code>中使用<code>&lt;img&gt;</code>是必要的 —— 如果您忘记了它，则不会显示图片。</p>
+<p>使用<code>&lt;img&gt;</code>声明要在<code>&lt;picture&gt;</code>块内使用的默认图像。 因为浏览器会忽略找到<code>&lt;img&gt;</code>标记后的任何<code>&lt;source&gt;</code>声明，所以将<code>&lt;img&gt;</code>作为<code>&lt;picture&gt;</code>的最后一个子元素。 img标签也是您应该使用img元素的alt属性附加替代文字的地方。</p>
+<h4>1.3.3 结合像素密度描述符</h4>
+<p>使用像素密度描述符（如1x，1.5x，2x和3x）添加对高分辨率显示器的支持。 新的srcset属性适用于<code>&lt;img&gt;</code>和<code>&lt;source&gt;</code>元素。下面的例子支持1x, 1.5x, 2x分辨率的屏幕。</p>
+<pre><code>&lt;picture&gt;
+  &lt;source 
+    media=&quot;(min-width: 650px)&quot; 
+    srcset=&quot;images/kitten-stretching.png,
+            images/kitten-stretching@1.5x.png 1.5x,  
+            images/kitten-stretching@2x.png 2x&quot;&gt;
+  &lt;source 
+    media=&quot;(min-width: 465px)&quot; 
+    srcset=&quot;images/kitten-sitting.png,
+            images/kitten-sitting@1.5x.png 1.5x
+            images/kitten-sitting@2x.png 2x&quot;&gt;
+  &lt;img 
+    src=&quot;images/kitten-curled.png&quot; 
+    srcset=&quot;images/kitten-curled@1.5x.png 1.5x,
+            images/kitten-curled@2x.png 2x&quot;
+    alt=&quot;a cute kitten&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
+
+<h4>1.3.4 结合宽度描述符</h4>
+<p>Web基础知识深入介绍了<code>&lt;img&gt;</code>元素的新width属性：</p>
+<blockquote>
+<p>当图像的最终尺寸未知时，可能难以为图像源指定密度描述符。 对于跨越浏览器的比例宽度且流畅的图像，这尤其如此，这取决于浏览器的大小。</p>
+<p>除了提供固定的图像尺寸和密度之外，还可以通过添加宽度描述符和图像元素的大小来指定每个提供的图像的大小，从而允许浏览器自动计算有效像素密度并选择最佳图像进行下载。</p>
+</blockquote>
+<p>以下是使用sizes属性来设置图像占总视口80％的比例的示例。 它与srcset属性结合在一起，提供宽度分别为160px，320px，640px和1280px的四个版本的灯塔照片：</p>
+<pre><code>&lt;img src=&quot;lighthouse-160.jpg&quot; alt=&quot;lighthouse&quot;
+     sizes=&quot;80vw&quot;
+     srcset=&quot;lighthouse-160.jpg 160w, 
+             lighthouse-320.jpg 320w,        
+             lighthouse-640.jpg 640w,
+             lighthouse-1280.jpg 1280w&quot;&gt;
+</code></pre>
+
+<p>浏览器将根据视口宽度和硬件显示分辨率使用这些提示来选择最合适的图像资源：</p>
+<p><img src="/assets/img/2.png" />
+<img src="https://i.imgur.com/AFobzKo.png" /></p>
+<p>通过添加<code>&lt;picture&gt;</code>，sizes属性可以应用于<code>&lt;img&gt;</code>和<code>&lt;source&gt;</code>元素：</p>
+<pre><code>&lt;picture&gt;
+  &lt;source media=&quot;(min-width: 800px)&quot;
+          sizes=&quot;80vw&quot;
+          srcset=&quot;lighthouse-landscape-640.jpg 640w,
+                  lighthouse-landscape-1280.jpg 1280w,
+                  lighthouse-landscape-2560.jpg 2560w&quot;&gt;
+  &lt;img src=&quot;lighthouse-160.jpg&quot; alt=&quot;lighthouse&quot;
+       sizes=&quot;80vw&quot;
+       srcset=&quot;lighthouse-160.jpg 160w,
+               lighthouse-320.jpg 320w,
+               lighthouse-640.jpg 640w,
+               lighthouse-1280.jpg 1280w&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
+
+<p>在前面的例子的基础上，当视口大于或等于800像素时，浏览器会提供灯塔版本的横向版本：</p>
+<p><img src="/assets/img/3.png" />
+<img src="https://i.imgur.com/ev4Qapw.png" /></p>
+<h4>1.3.5 加载其它文件格式</h4>
+<p><source>的type属性可用于加载可能并不是所有浏览器都支持的图像文件格式。 例如，您可以将WebP格式的图像提供给支持它的浏览器，同时在其他浏览器上回退到JPEG格式：</p>
+<pre><code>&lt;picture&gt;
+  &lt;source type=&quot;image/webp&quot; srcset=&quot;images/butterfly.webp&quot;&gt;
+  &lt;img src=&quot;images/butterfly.jpg&quot; alt=&quot;a butterfly&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
+
+<h4>1.3.5 其它代码示例</h4>
+<p>你可以参考Dev.Opera博客上的大量的例子 <a href="https://dev.opera.com/articles/responsive-images/">Responsive Images: Use Cases and Documented Code Snippets to Get You Started</a>，这些例子将<code>&lt;picture&gt;</code> 、 <code>&lt;img&gt;</code> 与 <code>srcset, media, sizes, type</code> 属性结合在一起.</p>
+<h3>1.4 现在就去尝试它吧！</h3>
+<p>目前可以在<a href="https://www.chromestatus.com/feature/5910974510923776">Chrome 38</a>中使用<code>&lt;picture&gt;</code>元素。在Chrome DevTools中使用<a href="https://developer.chrome.com/devtools/docs/device-mode#screen-emulation">屏幕模拟</a>进行尝试吧。</p>
+<p>如果您对这个新功能有反馈意见，请在<a href="http://crbug.com/">Chrome bug追踪器</a>上留言。</p>
+<p>如果您准备好今天开始实现<code>&lt;picture&gt;</code>，但也希望在其他浏览器中添加对响应图像的支持，请参阅<code>&lt;picture&gt;</code>元素<a href="http://googlesamples.github.io/web-fundamentals/samples/media/images/media.html">示例</a>以使用带有polyfill的<code>&lt;picture&gt;</code>。</p>
+<p>请务必查看Web基础知识中的<a href="https://developers.google.com/web/fundamentals/media/images/">图像指南</a>，以获取在Web上实现图像的最佳实践示例。</p>
+<h3>1.5 声明</h3>
+<p>本文翻译自下面这位<a href="https://www.html5rocks.com/en/tutorials/responsive/picture-element/?redirect_from_locale=zh#toc-pixel-density-descriptors">作者</a>：</p>
+<p><img src="/assets/img/4.png" />
+<img src="https://i.imgur.com/ItVYp9O.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
