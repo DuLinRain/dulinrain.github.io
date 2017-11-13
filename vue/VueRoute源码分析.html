@@ -1,0 +1,3836 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VueRoute</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>介绍</h1>
+<p>vue-router是vue的一个插件，可以非常方便的实现前端路由，使用vue-router是非常简单的，我们需要做的是，将组件(components)映射到路由(routes)，然后告诉 vue-router 在哪里渲染它们。</p>
+<p>本书将尝试从源码角度来看一看vue-router的实现，基于的是3.0.1版本。全书将从11个章节进行讲述，分别如下：</p>
+<ol>
+<li>概述。 本章将从整体上讲解vue-router源码的构成，形成一个初步的认识。</li>
+<li>router-view组件。本章将介绍router-view组件的实现。</li>
+<li>router-link组件。本章将介绍router-link组件的实现。</li>
+<li>History类。本章将介绍History类的实现，History类是vue-router三种路由模式的基础。</li>
+<li>HTML5History类。本章将介绍HTML5History类的实现，HTML5History类继承自History类。</li>
+<li>HashHistory类。本章将介绍HashHistory类的实现，HashHistory类继承自History类。</li>
+<li>AbstractHsitory类。本章将介绍AbstractHsitory类的实现，AbstractHsitory类继承自History类。</li>
+<li>VueRouter类。本章将介绍VueRouter类，该类是最终导出的类。</li>
+<li>install方法。本章将介绍vue-router插件的install方法。</li>
+<li>辅助函数。本章将介绍vue-router中定义的辅助函数，主要有断言、警告、错误。</li>
+<li>总结。本章将对全文进行总结。</li>
+</ol>
+<h6>整理人： 林雨</h6>
+<h6>首次整理时间： 2017-11-06</h6>
+<h6>最后整理时间： 2017-11-08</h6>
+<h1>第一章 概述</h1>
+<h3>1.1 vue-router是什么？</h3>
+<p>按照官方的说法：</p>
+<blockquote>
+<p>用 Vue.js + vue-router 创建单页应用，是非常简单的。使用 Vue.js ，我们已经可以通过组合组件来组成应用程序，当你要把 vue-router 添加进来，我们需要做的是，将组件(components)映射到路由(routes)，然后告诉 vue-router 在哪里渲染它们。</p>
+</blockquote>
+<p>也就是说，vue-router是用来做前端路由用的。实际上，前端路由的实现也分不同的模式。vue-router支持三种模式，分别是：</p>
+<ol>
+<li>hash: 使用 URL hash 值来作路由。支持所有浏览器，包括不支持 HTML5 History Api 的浏览器。</li>
+<li>history: 依赖 HTML5 History API 和服务器配置。查看 HTML5 History 模式。</li>
+<li>abstract: 支持所有 JavaScript 运行环境，如 Node.js 服务器端。如果发现没有浏览器的 API，路由会自动强制进入这个模式。</li>
+</ol>
+<p>为了实现这三种模式，vue-router分别采用了三个类：HashHistory、HTML5History、AbstractHistory。这三个类提供了几乎完全一致的接口，它们都采用经典的类继承方式继承自History类。History定义了路由的一些通用的操作。</p>
+<p>vue-router中路由的跳转是通过用户的行为来触发的，router-link组件用于渲染路由(通常是a标签)，而router-view组件(是一个函数组件)则用于渲染对应的视图。</p>
+<p>同其它vue插件原理相同，vue-router插件会提供一个install方法用于插件的安装，在install方法中会在Vue实例上全局注册router-link和router-view这两个组件。</p>
+<p>vue-router最终会导出一个VueRouter类，这是我们在实例化路由时使用的类，我们在实例化时可以给该类传递一个配置项来配置使用的路由模式等等。</p>
+<h3>1.2 vue-router源码的整体结构是怎样的？</h3>
+<p>vue-router采用的是典型的IIFE形式实现的，纵观整个代码结构可以得出如下结论：</p>
+<ol>
+<li>6 ~ 10行定义了vue-router模块的导出方式。</li>
+<li>14 ~ 28行定义了断言、警告、错误相关的辅助函数。</li>
+<li>30 ~ 381行实现了router-view组件。</li>
+<li>385 ~ 522行实现了router-link组件。</li>
+<li>524 ~ 572行实现了install方法。</li>
+<li>573 ~ 1529行实现了解析、匹配路由等等一系列的辅助函数。</li>
+<li>1534 ~ 1843行实现了与滚动行为等有关的操作。</li>
+<li>1845 ~ 2142行实现了History类。</li>
+<li>2143 ~ 2226行实现了HTML5History类。</li>
+<li>2231 ~ 2364行实现了HashHistory类。</li>
+<li>2369 ~ 2423行实现了AbstractHistory类。</li>
+<li>2427 ~ 2632行实现了VueRouter类。</li>
+</ol>
+<p>从以上分析可以看出，vue-router源码主要由router-view、router-link 3个组件，History、HTML5History、HashHistory、AbstractHistory、VueRouter 5个类组成。下面我们分别在各个章节讲述。</p>
+<h1>第二章 route-view组件</h1>
+<h3>2.1 route-view组件定义在vue-router源码的30 ~ 381行，我们来看一看它的实现：</h3>
+<pre><code>var View = {
+  name: 'router-view',
+  functional: true,
+  props: {
+    name: {
+      type: String,
+      default: 'default'
+    }
+  },
+  render: function render (_, ref) {
+    var props = ref.props;
+    var children = ref.children;
+    var parent = ref.parent;
+    var data = ref.data;
+
+    data.routerView = true;
+
+    // directly use parent context's createElement() function
+    // so that components rendered by router-view can resolve named slots
+    var h = parent.$createElement;
+    var name = props.name;
+    var route = parent.$route;
+    var cache = parent._routerViewCache || (parent._routerViewCache = {});
+
+    // determine current view depth, also check to see if the tree
+    // has been toggled inactive but kept-alive.
+    var depth = 0;
+    var inactive = false;
+    while (parent &amp;&amp; parent._routerRoot !== parent) {
+      if (parent.$vnode &amp;&amp; parent.$vnode.data.routerView) {
+        depth++;
+      }
+      if (parent._inactive) {
+        inactive = true;
+      }
+      parent = parent.$parent;
+    }
+    data.routerViewDepth = depth;
+
+    // render previous view if the tree is inactive and kept-alive
+    if (inactive) {
+      return h(cache[name], data, children)
+    }
+
+    var matched = route.matched[depth];
+    // render empty node if no matched route
+    if (!matched) {
+      cache[name] = null;
+      return h()
+    }
+
+    var component = cache[name] = matched.components[name];
+
+    // attach instance registration hook
+    // this will be called in the instance's injected lifecycle hooks
+    data.registerRouteInstance = function (vm, val) {
+      // val could be undefined for unregistration
+      var current = matched.instances[name];
+      if (
+        (val &amp;&amp; current !== vm) ||
+        (!val &amp;&amp; current === vm)
+      ) {
+        matched.instances[name] = val;
+      }
+    }
+
+    // also register instance in prepatch hook
+    // in case the same component instance is reused across different routes
+    ;(data.hook || (data.hook = {})).prepatch = function (_, vnode) {
+      matched.instances[name] = vnode.componentInstance;
+    };
+
+    // resolve props
+    var propsToPass = data.props = resolveProps(route, matched.props &amp;&amp; matched.props[name]);
+    if (propsToPass) {
+      // clone to prevent mutation
+      propsToPass = data.props = extend({}, propsToPass);
+      // pass non-declared props as attrs
+      var attrs = data.attrs = data.attrs || {};
+      for (var key in propsToPass) {
+        if (!component.props || !(key in component.props)) {
+          attrs[key] = propsToPass[key];
+          delete propsToPass[key];
+        }
+      }
+    }
+
+    return h(component, data, children)
+  }
+};
+</code></pre>
+
+<p><code>&lt;router-view&gt;</code>组件是一个 functional 组件，渲染路径匹配到的视图组件。<code>&lt;router-view&gt;</code> 渲染的组件还可以内嵌自己的 <code>&lt;router-view&gt;</code>，根据嵌套路径，渲染嵌套组件。 如果 <code>&lt;router-view&gt;</code>设置了名称，则会渲染对应的路由配置中 components 下的相应组件。函数组件可能大家不常用，但是官方文档对函数组件有比较详细的描述：</p>
+<p><img src="/assets/2-1.png" /></p>
+<p><img src="https://i.imgur.com/WhVBMr2.png" /></p>
+<p><img src="/assets/2-2.png" /></p>
+<p><img src="https://i.imgur.com/yw2Ku0l.png" /></p>
+<p><img src="/assets/2-3.png" /></p>
+<p><img src="https://i.imgur.com/bpEpmSo.png" /></p>
+<p>router-view组件主要的做的就是通过调用createElement方法来渲染我们点击router-link后匹配到的组件：</p>
+<pre><code>return h(component, data, children)
+</code></pre>
+
+<p>这里面在解析属性的时候调用了resolveProps方法，该方法根据当前URL生成的路由和匹配到的注册的路由的props来解析，resolveProps定义在vue-router源码的121 ~ 140行：</p>
+<pre><code>function resolveProps (route, config) {
+  switch (typeof config) {
+    case 'undefined':
+      return
+    case 'object':
+      return config
+    case 'function':
+      return config(route)
+    case 'boolean':
+      return config ? route.params : undefined
+    default:
+      {
+        warn(
+          false,
+          &quot;props in \&quot;&quot; + (route.path) + &quot;\&quot; is a &quot; + (typeof config) + &quot;, &quot; +
+          &quot;expecting an object, function or boolean.&quot;
+        );
+      }
+  }
+}
+</code></pre>
+
+<p>resolveProps函数根据第二个参数的类型来确定返回何种值。当返回的类型不为falsy的时候，会对解析到的props进行浅拷贝，浅拷贝采用的是extend方法，定义在源码的142 ~ 147行：</p>
+<pre><code>function extend (to, from) {
+  for (var key in from) {
+    to[key] = from[key];
+  }
+  return to
+}
+</code></pre>
+
+<h1>第三章 route-link组件</h1>
+<p>router-link组件定义在vue-router源码的385 ~ 488行，我们来看看它的实现：</p>
+<pre><code>// work around weird flow bug
+var toTypes = [String, Object];
+var eventTypes = [String, Array];
+//Link组件,对应的是router-link,貌似还是函数组件
+var Link = {
+  name: 'router-link',
+  props: {
+    //表示目标路由的链接。当被点击后，内部会立刻把 to 的值传到 router.push()，所以这个值可以是一个字符串或者是描述目标位置的对象。
+    to: {
+      type: toTypes,
+      required: true
+    },
+    //有时候想要 &lt;router-link&gt; 渲染成某种标签，例如 &lt;li&gt;。 于是我们使用 tag prop 类指定何种标签，同样它还是会监听点击，触发导航。
+    tag: {
+      type: String,
+      default: 'a'
+    },
+    //&quot;是否激活&quot; 默认类名的依据是 inclusive match （全包含匹配）。 举个例子，如果当前的路径
+    //是 /a 开头的，那么 &lt;router-link to=&quot;/a&quot;&gt; 也会被设置 CSS 类名。
+    //&quot;是否激活&quot; 默认类名的依据是 inclusive match （全包含匹配）。 举个例子，如果当前的路径
+    //是 /a 开头的，那么 &lt;router-link to=&quot;/a&quot;&gt; 也会被设置 CSS 类名。
+    exact: Boolean,
+    //设置 append 属性后，则在当前（相对）路径前添加基路径。例如，我们从 /a 导航到一个
+    //相对路径 b，如果没有配置 append，则路径为 /b，如果配了，则为 /a/b
+    append: Boolean,
+    //设置 replace 属性的话，当点击时，会调用 router.replace() 而不是 router.push()，
+    //于是导航后不会留下 history 记录。
+    replace: Boolean,
+    //设置 链接激活时使用的 CSS 类名。默认值可以通过路由的构造选项 linkActiveClass 来全局配置
+    activeClass: String,
+    //配置当链接被精确匹配的时候应该激活的 class。注意默认值也是可以通过路由构造函数
+    //选项 linkExactActiveClass 进行全局配置的。
+    exactActiveClass: String,
+    //声明可以用来触发导航的事件。可以是一个字符串或是一个包含字符串的数组。
+    event: {
+      type: eventTypes,
+      default: 'click'
+    }
+  },
+  render: function render (h) {
+    var this$1 = this;
+
+    var router = this.$router;//路由实例？
+    var current = this.$route;//当前的路由
+    //解析目标位置（格式和 &lt;router-link&gt; 的 to prop 一样），返回包含如下属性的对象：
+    // {
+    //   location: Location;
+    //   route: Route;
+    //   href: string;
+    // }
+    // current 是当前默认的路由 (通常你不需要改变它)
+    // append 允许你在 current 路由上附加路径 (如同 router-link)
+    var ref = router.resolve(this.to, current, this.append);
+    var location = ref.location;
+    var route = ref.route;
+    var href = ref.href;
+
+    var classes = {};
+    //这是在哪里配置的啊？？
+    var globalActiveClass = router.options.linkActiveClass;//匹配到后的全局类
+    var globalExactActiveClass = router.options.linkExactActiveClass;//精准匹配到时的全局类
+    // Support global empty active class
+    var activeClassFallback = globalActiveClass == null
+            ? 'router-link-active'
+            : globalActiveClass;
+    var exactActiveClassFallback = globalExactActiveClass == null
+            ? 'router-link-exact-active'
+            : globalExactActiveClass;
+    var activeClass = this.activeClass == null
+            ? activeClassFallback
+            : this.activeClass;
+    var exactActiveClass = this.exactActiveClass == null
+            ? exactActiveClassFallback
+            : this.exactActiveClass;
+    var compareTarget = location.path
+      ? createRoute(null, location, null, router)
+      : route;
+
+    classes[exactActiveClass] = isSameRoute(current, compareTarget);
+    //activeClass的true或false与exact、isIncludedRoute(current, compareTarget)有关
+    classes[activeClass] = this.exact
+      ? classes[exactActiveClass]
+      : isIncludedRoute(current, compareTarget);
+
+    var handler = function (e) {
+      if (guardEvent(e)) {//守护事件
+        if (this$1.replace) {//如果指定了replace
+          router.replace(location);
+        } else {
+          router.push(location);
+        }
+      }
+    };
+
+    var on = { click: guardEvent };//默认click事件是guardEvent
+    //为事件指定响应函数
+    if (Array.isArray(this.event)) {//如果指定了几种事件
+      this.event.forEach(function (e) { on[e] = handler; });
+    } else {
+      on[this.event] = handler;
+    }
+    //data用于渲染dom，creatElement
+    var data = {
+      class: classes//点击后的类
+    };
+
+    if (this.tag === 'a') {//指定了渲染标签类型为a标签
+      data.on = on;
+      data.attrs = { href: href };//渲染成a link，设置href
+    } else {//其它情况
+      // find the first &lt;a&gt; child and apply listener and href
+      // 看slot里面有没有a，如果有的话应用在第一个a上面
+      // 很好奇这个东西this.$slots.default是什么？？对象？？
+      var a = findAnchor(this.$slots.default);
+      if (a) {
+        // in case the &lt;a&gt; is a static node
+        // 避免a是一个静态节点
+        a.isStatic = false;
+        var extend = _Vue.util.extend;//用的是vue的extend方法
+        var aData = a.data = extend({}, a.data);//拿到a原有的数据
+        aData.on = on;//拿到事件
+        var aAttrs = a.data.attrs = extend({}, a.data.attrs);//拿到a原有的属性
+        aAttrs.href = href;//设置href
+      } else {
+        // doesn't have &lt;a&gt; child, apply listener to self
+        // 没有a的话，监听自己
+        data.on = on;
+      }
+    }
+    //渲染dom
+    return h(this.tag, data, this.$slots.default)
+  }
+};
+</code></pre>
+
+<p>从该组件的props可以看出，只有to属性是必须的。还可以看出router-link默认会渲染成a标签，默认的触发行为是click。具体的props官方文档描述的非常详细，我们可以看看：</p>
+<p><img src="/assets/2-4.png" /></p>
+<p><img src="https://i.imgur.com/3rzqqDA.png" /></p>
+<p><img src="/assets/2-5.png" /></p>
+<p><img src="https://i.imgur.com/sMPQbKW.png" /></p>
+<p><img src="/assets/2-6.png" /></p>
+<p><img src="https://i.imgur.com/dLZ01r6.png" /></p>
+<p><img src="/assets/2-7.png" /></p>
+<p><img src="https://i.imgur.com/IN7rylV.png" /></p>
+<p>可以看到，虽然从props属性来看，只有tag和event有默认值，但是官方文档却说其它一些属性都有对应的默认值，这是为啥呢？其实这些默认值都是在render函数中指定的。 我们来看看render函数。</p>
+<p>render函数首先拿到router实例以及当前页面的路由，然后根据当前route、目标route以及append属性来解析出：</p>
+<pre><code>var router = this.$router;
+var current = this.$route;
+var ref = router.resolve(this.to, current, this.append);
+</code></pre>
+
+<p>resolve函数定义在源码的2575 ~ 2598行,它根据当前route、目标route以及append属性来解析出一个包含location、route、href属性的对象：</p>
+<pre><code>VueRouter.prototype.resolve = function resolve (
+  to,
+  current,
+  append
+) {
+  var location = normalizeLocation(
+    to,
+    current || this.history.current,
+    append,
+    this
+  );
+  var route = this.match(location, current);
+  var fullPath = route.redirectedFrom || route.fullPath;
+  var base = this.history.base;
+  var href = createHref(base, fullPath, this.mode);
+  return {
+    location: location,
+    route: route,
+    href: href,
+    // for backwards compat
+    normalizedTo: location,
+    resolved: route
+  }
+};
+</code></pre>
+
+<p>该方法首先会调用normalizeLocation函数进行规范化，normalizeLocation函数除了接收resolve函数的三个参数外，还会将router实例作为第四个参数传递进去，normalizeLocation定义在vuex源码的1274 ~ 1326行：</p>
+<pre><code>function normalizeLocation (
+  raw,
+  current,
+  append,
+  router
+) {
+  var next = typeof raw === 'string' ? { path: raw } : raw;
+  // named target
+  if (next.name || next._normalized) {
+    return next
+  }
+
+  // relative params
+  if (!next.path &amp;&amp; next.params &amp;&amp; current) {
+    next = assign({}, next);
+    next._normalized = true;
+    var params = assign(assign({}, current.params), next.params);
+    if (current.name) {
+      next.name = current.name;
+      next.params = params;
+    } else if (current.matched.length) {
+      var rawPath = current.matched[current.matched.length - 1].path;
+      next.path = fillParams(rawPath, params, (&quot;path &quot; + (current.path)));
+    } else {
+      warn(false, &quot;relative params navigation requires a current route.&quot;);
+    }
+    return next
+  }
+
+  var parsedPath = parsePath(next.path || '');
+  var basePath = (current &amp;&amp; current.path) || '/';
+  var path = parsedPath.path
+    ? resolvePath(parsedPath.path, basePath, append || next.append)
+    : basePath;
+
+  var query = resolveQuery(
+    parsedPath.query,
+    next.query,
+    router &amp;&amp; router.options.parseQuery
+  );
+
+  var hash = next.hash || parsedPath.hash;
+  if (hash &amp;&amp; hash.charAt(0) !== '#') {
+    hash = &quot;#&quot; + hash;
+  }
+
+  return {
+    _normalized: true,
+    path: path,
+    query: query,
+    hash: hash
+  }
+}
+</code></pre>
+
+<p>normalizeLocation首先会判断&lt;router=link&gt;的to属性，我们知道官方文档曾说：</p>
+<blockquote>
+<p>to表示目标路由的链接。当被点击后，内部会立刻把 to 的值传到 router.push()，所以这个值可以是一个<strong>字符串</strong>或者是<strong>描述目标位置的对象</strong>。</p>
+</blockquote>
+<p>normalizeLocation函数中，判断到to属性是一个字符串的时候会将它转换成一个对象，该字符串作为path属性的值。当to属性本身是一个对象时，会检测是否具有name属性或者是否已经规范化了(_normalized为true)。如果任何一种情况成立都会直接返回。否则则当to不存在path属性但包含params属性时，会合并current和to的params，然后会分以下几种情况：</p>
+<ol>
+<li>如果current有name属性，则将current.name赋给to.name，将params赋给to.params</li>
+<li>否则，如果current的matched属性不为空数组，则取最后一个元素的path，调用fillParams来填充to.path属性。</li>
+</ol>
+<p>然后返回to。</p>
+<p>而如果“<strong>to不存在path属性但包含params属性时</strong>”这个属性不成立，则会根据to.path解析出原始path:</p>
+<pre><code>var parsedPath = parsePath(next.path || '');
+</code></pre>
+
+<p>parsePath函数定义在源码的622 ~ 643行：</p>
+<pre><code>function parsePath (path) {
+  var hash = '';
+  var query = '';
+
+  var hashIndex = path.indexOf('#');
+  if (hashIndex &gt;= 0) {
+    hash = path.slice(hashIndex);
+    path = path.slice(0, hashIndex);
+  }
+
+  var queryIndex = path.indexOf('?');
+  if (queryIndex &gt;= 0) {
+    query = path.slice(queryIndex + 1);
+    path = path.slice(0, queryIndex);
+  }
+
+  return {
+    path: path,
+    query: query,
+    hash: hash
+  }
+}
+</code></pre>
+
+<p>它通过原始path解析出query、hash、path，这里的path是去除query和hash后的。</p>
+<p>然后以current的path作为基准路径：</p>
+<pre><code>var basePath = (current &amp;&amp; current.path) || '/';
+</code></pre>
+
+<p>最后根据去除query和hash后的path（parsedPath）、基准path（basePath）和append属性来调用resolvePath解析出最终的路径，resolvePath定义在源码的580 ~ 620行：</p>
+<pre><code>function resolvePath (
+  relative,
+  base,
+  append
+) {
+  var firstChar = relative.charAt(0);
+  if (firstChar === '/') {
+    return relative
+  }
+
+  if (firstChar === '?' || firstChar === '#') {
+    return base + relative
+  }
+
+  var stack = base.split('/');
+
+  // remove trailing segment if:
+  // - not appending
+  // - appending to trailing slash (last segment is empty)
+  if (!append || !stack[stack.length - 1]) {
+    stack.pop();
+  }
+
+  // resolve relative path
+  var segments = relative.replace(/^\//, '').split('/');
+  for (var i = 0; i &lt; segments.length; i++) {
+    var segment = segments[i];
+    if (segment === '..') {
+      stack.pop();
+    } else if (segment !== '.') {
+      stack.push(segment);
+    }
+  }
+
+  // ensure leading slash
+  if (stack[0] !== '') {
+    stack.unshift('');
+  }
+
+  return stack.join('/')
+}
+</code></pre>
+
+<p>类似的会得到query和hash：</p>
+<pre><code>var query = resolveQuery(
+    parsedPath.query,
+    next.query,
+    router &amp;&amp; router.options.parseQuery
+);
+
+var hash = next.hash || parsedPath.hash;
+if (hash &amp;&amp; hash.charAt(0) !== '#') {
+    hash = &quot;#&quot; + hash;
+}
+</code></pre>
+
+<p>这里面会调用一个resolveQuery函数，该函数用于将字符串形式的query解析成key-value形式，当有多个相同key的时候，value会是一个数组，该函数定义在vue-router源码的164 ~ 183行：</p>
+<pre><code>//解析query
+//返回一个query，但是已经转成了key-value形式
+//实际上还是调用的下面的parseQuery函数
+//只不过它支持extraQuery,_parseQuery这两个额外的参数
+function resolveQuery (
+  query,
+  extraQuery,//额外的请求对象，是一个key-value的
+  _parseQuery//自定义解析函数
+) {
+  if ( extraQuery === void 0 ) extraQuery = {};
+
+  var parse = _parseQuery || parseQuery;
+  var parsedQuery;
+  try {
+    parsedQuery = parse(query || '');
+  } catch (e) {
+    &quot;development&quot; !== 'production' &amp;&amp; warn(false, e.message);
+    parsedQuery = {};
+  }
+  for (var key in extraQuery) {
+    parsedQuery[key] = extraQuery[key];//覆盖/增加
+  }
+  return parsedQuery
+}
+</code></pre>
+
+<p>可以看到，它接收第三个参数用于指定解析方式，而如果没有指定，则会默认使用parseQuery方法，该方法定义在vue-router源码的185 ~ 211行：</p>
+<pre><code>// 解析成一个对象，key-value形式
+// 真正的解析query的函数
+function parseQuery (query) {
+  var res = {};
+
+  query = query.trim().replace(/^(\?|#|&amp;)/, '');//将这几个字符都替换成空字符
+
+  if (!query) {
+    return res
+  }
+
+  query.split('&amp;').forEach(function (param) {
+    var parts = param.replace(/\+/g, ' ').split('=');//首先分隔=
+    var key = decode(parts.shift());//解码key
+    var val = parts.length &gt; 0//解码value
+      ? decode(parts.join('='))
+      : null;
+    //将name=linyu&amp;name=liming&amp;age=20这样的query字符串转换成
+    //{name: ['linyu', 'liming'], age: 20}这样的query对象
+    if (res[key] === undefined) {
+      res[key] = val;
+    } else if (Array.isArray(res[key])) {
+      res[key].push(val);
+    } else {
+      res[key] = [res[key], val];
+    }
+  });
+
+  return res
+}
+</code></pre>
+
+<p>可以看到它才是真正实现将query解析成一个对象的函数。这里面还用到了一个decode方法，用于解析编码，采用的就是原生的decodeURIComponent，这个在162行有定义：</p>
+<pre><code>var decode = decodeURIComponent;
+</code></pre>
+
+<p>query从字符串转对象的逆过程也有一个对应的方法，这个方法就是stringifyQuery,它定义在vue-router源码的213 ~ 243行，在后面的createRoute函数中会用到，在这里提前放出来：</p>
+<pre><code>//是parseQuery的逆过程，将{name: ['linyu', 'liming'], age: 20}之类的query对象
+//转成?name=linyu&amp;name=liming&amp;age=20这样的query字符串
+function stringifyQuery (obj) {
+  var res = obj ? Object.keys(obj).map(function (key) {
+    var val = obj[key];
+
+    if (val === undefined) {
+      return ''
+    }
+
+    if (val === null) {
+      return encode(key)
+    }
+
+    if (Array.isArray(val)) {
+      var result = [];
+      val.forEach(function (val2) {
+        if (val2 === undefined) {
+          return
+        }
+        if (val2 === null) {
+          result.push(encode(key));
+        } else {
+          result.push(encode(key) + '=' + encode(val2));
+        }
+      });
+      return result.join('&amp;')
+    }
+
+    return encode(key) + '=' + encode(val)
+  }).filter(function (x) { return x.length &gt; 0; }).join('&amp;') : null;
+  return res ? (&quot;?&quot; + res) : ''
+}
+</code></pre>
+
+<p>这里面还会调用encode方法，与decode方法不同的是，encode方法调用的并不是原生的encodeURIComponent, 而是对它做了进一步的处理，将encodeURIComponent没有转义的字符<code>!'()*</code>也进行了转义（151 ~ 160 行）：</p>
+<pre><code>/*  */
+//匹配!'()*这几个符号
+var encodeReserveRE = /[!'()*]/g;
+var encodeReserveReplacer = function (c) { return '%' + c.charCodeAt(0).toString(16); };
+var commaRE = /%2C/g;//逗号
+
+// fixed encodeURIComponent which is more conformant to RFC3986:
+// - escapes [!'()*]
+// - preserve commas
+// 也就是说encodeURIComponent默认不会转义!'()*这几个符号，会转义,号
+// encode要做的是转义!'()*这几个符号，不转义,号
+// 自定义encode函数
+var encode = function (str) { return encodeURIComponent(str)
+  .replace(encodeReserveRE, encodeReserveReplacer)
+  .replace(commaRE, ','); };
+</code></pre>
+
+<p>回到normalizeLocation函数，最终normalizeLocation函数会返回一个包含_normalized、path、query、hash的对象：</p>
+<pre><code>return {
+    _normalized: true,
+    path: path,
+    query: query,
+    hash: hash
+}
+</code></pre>
+
+<p>回到resolve函数，在normalizeLocation函数调用后，接下来调用的是match方法，</p>
+<pre><code>var route = this.match(location, current);
+</code></pre>
+
+<p>match方法用于根据location和当前路由得出location对应的路由，它实际上调用的是router实例上<strong>matcher属性的match方法</strong>(源码2467 ~ 2473行)：</p>
+<pre><code>VueRouter.prototype.match = function match (
+  raw,
+  current,
+  redirectedFrom
+) {
+  return this.matcher.match(raw, current, redirectedFrom)
+};
+</code></pre>
+
+<p><strong>matcher属性的match方法</strong>实际上是定义在createMatcher函数中(源码1338 ~ 1501行)定义的, 该函数是在router实例初始化的时候调用的，所做的工作主要是根据routes生成三个重要的数据结构：pathList(path组成的数组)、pathMap(path-&gt;record的映射)、nameMap(name-&gt;record的映射)。最终就是返回一个匹配的路由。</p>
+<p>回到resolve函数，它会继续拿到redirectedFrom，base，mode等属性生成一个对应模式下的超链接：</p>
+<pre><code>var fullPath = route.redirectedFrom || route.fullPath;
+var base = this.history.base;
+var href = createHref(base, fullPath, this.mode);
+</code></pre>
+
+<p>最终resolve函数会返回一个对象，包含三个主要属性：规范化后的location、匹配到的route、超链接href:</p>
+<pre><code>return {
+    location: location,
+    route: route,
+    href: href,
+    // for backwards compat
+    normalizedTo: location,
+    resolved: route
+}
+</code></pre>
+
+<p>回到router-link组件，在拿到to配到到的路由之后，它会定义classes对象：</p>
+<pre><code>var classes = {};
+var globalActiveClass = router.options.linkActiveClass;
+var globalExactActiveClass = router.options.linkExactActiveClass;
+// Support global empty active class
+var activeClassFallback = globalActiveClass == null
+        ? 'router-link-active'
+        : globalActiveClass;
+var exactActiveClassFallback = globalExactActiveClass == null
+        ? 'router-link-exact-active'
+        : globalExactActiveClass;
+var activeClass = this.activeClass == null
+        ? activeClassFallback
+        : this.activeClass;
+var exactActiveClass = this.exactActiveClass == null
+        ? exactActiveClassFallback
+        : this.exactActiveClass;
+var compareTarget = location.path
+  ? createRoute(null, location, null, router)
+  : route;
+
+classes[exactActiveClass] = isSameRoute(current, compareTarget);
+classes[activeClass] = this.exact
+  ? classes[exactActiveClass]
+  : isIncludedRoute(current, compareTarget);
+</code></pre>
+
+<p>其实主要定义了classes的两个属性：activeClass、exactActiveClass。这两个属性可以在使用router-link组件时通过props指定，如果没有指定也可以使用VueRouter实例化时的options配置项指定linkActiveClass、linkExactActiveClass，这两个属性官方文档都有描述：</p>
+<p><img src="/assets/2-8.png" /></p>
+<p><img src="https://i.imgur.com/nD1gxpd.png" /></p>
+<p>而当用户既没有通过router-link组件的props属性也没有通过options指定时，会分别有默认值：router-link-active、router-link-exact-active。</p>
+<p>回到router-link组件，它在location.path存在的时候回调用createRoute函数创建一个route，这个函数定义在源码的250 ~ 277行：</p>
+<pre><code>//创建路由
+function createRoute (
+  record,//
+  location,//
+  redirectedFrom,//
+  router//路由实例
+) {
+  var stringifyQuery$$1 = router &amp;&amp; router.options.stringifyQuery;//拿到路由实例上挂载的stringifyQuery
+
+  var query = location.query || {};
+  try {
+    query = clone(query);//克隆一个？？
+  } catch (e) {}
+  //创建的route包含name、meta、path、hash、query、params、fullPath、matched等属性
+  var route = {//路由信息对象，一条route??
+    name: location.name || (record &amp;&amp; record.name),
+    meta: (record &amp;&amp; record.meta) || {},
+    path: location.path || '/',
+    hash: location.hash || '',
+    query: query,
+    params: location.params || {},
+    fullPath: getFullPath(location, stringifyQuery$$1),
+    matched: record ? formatMatch(record) : []
+  };
+  //如果有redirectedFrom参数，还会设置route的该属性
+  if (redirectedFrom) {
+    route.redirectedFrom = getFullPath(redirectedFrom, stringifyQuery$$1);
+  }
+  return Object.freeze(route)//冻结这个对象
+}
+</code></pre>
+
+<p>主要根据location得到一个<strong>路由信息对象</strong>（详细可见<a href="https://router.vuejs.org/zh-cn/api/route-object.html">官方文档</a>），这里面会调用前面介绍过的stringifyQuery函数对query进行序列化操作。除此之外还调用了clone函数进行克隆操作，该函数定义在源码的279 ~ 291行：</p>
+<pre><code>//经典的克隆方法，不过这里针对数组使用map调用自己挺讨巧的
+function clone (value) {
+  if (Array.isArray(value)) {
+    return value.map(clone)
+  } else if (value &amp;&amp; typeof value === 'object') {
+    var res = {};
+    for (var key in value) {
+      res[key] = clone(value[key]);
+    }
+    return res
+  } else {
+    return value
+  }
+}
+</code></pre>
+
+<p>随后在classes对象上定义exactActiveClass属性时会调用isSameRoute函数，该函数定义在vue-router的319 ~ 340行，它主要是根据两个路由信息对象的属性判断他们是否是同一个路由：</p>
+<pre><code>//判断两个route是不是同一个
+function isSameRoute (a, b) {
+  if (b === START) {//如果b就是传的START
+    return a === b
+  } else if (!b) {//如果没有传递b
+    return false
+  } else if (a.path &amp;&amp; b.path) {//path都有
+    //path去掉反斜线后一样，hash一样，query一样
+    //
+    return (
+      a.path.replace(trailingSlashRE, '') === b.path.replace(trailingSlashRE, '') &amp;&amp;
+      a.hash === b.hash &amp;&amp;
+      isObjectEqual(a.query, b.query)//对象比较
+    )
+  } else if (a.name &amp;&amp; b.name) {//path不存在 &amp;&amp; 名字都存在
+    //名字一样、hash一样、query一样、params一样
+    return (
+      a.name === b.name &amp;&amp;
+      a.hash === b.hash &amp;&amp;
+      isObjectEqual(a.query, b.query) &amp;&amp;
+      isObjectEqual(a.params, b.params)
+    )
+  } else {
+    return false
+  }
+}
+</code></pre>
+
+<p>这里面还调用了isObjectEqual用于判断两个对象是否相等，我们知道对象没法像常规的数据那样去直接比较，所以这里是递归的判断对象的key-value是否相等，这个函数在很多场合（包括其他库）中都出现过：</p>
+<pre><code>//判断对象的key-value是否一样，并不是普通意义上的直接===比较
+//因为两个对象是永远不可能一样的
+function isObjectEqual (a, b) {
+  if ( a === void 0 ) a = {};
+  if ( b === void 0 ) b = {};
+
+  // handle null value #1566
+  if (!a || !b) { return a === b }
+  var aKeys = Object.keys(a);
+  var bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) {
+    return false
+  }
+  return aKeys.every(function (key) {
+    var aVal = a[key];
+    var bVal = b[key];
+    // check nested equality
+    if (typeof aVal === 'object' &amp;&amp; typeof bVal === 'object') {
+      return isObjectEqual(aVal, bVal)
+    }
+    return String(aVal) === String(bVal)
+  })
+}
+</code></pre>
+
+<p>而在classes对象上定义activeClass属性时会调用isIncludedRoute函数，该函数定义在vue-router的364 ~ 372行，它主要是根据两个路由信息对象的属性判断他们是否存在包含关系：</p>
+<pre><code>//路由是否是包含关系，比如：
+//'baidu.com/vuex/age/'.replace(trailingSlashRE, '/')
+//.indexOf('baidu.com/vuex/'.replace(trailingSlashRE, '/'))
+//&amp;&amp; target无hash或target的hash和current的hash相同
+//&amp;&amp; current的query包含target的query
+function isIncludedRoute (current, target) {
+  return (
+    current.path.replace(trailingSlashRE, '/').indexOf(
+      target.path.replace(trailingSlashRE, '/')
+    ) === 0 &amp;&amp;
+    (!target.hash || current.hash === target.hash) &amp;&amp;//target无hash或target的hash和current的hash相同
+    queryIncludes(current.query, target.query)//current的query包含target的query
+  )
+}
+//target有的key，current都有，则认为是included
+function queryIncludes (current, target) {
+  for (var key in target) {
+    if (!(key in current)) {
+      return false
+    }
+  }
+  return true
+}
+</code></pre>
+
+<p>回到router-link组件，它会注册响应的事件响应函数：</p>
+<pre><code>var handler = function (e) {
+  if (guardEvent(e)) {
+    if (this$1.replace) {
+      router.replace(location);
+    } else {
+      router.push(location);
+    }
+  }
+};
+
+var on = { click: guardEvent };
+if (Array.isArray(this.event)) {
+  this.event.forEach(function (e) { on[e] = handler; });
+} else {
+  on[this.event] = handler;
+}
+</code></pre>
+
+<p>因为props属性支持数组，也就是说用户可以指定多种触发事件，所以这里需要遍历event数组，on是一个对象，用于渲染dom时绑定事件。on初始化click事件为guardEvent，当然，在接下来遍历event数组之后event中的所有事件响应函数都会是handler函数了。实际上hander函数必定会调用guardEvent，guardEvent定义在源码的490 ~ 507行，主要对事件进行守卫：</p>
+<pre><code>function guardEvent (e) {
+  // don't redirect with control keys
+  if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) { return }
+  // don't redirect when preventDefault called
+  if (e.defaultPrevented) { return }
+  // don't redirect on right click
+  if (e.button !== undefined &amp;&amp; e.button !== 0) { return }
+  // don't redirect if `target=&quot;_blank&quot;`
+  if (e.currentTarget &amp;&amp; e.currentTarget.getAttribute) {
+    var target = e.currentTarget.getAttribute('target');
+    if (/\b_blank\b/i.test(target)) { return }
+  }
+  // this may be a Weex event which doesn't have this method
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+  return true
+}
+</code></pre>
+
+<p>guardEvent返回true时才会执行相应的路由跳转操作，路由跳转会根据router-link组件是否指定replace属性来决定调用router的push方法还是replace方法。</p>
+<p>接下来会完成dom的渲染操作的准备：</p>
+<pre><code>var data = {
+  class: classes
+};
+
+if (this.tag === 'a') {
+  data.on = on;
+  data.attrs = { href: href };
+} else {
+  // find the first &lt;a&gt; child and apply listener and href
+  var a = findAnchor(this.$slots.default);
+  if (a) {
+    // in case the &lt;a&gt; is a static node
+    a.isStatic = false;
+    var extend = _Vue.util.extend;
+    var aData = a.data = extend({}, a.data);
+    aData.on = on;
+    var aAttrs = a.data.attrs = extend({}, a.data.attrs);
+    aAttrs.href = href;
+  } else {
+    // doesn't have &lt;a&gt; child, apply listener to self
+    data.on = on;
+  }
+}
+
+return h(this.tag, data, this.$slots.default)
+</code></pre>
+
+<p>我们知道，router-link组件通常被渲染成一个a标签，但是并不是说必须是a标签，也可以是其它标签，所以这里更具不同的标签确定了不同的数据绑定方式。最终调用的就是vue的createElement函数进行的。这里面当用户指定的不是a标签的时候，它还是会尝试地在slot中去找是否有a标签，如果有的话会绑定到slot中的第一个a标签，没有则绑定到自身。这里面找slot中的a标签是递归调用findAnchor完成的, 它定义在源码的509 ~ 522行：</p>
+<pre><code>function findAnchor (children) {
+  if (children) {
+    var child;
+    for (var i = 0; i &lt; children.length; i++) {
+      child = children[i];
+      if (child.tag === 'a') {
+        return child
+      }
+      if (child.children &amp;&amp; (child = findAnchor(child.children))) {
+        return child
+      }
+    }
+  }
+}
+</code></pre>
+
+<p><strong>举个例子：</strong></p>
+<p><strong>没有指定tag时(同指定tag为a等同)</strong>：</p>
+<pre><code>&lt;li&gt;&lt;router-link to=&quot;/bar#anchor&quot;&gt;/bar#anchor&lt;/router-link&gt;&lt;/li&gt;
+</code></pre>
+
+<p><img src="/assets/2-9.png" /></p>
+<p><img src="https://i.imgur.com/qDMjCFs.png" /></p>
+<p><strong>有指定tag, 但不为a，且slot中无a标签</strong>：</p>
+<pre><code>&lt;li&gt;&lt;router-link tag=&quot;div&quot; to=&quot;/bar#anchor&quot;&gt;/bar#anchor&lt;/router-link&gt;&lt;/li&gt;
+</code></pre>
+
+<p><img src="/assets/2-10.png" /></p>
+<p><img src="https://i.imgur.com/ynCRVvW.png" /></p>
+<p><strong>有指定tag, 但不为a，且slot中有a标签</strong>：</p>
+<pre><code>&lt;li&gt;&lt;router-link tag=&quot;div&quot; to=&quot;/bar#anchor&quot;&gt;&lt;a&gt;/bar#anchor&lt;/a&gt;&lt;/router-link&gt;&lt;/li&gt;
+</code></pre>
+
+<p><img src="/assets/2-11.png" /></p>
+<p><img src="https://i.imgur.com/C9CZ7iv.png" /></p>
+<h1>第四章 History类</h1>
+<p>Vue-Router默认工作在hash模式，但其实我们是可以认为指定它的工作模式的。在实例化VueRouter时需要传递options参数，options可以设置一个mode属性，用来配置VueRoute的路由模式。VueRoute支持三种路由模式，我们来看看官网的说明：</p>
+<p><img src="/assets/vue-router1.png" /></p>
+<p><img src="https://i.imgur.com/cFXmXdg.png" /></p>
+<p>那么这几种模式是如何实现的呢？</p>
+<p>实际上，这三种模式分别是通过三个类来实现的：</p>
+<ol>
+<li>hash模式由HashHistory类实现。</li>
+<li>history模式由HTML5History类实现。</li>
+<li>abstract模式由AbstractHistory类实现。</li>
+</ol>
+<p>而这三个类其实又都继承于History类。要想弄清楚这三种模式，首先得从他们的父类入手。</p>
+<h3>4.1 History类</h3>
+<p>History类定义在vue-router源码的1845 ~ 2143行，我们来具体看一下它的内容。</p>
+<h4>4.1.1 成员属性</h4>
+<p>History类接收router和base两个参数，共有9个成员属性，分别是：</p>
+<ol>
+<li>router。 表示VueRouter实例。实例化History类时的第一个参数。</li>
+<li>base。 表示基路径。会用normalizeBase进行规范化。实例化History类时的第二个参数。</li>
+<li>current。表示当前路由(route)。</li>
+<li>pending。描述阻塞状态。</li>
+<li>ready。描述是否就绪状态。</li>
+<li>readyCbs。就绪状态的回调数组。</li>
+<li>readyErrorCbs。就绪时产生错误的回调数组。</li>
+<li>errorCbs。错误的回调数组</li>
+<li>cb。监听时的回调函数。</li>
+</ol>
+<p>其源码定义在1845 ~ 1855行：</p>
+<pre><code>var History = function History (router, base) {
+  this.router = router;
+  this.base = normalizeBase(base);//规范化base
+  // start with a route object that stands for &quot;nowhere&quot;
+  this.current = START;//当前路径，初始化为/
+  this.pending = null;
+  this.ready = false;
+  this.readyCbs = [];
+  this.readyErrorCbs = [];
+  this.errorCbs = [];
+};
+</code></pre>
+
+<p>这里面咋一看只有八个成员属性，少了一个cb。实际上这个cb是在调用listen原型方法的时候定义的，我们稍后会讲到原型方法。</p>
+<p>这里面用到了一个normalizeBase方法，该方法定义在vue-router源码的2009 ~ 2027行：</p>
+<pre><code>//归一化base
+function normalizeBase (base) {
+  if (!base) {//如果没有提供base则从dom里面找base标签
+    if (inBrowser) {//如果在浏览器环境
+      // respect &lt;base&gt; tag
+      var baseEl = document.querySelector('base');
+      base = (baseEl &amp;&amp; baseEl.getAttribute('href')) || '/';
+      // strip full URL origin
+      // 提取完整的URL
+      base = base.replace(/^https?:\/\/[^\/]+/, '');
+    } else {//非浏览器环境直接置为'/'
+      base = '/';
+    }
+  }
+  // make sure there's the starting slash
+  // 确保以斜线开头
+  if (base.charAt(0) !== '/') {
+    base = '/' + base;
+  }
+  // remove trailing slash
+  // 确保最后不以斜线结束
+  return base.replace(/\/$/, '')
+}
+</code></pre>
+
+<p>可以看到，该函数主要是用于对提供的base进行规范化处理。这里面又分几种情况：</p>
+<ul>
+<li>如果没有提供base参数，则判断是否在浏览器环境中，如果在，则从DOM中查找base标签，如果找到了base标签，则拿他的href，否则用'/'作为base。然后根据此时的base去除主机和域名，拿到真正的base。比如'http://www.baidu.com/a/b/c'.replace(/^https?:\/\/[^\/]+/, '');拿到'/a/b/c'。如果不在浏览器环境，则将base设置为'/'</li>
+<li>如果提供了base，则判断是不是以'/'开头，如果不是，则加上'/'</li>
+<li>然后判断base是不是以'/'结尾，如果是，则去掉结尾的'/'</li>
+</ul>
+<p>也就是说，如果base是'/'，会返回一个''（空字符串）</p>
+<h4>4.1.2 原型方法</h4>
+<p>History类定义了<code>listen</code>、<code>onReady</code>、<code>onError</code>、<code>transitionTo</code>、<code>confirmTransition</code>、<code>updateRoute</code> 6个原型方法。我们分别来看一下它的实现。</p>
+<h5>4.1.2.1 History.prototype.listen方法</h5>
+<p>History.prototype.listen方法定义在vue-router源码的1857 ~ 1859行，通过它来监听路由的变化，并且会更新实例上的cb属性。其源码如下：</p>
+<pre><code>History.prototype.listen = function listen (cb) {
+  this.cb = cb;//callback属性
+};
+</code></pre>
+
+<h5>4.1.2.2 History.prototype.onReady方法</h5>
+<p>History.prototype.onReady方法定义在vue-router源码的1861 ~ 1870行，它接收cb, errorCb两个参数，用于注册ready时的回调。当History实例的当前ready状态为true时，会执行cb回调，否则将cb回调函数放入实例的readyCbs队列。如果提供了errorCb参数，则将errorCb加入readyErrorCbs队列。其源码如下：</p>
+<pre><code>History.prototype.onReady = function onReady (cb, errorCb) {
+  if (this.ready) {
+    cb();
+  } else {
+    this.readyCbs.push(cb);
+    if (errorCb) {
+      this.readyErrorCbs.push(errorCb);
+    }
+  }
+};
+</code></pre>
+
+<h5>4.1.2.3 History.prototype.onError方法</h5>
+<p>History.prototype.onError方法定义在vue-router源码的1872 ~ 1874行，它接收一个errorCb参数，用于注册错误的回调。它会把errorCb加入到History实例的errorCbs队列。其源码如下：</p>
+<pre><code>History.prototype.onError = function onError (errorCb) {
+  this.errorCbs.push(errorCb);
+};
+</code></pre>
+
+<h5>4.1.2.4 History.prototype.transitionTo方法</h5>
+<p>History.prototype.transitionTo方法定义在vue-router源码的1876 ~ 1899行，它主要用于路由跳转时调用。接收location, onComplete, onAbort三个参数，分别表示目标位置、完成时回调、中止时回调。transitionTo方法实际上是先拿当前路由和location进行路由匹配，当匹配到对应的目标route后，调用confirmTransition完成真正的跳转操作，confirmTransition方法的源码我们稍后会讲。transitionTo方法的源码如下：</p>
+<pre><code>History.prototype.transitionTo = function transitionTo (location, onComplete, onAbort) {
+    var this$1 = this;
+
+  var route = this.router.match(location, this.current);
+  this.confirmTransition(route, function () {//成功时的callback
+    this$1.updateRoute(route);
+    onComplete &amp;&amp; onComplete(route);
+    this$1.ensureURL();
+
+    // fire ready cbs once
+    if (!this$1.ready) {
+      this$1.ready = true;
+      this$1.readyCbs.forEach(function (cb) { cb(route); });
+    }
+  }, function (err) {//失败时的callback
+    if (onAbort) {
+      onAbort(err);
+    }
+    if (err &amp;&amp; !this$1.ready) {
+      this$1.ready = true;
+      this$1.readyErrorCbs.forEach(function (cb) { cb(err); });
+    }
+  });
+};
+</code></pre>
+
+<h5>4.1.2.5 History.prototype.confirmTransition方法</h5>
+<p>History.prototype.confirmTransition方法定义在vue-router源码的1901 ~ 1998行，它是真正完成路由跳转的函数。它接收route, onComplete, onAbort三个参数，分别表示目标路由、完成时回调、中止时回调。我们来看看它的源码：</p>
+<pre><code>History.prototype.confirmTransition = function confirmTransition (route, onComplete, onAbort) {
+    var this$1 = this;
+
+  var current = this.current;
+  var abort = function (err) {
+    if (isError(err)) {
+      if (this$1.errorCbs.length) {
+        this$1.errorCbs.forEach(function (cb) { cb(err); });
+      } else {
+        warn(false, 'uncaught error during route navigation:');
+        console.error(err);
+      }
+    }
+    onAbort &amp;&amp; onAbort(err);
+  };
+  if (
+    isSameRoute(route, current) &amp;&amp;
+    // in the case the route map has been dynamically appended to
+    route.matched.length === current.matched.length
+  ) {
+    this.ensureURL();
+    return abort()
+  }
+
+  var ref = resolveQueue(this.current.matched, route.matched);
+    var updated = ref.updated;
+    var deactivated = ref.deactivated;
+    var activated = ref.activated;
+
+  var queue = [].concat(
+    // in-component leave guards
+    extractLeaveGuards(deactivated),
+    // global before hooks
+    this.router.beforeHooks,
+    // in-component update hooks
+    extractUpdateHooks(updated),
+    // in-config enter guards
+    activated.map(function (m) { return m.beforeEnter; }),
+    // async components
+    resolveAsyncComponents(activated)
+  );
+
+  this.pending = route;// 导航被触发(对应第1步)
+  var iterator = function (hook, next) {
+    if (this$1.pending !== route) {
+      return abort()
+    }
+    try {
+      hook(route, current, function (to) {
+        if (to === false || isError(to)) {
+          // next(false) -&gt; abort navigation, ensure current URL
+          this$1.ensureURL(true);
+          abort(to);
+        } else if ( 
+          typeof to === 'string' ||
+          (typeof to === 'object' &amp;&amp; (
+            typeof to.path === 'string' ||
+            typeof to.name === 'string'
+          ))
+        ) {
+          // next('/') or next({ path: '/' }) -&gt; redirect
+          abort();
+          if (typeof to === 'object' &amp;&amp; to.replace) {
+            this$1.replace(to);
+          } else {
+            this$1.push(to);
+          }
+        } else {
+          // confirm transition and pass on the value
+          next(to);
+        }
+      });
+    } catch (e) {
+      abort(e);
+    }
+  };
+
+  runQueue(queue, iterator, function () {
+    var postEnterCbs = [];
+    var isValid = function () { return this$1.current === route; };
+    // wait until async components are resolved before
+    // extracting in-component enter guards
+    var enterGuards = extractEnterGuards(activated, postEnterCbs, isValid);
+    var queue = enterGuards.concat(this$1.router.resolveHooks);
+    runQueue(queue, iterator, function () {
+      if (this$1.pending !== route) {
+        return abort()
+      }
+      this$1.pending = null;
+      onComplete(route);
+      if (this$1.router.app) {
+        this$1.router.app.$nextTick(function () {
+          postEnterCbs.forEach(function (cb) { cb(); });
+        });
+      }
+    });
+  });
+};
+</code></pre>
+
+<p>confirmTransition是一个非常重要的函数，内容也比较多，我们来一段段地看。</p>
+<p>confirmTransition会先判断当前路由和目标路由是否同一个路由，如果是则中止跳转。会调用传递的abort方法。abort定义在confirmTransition函数内部：</p>
+<pre><code>  var abort = function (err) {
+    if (isError(err)) {
+      if (this$1.errorCbs.length) {
+        this$1.errorCbs.forEach(function (cb) { cb(err); });
+      } else {
+        warn(false, 'uncaught error during route navigation:');
+        console.error(err);
+      }
+    }
+    onAbort &amp;&amp; onAbort(err);
+  };
+</code></pre>
+
+<p>我们看到，他主要做的是执行history实例上errorCbs数组中注册的错误回调。当errorCbs数组中注册的错误回调执行完成之后再执行用户调用transitionTo方法传递的错误回调函数。</p>
+<p>随后，confirmTransition函数会拿当前路由和目标路由进行解析，解析出<strong>失活的组件</strong>、<strong>重用的组件<strong>、</strong>激活的组件</strong>：</p>
+<pre><code>var ref = resolveQueue(this.current.matched, route.matched);
+var updated = ref.updated;// 重用的组件
+var deactivated = ref.deactivated;// 失活的组件
+var activated = ref.activated;// 激活的组件
+</code></pre>
+
+<p>后面的代码就涉及到一个非常重要的概念了——<strong>导航解析流程</strong>。<a href="https://router.vuejs.org/zh-cn/advanced/navigation-guards.html">官方文档</a>对此有详尽的描述：</p>
+<p><img src="/assets/2-12.png" /></p>
+<p><img src="https://i.imgur.com/BL2ZLyb.png" /></p>
+<p>继续看confirmTransition函数，我们可以看到，它将前6个步鄹的导航钩子提取到一个队列里，然后执行该队列：</p>
+<pre><code>var queue = [].concat(
+    // in-component leave guards
+    extractLeaveGuards(deactivated),//对应第2步——提取失活的组件的离开守卫
+    // global before hooks
+    this.router.beforeHooks, // 对应第3步——全局的 beforeEach 守卫
+    // in-component update hooks
+    extractUpdateHooks(updated),// 对应第4步——重用的组件里 beforeRouteUpdate 守卫
+    // in-config enter guards
+    activated.map(function (m) { return m.beforeEnter; }), // 对应第5步——路由配置里 beforeEnter 守卫
+    // async components
+    resolveAsyncComponents(activated) // 对应第6步——提取异步路由组件守卫
+);
+</code></pre>
+
+<p>队列是调用runQueue函数执行的，runQueue函数定义在源码的1717 ~ 1732行，它所做的相当于是遍历数组queue，将数组元素作为fn的参数执行响应的函数，当数组遍历完后执行响应的回调cb:</p>
+<pre><code>function runQueue (queue, fn, cb) {
+  var step = function (index) {
+    if (index &gt;= queue.length) {
+      cb();
+    } else {
+      if (queue[index]) {
+        fn(queue[index], function () {
+          step(index + 1);
+        });
+      } else {
+        step(index + 1);
+      }
+    }
+  };
+  step(0);
+}
+</code></pre>
+
+<p>runQueue的实际调用如下：</p>
+<pre><code>runQueue(queue, iterator, function () {
+    var postEnterCbs = [];
+    var isValid = function () { return this$1.current === route; };
+    // wait until async components are resolved before
+    // extracting in-component enter guards
+    var enterGuards = extractEnterGuards(activated, postEnterCbs, isValid);
+    var queue = enterGuards.concat(this$1.router.resolveHooks);
+    runQueue(queue, iterator, function () {
+      if (this$1.pending !== route) {
+        return abort()
+      }
+      this$1.pending = null;
+      onComplete(route);
+      if (this$1.router.app) {
+        this$1.router.app.$nextTick(function () {
+          postEnterCbs.forEach(function (cb) { cb(); });
+        });
+      }
+    });
+});
+</code></pre>
+
+<p>实际上它就是遍历前面的定义的数组queue（包含导航流程的前6步），将这每种导航守卫作为参数调用iterator，iterator的代码也定义在confirmTransition函数内：</p>
+<pre><code>var iterator = function (hook, next) {
+    if (this$1.pending !== route) {
+      return abort()
+    }
+    try {
+      hook(route, current, function (to) {
+        if (to === false || isError(to)) {
+          // next(false) -&gt; abort navigation, ensure current URL
+          this$1.ensureURL(true);
+          abort(to);
+        } else if ( 
+          typeof to === 'string' ||
+          (typeof to === 'object' &amp;&amp; (
+            typeof to.path === 'string' ||
+            typeof to.name === 'string'
+          ))
+        ) {
+          // next('/') or next({ path: '/' }) -&gt; redirect
+          abort();
+          if (typeof to === 'object' &amp;&amp; to.replace) {
+            this$1.replace(to);
+          } else {
+            this$1.push(to);
+          }
+        } else {
+          // confirm transition and pass on the value
+          next(to);
+        }
+      });
+    } catch (e) {
+      abort(e);
+    }
+};
+</code></pre>
+
+<p>它所完成的工作就是<a href="https://router.vuejs.org/zh-cn/advanced/navigation-guards.html">官方文档</a>所描述的：</p>
+<p><img src="/assets/2-13.png" /></p>
+<p><img src="https://i.imgur.com/bi13m3J.png" /></p>
+<p>在runQueue执行完，回调调用前，实际上也就完成了<strong>完整的导航解析流程</strong>的前6步：</p>
+<p><img src="/assets/2-14.png" /></p>
+<p><img src="https://i.imgur.com/IjKFc96.png" /></p>
+<p>剩余的导航流程是在runQueue的回调函数中完成的，代码前面已经粘贴过，这里我们再次单独拎出来看看：</p>
+<pre><code>var postEnterCbs = [];
+var isValid = function () { return this$1.current === route; };
+// wait until async components are resolved before
+// extracting in-component enter guards
+var enterGuards = extractEnterGuards(activated, postEnterCbs, isValid);// 被激活的组件里 beforeRouteEnter 守卫
+var queue = enterGuards.concat(this$1.router.resolveHooks);// 全局的 beforeResolve 守卫
+runQueue(queue, iterator, function () {
+  if (this$1.pending !== route) {
+    return abort()
+  }
+  this$1.pending = null;
+  onComplete(route);// 导航被确认。
+  if (this$1.router.app) {
+    this$1.router.app.$nextTick(function () {
+      postEnterCbs.forEach(function (cb) { cb(); });
+    });
+  }
+});
+</code></pre>
+
+<p>我们看到它实际上提取了两种守卫——<strong>被激活的组件里 beforeRouteEnter 守卫(对应第7步)</strong>和<strong>全局的 beforeResolve 守卫(对应第8步)</strong>。</p>
+<p>然后第二次调用runQueue执行队列，执行完后在回调函数中执行onComplete方法以<strong>确认导航(对应第9步)</strong>。</p>
+<p>在执行onComplete方法后一定会执行updateRoute方法，我们看看transitionTo中调用confirmTransition时的回调(1880 ~ 1898行)予以确认一下：</p>
+<pre><code>this.confirmTransition(route, function () {
+    this$1.updateRoute(route);//更新路由
+    onComplete &amp;&amp; onComplete(route);
+    this$1.ensureURL();
+
+    // fire ready cbs once
+    if (!this$1.ready) {
+      this$1.ready = true;
+      this$1.readyCbs.forEach(function (cb) { cb(route); });
+    }
+  }, function (err) {
+    if (onAbort) {
+      onAbort(err);
+    }
+    if (err &amp;&amp; !this$1.ready) {
+      this$1.ready = true;
+      this$1.readyErrorCbs.forEach(function (cb) { cb(err); });
+    }
+});
+</code></pre>
+
+<p>而执行updateRoute函数就必定会执行全局的 afterEach 钩子（<strong>对应第10步</strong>），可以看看History.prototype.updateRoute方法的实现就知道了：</p>
+<pre><code>History.prototype.updateRoute = function updateRoute (route) {
+  var prev = this.current;
+  this.current = route;
+  this.cb &amp;&amp; this.cb(route);
+  this.router.afterHooks.forEach(function (hook) {
+    hook &amp;&amp; hook(route, prev);
+  });
+};
+</code></pre>
+
+<p>最后会调用nextTick(<strong>对应第11步</strong>)，执行beforeRouteEnter 守卫中传给 next 的回调函数（<strong>对应第12步</strong>）：</p>
+<pre><code>if (this$1.router.app) {
+    this$1.router.app.$nextTick(function () {//
+      postEnterCbs.forEach(function (cb) { cb(); });
+    });
+}
+</code></pre>
+
+<p>其中的postEnterCbs是在调用extractEnterGuards方法提取beforeRouteEnter 守卫时赋值的。</p>
+<p>至此，第二个runQueue的调用完成了剩余的全部导航流程：</p>
+<p><img src="/assets/2-15.png" /></p>
+<p><img src="https://i.imgur.com/GUkZnfo.png" /></p>
+<h5>4.1.2.6 History.prototype.updateRoute方法</h5>
+<p>History.prototype.updateRoute方法定义在vue-router源码的2000 ~ 2007行，用于更新路由。 显然，更新路由一般发生在路由跳转完成之后，也就是confirmTransition的成功回调(onComplete)里面, 它所做的主要就是将目标路由赋给current，完成更新。当然还需要调用history实例上的回调cb，除此之外还得调用router实例上注册的后置钩子(afterHooks)函数。</p>
+<pre><code>History.prototype.updateRoute = function updateRoute (route) {
+  var prev = this.current;
+  this.current = route;
+  this.cb &amp;&amp; this.cb(route);
+  this.router.afterHooks.forEach(function (hook) {
+    hook &amp;&amp; hook(route, prev);
+  });
+};
+</code></pre>
+
+<h1>第五章 HTML5History类</h1>
+<h3>5.1 HTML5History类源码实现</h3>
+<p>HTML5History类定义在vue-router源码的2143 ~ 2226行，采用的是经典的IIFE(立即调用函数表达式)方式实现的：</p>
+<pre><code>//HTML5History继承自History
+//HTML5History模式下支持滚动行为
+var HTML5History = (function (History$$1) {
+  function HTML5History (router, base) {
+    var this$1 = this;
+
+    History$$1.call(this, router, base);//调用父类的构造函数
+
+    var expectScroll = router.options.scrollBehavior;
+
+    if (expectScroll) {
+      setupScroll();
+    }
+
+    var initLocation = getLocation(this.base);
+    window.addEventListener('popstate', function (e) {
+      var current = this$1.current;
+
+      // Avoiding first `popstate` event dispatched in some browsers but first
+      // history route not updated since async guard at the same time.
+      var location = getLocation(this$1.base);
+      if (this$1.current === START &amp;&amp; location === initLocation) {
+        return
+      }
+
+      this$1.transitionTo(location, function (route) {
+        if (expectScroll) {
+          handleScroll(router, route, current, true);
+        }
+      });
+    });
+  }
+  //下面三步是经典的类继承的实现
+  if ( History$$1 ) HTML5History.__proto__ = History$$1;
+  //实现HTML5History.prototype.__proto__ = History$$1.prototype
+  HTML5History.prototype = Object.create( History$$1 &amp;&amp; History$$1.prototype );
+  //修正构造函数
+  HTML5History.prototype.constructor = HTML5History;
+  //定义原型函数go
+  HTML5History.prototype.go = function go (n) {
+    window.history.go(n);
+  };
+  //定义原型函数push
+  HTML5History.prototype.push = function push (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    var ref = this;
+    var fromRoute = ref.current;
+    this.transitionTo(location, function (route) {
+      pushState(cleanPath(this$1.base + route.fullPath));
+      handleScroll(this$1.router, route, fromRoute, false);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+  //定义原型函数replace
+  HTML5History.prototype.replace = function replace (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    var ref = this;
+    var fromRoute = ref.current;
+    this.transitionTo(location, function (route) {
+      replaceState(cleanPath(this$1.base + route.fullPath));
+      handleScroll(this$1.router, route, fromRoute, false);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+  //定义原型函数ensureURL
+  HTML5History.prototype.ensureURL = function ensureURL (push) {
+    if (getLocation(this.base) !== this.current.fullPath) {
+      var current = cleanPath(this.base + this.current.fullPath);
+      push ? pushState(current) : replaceState(current);
+    }
+  };
+  //定义原型函数getCurrentLocation
+  HTML5History.prototype.getCurrentLocation = function getCurrentLocation () {
+    return getLocation(this.base)
+  };
+
+  return HTML5History;//返回这个类
+}(History));
+</code></pre>
+
+<p>该类继承自History类，继承的方式也是经典的类继承方式，我们来大体看一下：</p>
+<p>该函数的构造函数中首先借用父类的构造函数（2147行）：</p>
+<pre><code>History$$1.call(this, router, base);//调用父类的构造函数
+</code></pre>
+
+<p>然后实现原型继承（2174 ~ 2176行）：</p>
+<pre><code>//下面三步是经典的类继承的实现
+  if ( History$$1 ) HTML5History.__proto__ = History$$1;
+  //实现HTML5History.prototype.__proto__ = History$$1.prototype
+  HTML5History.prototype = Object.create( History$$1 &amp;&amp; History$$1.prototype );
+  //修正构造函数
+  HTML5History.prototype.constructor = HTML5History;
+</code></pre>
+
+<p>这样就完成了从History类继承。</p>
+<p>我们知道，HTML5History模式支持滚动行为，所以在构造函数中有这么一段代码（2149 ~ 2171行）处理用户的滚动行为：</p>
+<pre><code>var expectScroll = router.options.scrollBehavior;
+
+if (expectScroll) {
+  setupScroll();
+}
+
+var initLocation = getLocation(this.base);
+window.addEventListener('popstate', function (e) {
+  var current = this$1.current;
+
+  // Avoiding first `popstate` event dispatched in some browsers but first
+  // history route not updated since async guard at the same time.
+  var location = getLocation(this$1.base);
+  if (this$1.current === START &amp;&amp; location === initLocation) {
+    return
+  }
+
+  this$1.transitionTo(location, function (route) {
+    if (expectScroll) {
+      handleScroll(router, route, current, true);
+    }
+  });
+});
+</code></pre>
+
+<p>关于HTML5History模式的详细内容在后面的小节介绍。</p>
+<p>HTML5History类定义了一些与浏览器操作有关的原型函数，我们分别来看一下。</p>
+<h4>5.1.1 原型函数</h4>
+<h5>5.1.1.1 HTML5History.prototype.go</h5>
+<p>HTML5History.prototype.go方法定义在2178 ~ 2180行，它实际上调用的就是原生的window.history.go(n)来实现的：</p>
+<pre><code>//定义原型函数go
+HTML5History.prototype.go = function go (n) {
+    window.history.go(n);
+};
+</code></pre>
+
+<h5>5.1.1.2 HTML5History.prototype.push</h5>
+<p>HTML5History.prototype.push方法定义在源码的2182 ~ 2192行，该方法用于HTML5History模式下将当新路由加入到history中。因为是 HTML5History模式，需要支持滚动，所以它在调用transitionTo方法的成功回调中会调用handleScroll方法：</p>
+<pre><code>  //定义原型函数push
+  HTML5History.prototype.push = function push (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    var ref = this;
+    var fromRoute = ref.current;
+    this.transitionTo(location, function (route) {
+      pushState(cleanPath(this$1.base + route.fullPath));
+      handleScroll(this$1.router, route, fromRoute, false);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+</code></pre>
+
+<h5>5.1.1.3 HTML5History.prototype.replace</h5>
+<p>HTML5History.prototype.replace定义在源码的2194 ~ 2204行，该方法用于HTML5History模式下将新路由替换history中当前路由。因为是 HTML5History模式，需要支持滚动，所以它在调用transitionTo方法的成功回调中会调用handleScroll方法：</p>
+<pre><code>//定义原型函数replace
+  HTML5History.prototype.replace = function replace (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    var ref = this;
+    var fromRoute = ref.current;
+    this.transitionTo(location, function (route) {
+      replaceState(cleanPath(this$1.base + route.fullPath));
+      handleScroll(this$1.router, route, fromRoute, false);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+</code></pre>
+
+<h5>5.1.1.4 HTML5History.prototype.ensureURL</h5>
+<p>HTML5History.prototype.ensureURL定义在vue-router源码的2206 ~ 2211行：</p>
+<pre><code>HTML5History.prototype.ensureURL = function ensureURL (push) {
+    if (getLocation(this.base) !== this.current.fullPath) {
+      var current = cleanPath(this.base + this.current.fullPath);
+      push ? pushState(current) : replaceState(current);
+    }
+};
+</code></pre>
+
+<p>通过getLocation从window.location.pathname中拿去除base后的完整路径，与current属性上的fullPath作比较，如果二者不一致说明URL发生了变化，然后调用cleanPath进行进化(主要就是去除两个连续的/)后，跟新state,具体是增加还是替换取决于传递的参数:</p>
+<pre><code>HTML5History.prototype.ensureURL = function ensureURL (push) {
+    if (getLocation(this.base) !== this.current.fullPath) {
+      var current = cleanPath(this.base + this.current.fullPath);
+      push ? pushState(current) : replaceState(current);
+    }
+};
+</code></pre>
+
+<p>getLocation定义在2220 ~ 2226行：</p>
+<pre><code>function getLocation (base) {
+  var path = window.location.pathname;
+  if (base &amp;&amp; path.indexOf(base) === 0) {
+    path = path.slice(base.length);
+  }
+  return (path || '/') + window.location.search + window.location.hash
+}
+</code></pre>
+
+<p>cleanPath定义在645 ~ 647行：</p>
+<pre><code>//净化path，主要就是将连续两个//换成一个
+//'a//b///c/d//f'.replace(/\/\//g, '/') &quot;a/b//c/d/f&quot;
+//并没法完全净化，只会净化一次
+function cleanPath (path) {
+    return path.replace(/\/\//g, '/')
+}
+</code></pre>
+
+<h5>5.1.1.5 HTML5History.prototype.getCurrentLocation</h5>
+<p>HTML5History.prototype.getCurrentLocation定义在2213 ~ 2215行，用于拿当前URL的path, 包含去掉base后的path, search, 和hash部分
+	HTML5History.prototype.getCurrentLocation = function getCurrentLocation () {
+	    return getLocation(this.base)
+	};</p>
+<p>实际调用的还是getLocation，getLocation我们在前面已经介绍过了。</p>
+<h3>5.2 HTML5History模式是如何支持滚动行为的？</h3>
+<p>我们知道，vue-router支持三种history模式，其中在使用HTML5 history 模式时可以支持<strong>滚动行为</strong>(注： 从源码来看，hash模式应该也是支持滚动行为的)，那么什么是滚动行为呢？ 官方是这么说的：</p>
+<blockquote>
+<p>使用前端路由，当切换到新路由时，想要页面滚到顶部，或者是保持原先的滚动位置，就像重新加载页面那样。 vue-router 能做到，而且更好，它让你可以自定义路由切换时页面如何滚动。</p>
+</blockquote>
+<p>关于滚动行为的介绍与用法，官方文档有详细的描述，这里我们直接粘贴过来看看：</p>
+<h4>5.2.1 vue-router官方文档关于滚动行为的介绍</h4>
+<h2></h2>
+<p>当创建一个 Router 实例，你可以提供一个 scrollBehavior 方法：</p>
+<pre><code>const router = new VueRouter({
+  routes: [...],
+  scrollBehavior (to, from, savedPosition) {
+    // return 期望滚动到哪个的位置
+  }
+})
+</code></pre>
+
+<p>scrollBehavior 方法接收 to 和 from 路由对象。第三个参数 savedPosition 当且仅当 popstate 导航 (通过浏览器的 前进/后退 按钮触发) 时才可用。</p>
+<p>这个方法返回滚动位置的对象信息，长这样：</p>
+<ul>
+<li>{ x: number, y: number }</li>
+<li>{ selector: string, offset? : { x: number, y: number }} (offset 只在 2.6.0+ 支持)</li>
+</ul>
+<p>如果返回一个 falsy (译者注：falsy 不是 false，<a href="https://developer.mozilla.org/zh-CN/docs/Glossary/Falsy">参考这里</a>)的值，或者是一个空对象，那么不会发生滚动。</p>
+<p>举例：</p>
+<pre><code>scrollBehavior (to, from, savedPosition) {
+  return { x: 0, y: 0 }
+}
+</code></pre>
+
+<p>对于所有路由导航，简单地让页面滚动到顶部。</p>
+<p>返回 savedPosition，在按下 后退/前进 按钮时，就会像浏览器的原生表现那样：</p>
+<pre><code>scrollBehavior (to, from, savedPosition) {
+  if (savedPosition) {
+    return savedPosition
+  } else {
+    return { x: 0, y: 0 }
+  }
+}
+</code></pre>
+
+<p>如果你要模拟『滚动到锚点』的行为：</p>
+<pre><code>scrollBehavior (to, from, savedPosition) {
+  if (to.hash) {
+    return {
+      selector: to.hash
+    }
+  }
+}
+</code></pre>
+
+<p>我们还可以利用<a href="https://router.vuejs.org/zh-cn/advanced/meta.html">路由元信息</a>更细颗粒度地控制滚动。查看完整例子请<a href="https://github.com/vuejs/vue-router/blob/next/examples/scroll-behavior/app.js">移步这里</a>。</p>
+<h2></h2>
+<p>整个文档的意思就是说，在HTML5 history 模式时，通过在路由实例化时提供一个scrollBehavior选项来指定在路由切换时页面的滚动行为。如果你希望发生滚动行为，该函数必须返回一个对象，这个对象必须包含以下两种格式的信息：</p>
+<ul>
+<li>{ x: number, y: number }</li>
+<li>{ selector: string, offset? : { x: number, y: number }} (offset 只在 2.6.0+ 支持)</li>
+</ul>
+<p>而如果你不希望发生滚动行为，那么你只需要给它返回一个falsy类型的值就可以了。</p>
+<p>而返回savedPosition则在按下 后退/前进 按钮时，就会像浏览器的原生表现那样：</p>
+<pre><code>scrollBehavior (to, from, savedPosition) {
+  if (savedPosition) {
+    return savedPosition
+  } else {
+    return { x: 0, y: 0 }
+  }
+}
+</code></pre>
+
+<p>这句话什么意思呢？就是说，你正常的点击页面的方式进行路由导航时，savedPosition值是null, 是不会返回savedPosition的，而当你点击后退/前进 按钮时，此时savedPosition值不为null，一定会返回savedPosition。</p>
+<p>我们举个例子来看看：</p>
+<p><img src="/assets/1.png" /></p>
+<p><img src="https://i.imgur.com/GvCSXn4.png" /></p>
+<p>这个例子定义了四个路由，当直接点击链接切换路由的时候，savedPosition总是null，而当点击浏览器的前进/后退按钮时，savedPosition不为空，页面会滚动到对应的位置。</p>
+<p>我们现在已经知道了路由切换回进行滚动行为，那么我们在来看看路由是如何切换的呢？也就是说当用户点击链接后，路由是如何实现的呢? 实际上，HTML5 History模式下主要采用的是两个方法和一个事件：</p>
+<ul>
+<li>history.pushState()</li>
+<li>history.replaceState()</li>
+<li>window.onpopstate事件</li>
+</ul>
+<p>前两个方法都是在HTML5中才引入的，我们来具体了解一下他们，这里直接拿MDN文档贴过来：</p>
+<h2></h2>
+<h4>5.2.2 HTML5 规范中关于history的介绍</h4>
+<h5>5.2.2.1 pushState() 方法</h5>
+<p>在 HTML 文件中,  history.pushState() 方法向浏览器历史添加了一个状态。</p>
+<p>pushState() 带有三个参数：一个状态对象，一个标题（现在被忽略了），以及一个可选的URL地址。下面将对这三个参数进行细致的检查：</p>
+<ul>
+<li>state object — 状态对象是一个由 pushState()方法创建的、与历史纪录相关的JS对象。当用户定向到一个新的状态时，会触发popstate事件。事件的state属性包含了历史纪录的state对象。（译者注：总而言之，它存储JSON字符串，可以用在popstate事件中。）state 对象可以是任何可以序列化的东西。由于 火狐 会将这些对象存储在用户的磁盘上，所以用户在重启浏览器之后这些state对象会恢复，我们施加一个最大640k 的字符串在state对象的序列化表示上。如果你像pushState() 方法传递了一个序列化表示大于640k 的state对象，这个方法将扔出一个异常。如果你需要更多的空间，推荐使用sessionStorage或者localStorage。</li>
+<li>title — 火狐浏览器现在已经忽略此参数，将来也许可能被使用。考虑到将来有可能的改变，传递一个空字符串是安全的做法。当然，你可以传递一个短标题给你要转变成的状态。（译者注：现在大多数浏览器不支持或者忽略这个参数，最好用null代替）</li>
+<li>URL — 这个参数提供了新历史纪录的地址。请注意，浏览器在调用pushState()方法后不会去加载这个URL，但有可能在之后会这样做，比如用户重启浏览器之后。新的URL不一定要是绝对地址，如果它是相对的，它一定是相对于当前的URL。新URL必须和当前URL在同一个源下;否则，pushState() 将丢出异常。这个参数可选，如果它没有被特别标注，会被设置为文档的当前URL。</li>
+</ul>
+<p>一些情况下，调用pushState和设置 window.location = &quot;#foo&quot;相当，这种状况下，这两种行为都会创建和激活另一个和当前页面有关的历史纪录。但是pushState()有其他优势：</p>
+<ul>
+<li>新URL可以是当前URL同源下的任意地址。相反的，设置window.location会让你保持在相同页面，除非你只修改hash.</li>
+<li>如果不必要，你可以不改变URL，相反的，将window.location设定为“#foo”；只会创建一个新的历史纪录，如果当前hash不为#foo.</li>
+<li>你可以关联任意的数据到你的新历史纪录中。使用基于hash的方法，你需要将所有相关 的数据编码为一个短字符串。</li>
+</ul>
+<p><strong>请注意</strong></p>
+<blockquote>
+<p>pushState()方法绝不会导致hashchange 事件被激活，即使新的URL和旧的只在hash上有区别。</p>
+</blockquote>
+<p><strong>语法：</strong></p>
+<pre><code>history.pushState(state, title, url);
+</code></pre>
+
+<p><strong>示例：</strong></p>
+<p>创建了一个新的由 state, title, 和 url设定的浏览器历史纪录.</p>
+<pre><code>var state = { 'page_id': 1, 'user_id': 5 };
+var title = 'Hello World';
+var url = 'hello-world.html';
+
+history.pushState(state, title, url);
+</code></pre>
+
+<h5>5.2.2.2 replaceState() 方法</h5>
+<p>history.replaceState() 的使用与 history.pushState() 非常相似，区别在于  replaceState()  是修改了当前的历史记录项而不是新建一个。 注意这并不会阻止其在全局浏览器历史记录中创建一个新的历史记录项。</p>
+<p>replaceState() 的使用场景在于为了响应用户操作，你想要更新状态对象state或者当前历史记录的URL。</p>
+<p><strong>replaceState() 方法示例</strong></p>
+<p>假设 http://mozilla.org/foo.html 执行了如下JavaScript代码：</p>
+<pre><code>var stateObj = { foo: &quot;bar&quot; };
+history.pushState(stateObj, &quot;page 2&quot;, &quot;bar.html&quot;);
+</code></pre>
+
+<p>上文2行代码可以在 &quot;replaceState() 方法示例&quot; 部分找到。然后，假设http://mozilla.org/bar.html执行了如下 JavaScript：</p>
+<pre><code>history.replaceState(stateObj, &quot;page 3&quot;, &quot;bar2.html&quot;);
+</code></pre>
+
+<p>这将会导致地址栏显示http://mozilla.org/bar2.html,，但是浏览器并不会去加载bar2.html 甚至都不需要检查 bar2.html 是否存在。</p>
+<p>假设现在用户重新导向到了http://www.microsoft.com，然后点击了回退按按钮。这里，地址栏会显示http://mozilla.org/bar2.html。加入用户再次点击回退按钮，地址栏会显示http://mozilla.org/foo.html，完全跳过了abar.html。</p>
+<h5>5.2.2.2 popstate 事件</h5>
+<p>window.onpopstate是popstate事件在window对象上的事件处理程序.</p>
+<p>每当处于激活状态的历史记录条目发生变化时,popstate事件就会在对应window对象上触发. 如果当前处于激活状态的历史记录条目是由history.pushState()方法创建,或者由history.replaceState()方法修改过的, 则popstate事件对象的state属性包含了这个历史记录条目的state对象的一个拷贝.</p>
+<p>调用history.pushState()或者history.replaceState()不会触发popstate事件. popstate事件只会在浏览器某些行为下触发, 比如点击后退、前进按钮(或者在JavaScript中调用history.back()、history.forward()、history.go()方法).</p>
+<p>当网页加载时,各浏览器对popstate事件是否触发有不同的表现,Chrome 和 Safari会触发popstate事件, 而Firefox不会.</p>
+<p><strong>语法</strong></p>
+<pre><code>window.onpopstate = funcRef;
+funcRef 是个函数名.
+</code></pre>
+
+<p><strong>popstate事件</strong></p>
+<p>假如当前网页地址为http://example.com/example.html,则运行下述代码后:</p>
+<pre><code>window.onpopstate = function(event) {
+  alert(&quot;location: &quot; + document.location + &quot;, state: &quot; + JSON.stringify(event.state));
+};
+//绑定事件处理函数. 
+//添加并激活一个历史记录条目 http://example.com/example.html?page=1,条目索引为1
+history.pushState({page: 1}, &quot;title 1&quot;, &quot;?page=1&quot;);
+//添加并激活一个历史记录条目 http://example.com/example.html?page=2,条目索引为2    
+history.pushState({page: 2}, &quot;title 2&quot;, &quot;?page=2&quot;); 
+//修改当前激活的历史记录条目 http://ex..?page=2 变为 http://ex..?page=3,条目索引为3   
+history.replaceState({page: 3}, &quot;title 3&quot;, &quot;?page=3&quot;); 
+history.back(); // 弹出 &quot;location: http://example.com/example.html?page=1, state: {&quot;page&quot;:1}&quot;
+history.back(); // 弹出 &quot;location: http://example.com/example.html, state: null
+history.go(2);  // 弹出 &quot;location: http://example.com/example.html?page=3, state: {&quot;page&quot;:3}
+</code></pre>
+
+<p>即便进入了那些非pushState和replaceState方法作用过的(比如http://example.com/example.html)没有state对象关联的那些网页, popstate事件也仍然会被触发.</p>
+<h2></h2>
+<h4>5.3 HTML5 History模式在Vue-router中是如何使用的？</h4>
+<p>我们看到，不管是pushState还是replaceState，第一个参数都是一个state对象，相当于是作为第三个参数的key，存储着k-v对。我么来看看vue-router是如何实现的。</p>
+<p>vue-router在源码的1680行定义了<code>_Key</code>：</p>
+<pre><code>var _key = genKey();
+</code></pre>
+
+<p>可以看到它实际上调用的是genKey()，genKey()定义在vuex源码的1682 ~ 1684行：</p>
+<pre><code>function genKey () {//拿当前(代码首次运行)时间作为key
+  return Time.now().toFixed(3)
+}
+</code></pre>
+
+<p>可以看到它实际上是以genKey执行时的当前时间作为<code>_key</code>，这里的时间会优先使用window.perfermence性能API，如源码1676 ~ 1678行所示：</p>
+<pre><code>var Time = inBrowser &amp;&amp; window.performance &amp;&amp; window.performance.now
+  ? window.performance
+  : Date;
+</code></pre>
+
+<p>在源码的1686 ~ 1692行定义个方法，分别用于获取<code>_Key</code>和更新<code>_Key</code>:</p>
+<pre><code>function getStateKey () {
+  return _key
+}
+//重新设置key
+function setStateKey (key) {
+  _key = key;
+}
+</code></pre>
+
+<p>vue-router源码还在1694 ~ 1709行定义了pushState方法对原生的方法进行了封装，接收两个参数，第二个用于指定是否是replaceState:</p>
+<pre><code>//Safari需要特殊处理
+function pushState (url, replace) {
+  saveScrollPosition();
+  // try...catch the pushState call to get around Safari
+  // DOM Exception 18 where it limits to 100 pushState calls
+  var history = window.history;
+  try {
+    if (replace) {
+      history.replaceState({ key: _key }, '', url);
+    } else {
+      _key = genKey();//重新生成key
+      history.pushState({ key: _key }, '', url);
+    }
+  } catch (e) {
+    window.location[replace ? 'replace' : 'assign'](url);
+  }
+}
+</code></pre>
+
+<p>该函数和原生pushState的套路是一样的，特别之处是该函数针对Safari浏览器做了特殊的处理。因为Safari对pushState的数量有限制，所以当超过这个数量之后无法再调用pushState，改为调用window.location.replace或window.location.assign。</p>
+<p>每当执行pushState的时候会首先调用saveScrollPosition函数，saveScrollPosition函数定义在1589 ~ 1597行，用于保存当前页面的滚动位置：</p>
+<pre><code>function saveScrollPosition () {
+  var key = getStateKey();//保存对应的位置
+  if (key) {
+    positionStore[key] = {
+      x: window.pageXOffset,
+      y: window.pageYOffset
+    };
+  }
+}
+</code></pre>
+
+<p>位置信息是以k-v形式保存在positionStore对象中的，positionStore定义在源码的1534行：</p>
+<pre><code>var positionStore = Object.create(null);
+</code></pre>
+
+<p>除此之外，源码还在1711 ~ 1713行定义了replaceState方法，实际上就是调用的pushState方法，只不过将第二个参数置为true：</p>
+<pre><code>//替换状态
+function replaceState (url) {
+  pushState(url, true);
+}
+</code></pre>
+
+<p>说了这么多还是没有具体到HTML5History模式下路由是如何工作的，现在我们来看一下。</p>
+<p>在源码2143 ~ 2172行定义了HTML5History类的构造函数：</p>
+<pre><code>  function HTML5History (router, base) {
+    var this$1 = this;
+
+    History$$1.call(this, router, base);//调用父类的构造函数
+
+    var expectScroll = router.options.scrollBehavior;
+
+    if (expectScroll) {
+      setupScroll();
+    }
+
+    var initLocation = getLocation(this.base);
+    window.addEventListener('popstate', function (e) {
+      var current = this$1.current;
+
+      // Avoiding first `popstate` event dispatched in some browsers but first
+      // history route not updated since async guard at the same time.
+      var location = getLocation(this$1.base);
+      if (this$1.current === START &amp;&amp; location === initLocation) {
+        return
+      }
+
+      this$1.transitionTo(location, function (route) {
+        if (expectScroll) {
+          handleScroll(router, route, current, true);
+        }
+      });
+    });
+  }
+</code></pre>
+
+<p>这个类的构造函数中会先判断用户在实例化router的时候有没有传递scrollBehavior方法，如果有传递的话，会先调用setupScroll方法，setupScroll方法定义在vue-router源码的1536 ~ 1545行：</p>
+<pre><code>function setupScroll () {
+  // Fix for #1585 for Firefox
+  window.history.replaceState({ key: getStateKey() }, '');
+  window.addEventListener('popstate', function (e) {
+    saveScrollPosition();
+    if (e.state &amp;&amp; e.state.key) {
+      setStateKey(e.state.key);
+    }
+  });
+}
+</code></pre>
+
+<p>该方法会第一次注册popstate事件，保存当前位置，然后如果事件存在key的话，更新<code>_Key</code>。 </p>
+<p>随后构造函数继续，根据实例化router时传递的base拿到初始位置initLocation，然后注册第二个popstate事件，该事件响应函数会将初始位置和当前位置进行对比，如果不相同会调用transitionTo执行相应的路由跳转。 而在跳转的成功回调函数中会调用，如果实例化router时传递了scrollBehavior则会处理滚动：</p>
+<pre><code>if (expectScroll) {
+  handleScroll(router, route, current, true);
+}
+</code></pre>
+
+<p>handleScroll函数定义在vue-router源码的1547 ~ 1587行：</p>
+<pre><code>function handleScroll (
+  router,
+  to,
+  from,
+  isPop
+) {
+  // 还没有挂载app，return
+  if (!router.app) {
+    return
+  }
+  // 有设置behavior, return
+  var behavior = router.options.scrollBehavior;
+  if (!behavior) {
+    return
+  }
+
+  {
+    assert(typeof behavior === 'function', &quot;scrollBehavior must be a function&quot;);
+  }
+
+  // wait until re-render finishes before scrolling
+  // 调用vue实例定义的nextTick
+  router.app.$nextTick(function () {
+    var position = getScrollPosition();//拿到位置，判断是否需要scroll
+    var shouldScroll = behavior(to, from, isPop ? position : null);
+    // 不需要滚动则直接返回
+    if (!shouldScroll) {
+      return
+    }
+    // 滚动到对应位置
+    if (typeof shouldScroll.then === 'function') {//支持promise
+      shouldScroll.then(function (shouldScroll) {
+        scrollToPosition((shouldScroll), position);
+      }).catch(function (err) {
+        {
+          assert(false, err.toString());
+        }
+      });
+    } else {
+      scrollToPosition(shouldScroll, position);//不支持promise的话
+    }
+  });
+}
+</code></pre>
+
+<p>可以看到，它接收四个参数，分别表示router实例、目标路由、路由来源、是否支持popState。 该函数在进行一些基本的校验后会调用vue的$nextTick方法注册一个异步函数。该异步函数首先调用getScrollPosition拿到当前<code>_Key</code>对应的页面的位置：</p>
+<pre><code>var position = getScrollPosition();//拿到位置，判断是否需要scroll
+</code></pre>
+
+<p>getScrollPosition定义在源码的1599 ~ 1604行，主要就是根据当前<code>_Key</code>取出保存的位置：</p>
+<pre><code>//拿位置
+function getScrollPosition () {
+  var key = getStateKey();//获取对应的位置
+  if (key) {
+    return positionStore[key]
+  }
+}
+</code></pre>
+
+<p>然后会执行实例化时用户传递的scrollBehavior函数，开篇已经提到过scrollBehavior函数的不同返回值及其含义。如果scrollBehavior返回falsy，则表明不需要滚动。否则调用scrollToPosition完成真正的滚动：</p>
+<pre><code>// 滚动到对应位置
+if (typeof shouldScroll.then === 'function') {//支持promise
+  shouldScroll.then(function (shouldScroll) {
+    scrollToPosition((shouldScroll), position);
+  }).catch(function (err) {
+    {
+      assert(false, err.toString());
+    }
+  });
+} else {
+  scrollToPosition(shouldScroll, position);//不支持promise的话
+}
+</code></pre>
+
+<p>scrollToPosition定义在源码的1638 ~ 1656行，会根据实例化router时传递的scrollBehavior函数的返回值和拿到额position执行滚动：</p>
+<pre><code>//滚动到对应位置
+//调用的实际上还是window.scrollTo
+function scrollToPosition (shouldScroll, position) {
+  var isObject = typeof shouldScroll === 'object';
+  if (isObject &amp;&amp; typeof shouldScroll.selector === 'string') {
+    var el = document.querySelector(shouldScroll.selector);
+    if (el) {
+      var offset = shouldScroll.offset &amp;&amp; typeof shouldScroll.offset === 'object' ? shouldScroll.offset : {};
+      offset = normalizeOffset(offset);
+      position = getElementPosition(el, offset);
+    } else if (isValidPosition(shouldScroll)) {
+      position = normalizePosition(shouldScroll);
+    }
+  } else if (isObject &amp;&amp; isValidPosition(shouldScroll)) {
+    position = normalizePosition(shouldScroll);
+  }
+
+  if (position) {
+    window.scrollTo(position.x, position.y);
+  }
+}
+</code></pre>
+
+<p>scrollToPosition会根据传scrollBehavior函数的返回值(这里是shouldScroll对象)的内容区别对待。 如果shouldScroll拥有selector属性，则实现的是『滚动到锚点』的行为，当有selector属性时，会拿到对应的元素。它还会进一步根据是否有offset属性来得到最终的位置。offset需要用normalizeOffset函数进行规范化，normalizeOffset定义在源码的1627 ~ 1632行：</p>
+<pre><code>function normalizeOffset (obj) {//归一化/规范化偏移量
+  return {
+    x: isNumber(obj.x) ? obj.x : 0,
+    y: isNumber(obj.y) ? obj.y : 0
+  }
+}
+</code></pre>
+
+<p>主要就是确保position是数值，调用的是isNumber方法，定义在1634 ~ 1636行：</p>
+<pre><code>function isNumber (v) {//是否是数值
+  return typeof v === 'number'
+}
+</code></pre>
+
+<p>其实这里完全可以调用Number.isNumber方法，不用自己定义。</p>
+<p>然后会依据锚点元素和offset调用getElementPosition拿到正确的position, getElementPosition定义在源码的1606 ~ 1614行：</p>
+<pre><code>function getElementPosition (el, offset) {//获得元素的位置
+  var docEl = document.documentElement;
+  var docRect = docEl.getBoundingClientRect();//文档的区域
+  var elRect = el.getBoundingClientRect();//元素的区域
+  return {
+    x: elRect.left - docRect.left - offset.x,
+    y: elRect.top - docRect.top - offset.y
+  }
+}
+</code></pre>
+
+<p>而如果页面实际上没有selector属性指定的锚点元素时，会调用isValidPosition对shouldScroll对象进行验证，主要是验证x/y属性是不是Number， isValidPosition定义在源码的1616 ~ 1619行：</p>
+<pre><code>function isValidPosition (obj) {//判断位置是否有效
+  return isNumber(obj.x) || isNumber(obj.y)
+}
+</code></pre>
+
+<p>如果验证通过还会对shouldScroll对象进行规范化，调用的是normalizePosition,定义在源码的1620 ~ 1625行：</p>
+<pre><code>function normalizePosition (obj) {//归一化/规范化位置
+  return {
+    x: isNumber(obj.x) ? obj.x : window.pageXOffset,
+    y: isNumber(obj.y) ? obj.y : window.pageYOffset
+  }
+}
+</code></pre>
+
+<p>如果shouldScroll对象没有selector属性，也会执行“有selector属性但指定的锚点不存在”时一样的操作。当确定最终的position后会调用原生的scrollTo滚动到指定的位置。</p>
+<p>至此，已经将开篇管方文档的那篇描述完全从源代码的角度解释了一遍。最后我们看看官方给出的例子来验证一下：</p>
+<pre><code>Vue.use(VueRouter)
+
+const Home = { template: '&lt;div&gt;home&lt;/div&gt;' }
+const Foo = { template: '&lt;div&gt;foo&lt;/div&gt;' }
+const Bar = {
+  template: `
+    &lt;div&gt;
+      bar
+      &lt;div style=&quot;height:1500px&quot;&gt;&lt;/div&gt;
+      &lt;p id=&quot;anchor&quot;&gt;Anchor&lt;/p&gt;
+    &lt;/div&gt;
+  `
+}
+
+// scrollBehavior:
+// - only available in html5 history mode
+// - defaults to no scroll behavior
+// - return false to prevent scroll
+const scrollBehavior = (to, from, savedPosition) =&gt; {
+  console.log(savedPosition)
+  if (savedPosition) {
+    // savedPosition is only available for popstate navigations.
+    return savedPosition
+  } else {
+    const position = {}
+    // new navigation.
+    // scroll to anchor by returning the selector
+    if (to.hash) {
+      position.selector = to.hash
+    }
+    // check if any matched route config has meta that requires scrolling to top
+    // console.log(to.matched)
+    if (to.matched.some(m =&gt; m.meta.scrollToTop)) {
+      // cords will be used if no selector is provided,
+      // or if the selector didn't match any element.
+      position.x = 0
+      position.y = 0
+    }
+    // if the returned position is falsy or an empty object,
+    // will retain current scroll position.
+    return position
+  }
+}
+
+const router = new VueRouter({
+  mode: 'history',
+  base: '/',
+  scrollBehavior,
+  routes: [
+    { path: '/', component: Home, meta: { scrollToTop: true }},
+    { path: '/foo', component: Foo },
+    { path: '/bar', component: Bar, meta: { scrollToTop: true }}
+  ]
+})
+
+new Vue({
+  router,
+  template: `
+    &lt;div id=&quot;app&quot;&gt;
+      &lt;h1&gt;Scroll Behavior&lt;/h1&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;router-link to=&quot;/&quot;&gt;/&lt;/router-link&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;router-link to=&quot;/foo&quot;&gt;/foo&lt;/router-link&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;router-link to=&quot;/bar&quot;&gt;/bar&lt;/router-link&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;router-link to=&quot;/bar#anchor&quot;&gt;/bar#anchor&lt;/router-link&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;router-view class=&quot;view&quot;&gt;&lt;/router-view&gt;
+    &lt;/div&gt;
+  `
+}).$mount('#app')
+</code></pre>
+
+<p>我们主要看scrollBehavior</p>
+<pre><code>const scrollBehavior = (to, from, savedPosition) =&gt; {
+  console.log(savedPosition)
+  if (savedPosition) {
+    // savedPosition is only available for popstate navigations.
+    return savedPosition
+  } else {
+    const position = {}
+    // new navigation.
+    // scroll to anchor by returning the selector
+    if (to.hash) {
+      position.selector = to.hash
+    }
+    // check if any matched route config has meta that requires scrolling to top
+    // console.log(to.matched)
+    if (to.matched.some(m =&gt; m.meta.scrollToTop)) {
+      // cords will be used if no selector is provided,
+      // or if the selector didn't match any element.
+      position.x = 0
+      position.y = 0
+    }
+    // if the returned position is falsy or an empty object,
+    // will retain current scroll position.
+    return position
+  }
+}
+</code></pre>
+
+<p>这里有三个路由，四个link。‘/’,‘/bar’路由都指定了滚动到顶部，‘/foo’没有。</p>
+<p>当用户按前进/后退的时候，会执行：</p>
+<pre><code>// savedPosition is only available for popstate navigations.
+return savedPosition
+</code></pre>
+
+<p>点击&quot;/bar#anchor&quot;链接时，position将含有selector，x，y三个属性：</p>
+<p><img src="/assets/2.png" /></p>
+<p><img src="https://i.imgur.com/vGz5ukv.png" /></p>
+<p>因为页面有 <code>&lt;p id=&quot;anchor&quot;&gt;Anchor&lt;/p&gt;</code>锚点，所以会执行vue-router源码scrollToPosition函数的如下分支：</p>
+<pre><code>function scrollToPosition (shouldScroll, position) {
+  var isObject = typeof shouldScroll === 'object';
+  if (isObject &amp;&amp; typeof shouldScroll.selector === 'string') {
+    var el = document.querySelector(shouldScroll.selector);
+    if (el) {
+      var offset = shouldScroll.offset &amp;&amp; typeof shouldScroll.offset === 'object' ? shouldScroll.offset : {};
+      offset = normalizeOffset(offset);
+      position = getElementPosition(el, offset);
+</code></pre>
+
+<h1>第六章 HashHistory类</h1>
+<h3>6.1 HashHistory类源码</h3>
+<p>HashHistory类定义在vue-router源码的2231 ~ 2314行，和HTML5History模式实现的方式以及接口基本一样，采用的也是经典的IIFE(立即调用函数表达式)方式实现的：</p>
+<pre><code>var HashHistory = (function (History$$1) {
+  function HashHistory (router, base, fallback) {
+    History$$1.call(this, router, base);//调用History类的构造函数
+    // check history fallback deeplinking
+    if (fallback &amp;&amp; checkFallback(this.base)) {
+      return
+    }
+    ensureSlash();//确保反斜线
+  }
+  //经典的类继承实现方式
+  if ( History$$1 ) HashHistory.__proto__ = History$$1;
+  HashHistory.prototype = Object.create( History$$1 &amp;&amp; History$$1.prototype );
+  HashHistory.prototype.constructor = HashHistory;
+
+  // this is delayed until the app mounts
+  // to avoid the hashchange listener being fired too early
+  HashHistory.prototype.setupListeners = function setupListeners () {
+    var this$1 = this;
+
+    var router = this.router;
+    var expectScroll = router.options.scrollBehavior;
+    var supportsScroll = supportsPushState &amp;&amp; expectScroll;
+
+    if (supportsScroll) {
+      setupScroll();
+    }
+    //如果支持popstate则使用它，否则使用hashchange
+    //如果支持popstate，则监听popstate，否则监听hashchange
+    window.addEventListener(supportsPushState ? 'popstate' : 'hashchange', function () {
+      var current = this$1.current;
+      if (!ensureSlash()) {
+        return
+      }
+      this$1.transitionTo(getHash(), function (route) {
+        if (supportsScroll) {
+          handleScroll(this$1.router, route, current, true);
+        }
+        if (!supportsPushState) {
+          replaceHash(route.fullPath);
+        }
+      });
+    });
+  };
+  //HashHistory的push方法，调用的是pushHash方法
+  HashHistory.prototype.push = function push (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    var ref = this;
+    var fromRoute = ref.current;//当前路由
+    this.transitionTo(location, function (route) {
+      pushHash(route.fullPath);
+      handleScroll(this$1.router, route, fromRoute, false);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+  //HashHistory的replace方法,调用的是replacehHash方法
+  HashHistory.prototype.replace = function replace (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    var ref = this;
+    var fromRoute = ref.current;
+    this.transitionTo(location, function (route) {
+      replaceHash(route.fullPath);
+      handleScroll(this$1.router, route, fromRoute, false);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+  //HashHistory的go方法，调用的是window.history.go方法
+  HashHistory.prototype.go = function go (n) {
+    window.history.go(n);
+  };
+  //HashHistory的ensureURL方法
+  //参数决定是push还是replace
+  HashHistory.prototype.ensureURL = function ensureURL (push) {
+    //当前路径的完全路径
+    var current = this.current.fullPath;
+    if (getHash() !== current) {
+      push ? pushHash(current) : replaceHash(current);
+    }
+  };
+  //HashHistory的getCurrentLocation方法，调用的是getHash方法
+  //拿url中#符号后面的东西
+  HashHistory.prototype.getCurrentLocation = function getCurrentLocation () {
+    return getHash()
+  };
+
+  return HashHistory;
+}(History));
+</code></pre>
+
+<p>该类继承自History类，继承的方式也是经典的原型继承方式，我们来大体看一下：</p>
+<p>该函数的构造函数中首先借用父类的构造函数（2233行）：</p>
+<pre><code>History$$1.call(this, router, base);//调用History类的构造函数
+</code></pre>
+
+<p>然后实现原型继承（2241 ~ 2243行）：</p>
+<pre><code>  if ( History$$1 ) HashHistory.__proto__ = History$$1;
+  HashHistory.prototype = Object.create( History$$1 &amp;&amp; History$$1.prototype );
+  HashHistory.prototype.constructor = HashHistory;
+</code></pre>
+
+<p>这样就完成了从History类继承。</p>
+<p>构造函数会先检查是否支持回退(fallback)，如果支持回退，并且base是以/#开头的话，不会调用ensureSlash强制path以/开头。</p>
+<p>ensureSlash函数定义在源码的2326 ~ 2333行，它会先调用getHash拿到hash，然后确保以/开头：</p>
+<pre><code>function ensureSlash () {
+  var path = getHash();
+  if (path.charAt(0) === '/') {
+    return true
+  }
+  replaceHash('/' + path);
+  return false
+}
+</code></pre>
+
+<p>getHash函数定义在2335 ~ 2341行，它直接截取#后面的内容返回：</p>
+<pre><code>//手动拿hash，而不是用window.location.hash
+//为了确保跨浏览器支持
+function getHash () {
+  // We can't use window.location.hash here because it's not
+  // consistent across browsers - Firefox will pre-decode it!
+  var href = window.location.href;
+  var index = href.indexOf('#');
+  return index === -1 ? '' : href.slice(index + 1)
+}
+</code></pre>
+
+<p>HashHistory类定义了一些与浏览器操作有关的原型函数，这些函数的名称与HTML5History几乎完全一样，我们分别来看一下。</p>
+<h4>6.1.1 原型函数</h4>
+<h5>6.1.1.1 HashHistory.prototype.setupListeners</h5>
+<pre><code>  // this is delayed until the app mounts
+  // to avoid the hashchange listener being fired too early
+  HashHistory.prototype.setupListeners = function setupListeners () {
+    var this$1 = this;
+
+    var router = this.router;
+    var expectScroll = router.options.scrollBehavior;
+    var supportsScroll = supportsPushState &amp;&amp; expectScroll;
+
+    if (supportsScroll) {
+      setupScroll();
+    }
+    //如果支持popstate则使用它，否则使用hashchange
+    //如果支持popstate，则监听popstate，否则监听hashchange
+    window.addEventListener(supportsPushState ? 'popstate' : 'hashchange', function () {
+      var current = this$1.current;
+      if (!ensureSlash()) {
+        return
+      }
+      this$1.transitionTo(getHash(), function (route) {
+        if (supportsScroll) {
+          handleScroll(this$1.router, route, current, true);
+        }
+        if (!supportsPushState) {
+          replaceHash(route.fullPath);
+        }
+      });
+    });
+  };
+</code></pre>
+
+<p>setupListeners就和HTML5History的构造函数的道理是一样的，主要就是处理滚动以及监听响应的事件(popstate/hashchange)。setupListeners最终会在VueRouter的init函数中被调用。</p>
+<h5>6.1.1.2 HashHistory.prototype.push</h5>
+<p>HashHistory.prototype.push方法定义在源码的2274 ~ 2284行，该方法用于HashHistory模式下将当新路由加入到history中。从代码来看它在调用transitionTo方法的成功回调中会调用handleScroll方法，所以hash模式应该也是支持滚动的：</p>
+<pre><code>  //HashHistory的replace方法,调用的是replacehHash方法
+  HashHistory.prototype.replace = function replace (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    var ref = this;
+    var fromRoute = ref.current;
+    this.transitionTo(location, function (route) {
+      replaceHash(route.fullPath);
+      handleScroll(this$1.router, route, fromRoute, false);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+</code></pre>
+
+<h5>6.1.1.3 HashHistory.prototype.replace</h5>
+<p>HashHistory.prototype.replace方法定义在源码的2286 ~ 2296行，该方法用于HashHistory模式下将将新路由替换history中当前路由。从代码来看它在调用transitionTo方法的成功回调中会调用handleScroll方法，所以hash模式应该也是支持滚动的：</p>
+<pre><code>  //HashHistory的replace方法,调用的是replacehHash方法
+  HashHistory.prototype.replace = function replace (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    var ref = this;
+    var fromRoute = ref.current;
+    this.transitionTo(location, function (route) {
+      replaceHash(route.fullPath);
+      handleScroll(this$1.router, route, fromRoute, false);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+</code></pre>
+
+<h5>HashHistory.prototype.go</h5>
+<p>HashHistory.prototype.go方法定义在2298 ~ 2300行，它实际上调用的就是原生的window.history.go(n)来实现的：</p>
+<pre><code>  //HashHistory的go方法，调用的是window.history.go方法
+  HashHistory.prototype.go = function go (n) {
+    window.history.go(n);
+  };
+</code></pre>
+
+<h5>HashHistory.prototype.ensureURL</h5>
+<p>HashHistory.prototype.ensureURL定义在vue-router源码的2302 ~ 2307 行，它的用处和HTML5History.prototype.ensureURL，只不过它是比较二者的hash是不是一致的，并且当不一致时也是调用的pushHash/replaceHash来新增/替换。</p>
+<pre><code>  //参数决定是push还是replace
+  HashHistory.prototype.ensureURL = function ensureURL (push) {
+    //当前路径的完全路径
+    var current = this.current.fullPath;
+    if (getHash() !== current) {
+      push ? pushHash(current) : replaceHash(current);
+    }
+  };
+</code></pre>
+
+<p>getHash方法定义在源码的2235 ~ 2341行，是通过href截取的hash，而不是直接window.location.hash：</p>
+<pre><code>//手动拿hash，而不是用window.location.hash
+//为了确保跨浏览器支持
+function getHash () {
+      // We can't use window.location.hash here because it's not
+      // consistent across browsers - Firefox will pre-decode it!
+      var href = window.location.href;
+      var index = href.indexOf('#');
+      return index === -1 ? '' : href.slice(index + 1)
+}
+</code></pre>
+
+<h5>HashHistory.prototype.getCurrentLocation</h5>
+<p>HashHistory.prototype.getCurrentLocation定义在源码的2309 ~ 2311行，用于拿到当前的hash，调用的实际上是getHash，这个在前面已经讲过了：</p>
+<pre><code>HashHistory.prototype.getCurrentLocation = function getCurrentLocation () {
+    return getHash()
+};
+</code></pre>
+
+<h2></h2>
+<h1>第七章 AbstractHistory类</h1>
+<h3>7.1 AbstractHistory类源码分析</h3>
+<p>AbstractHistory类定义在vue-router源码的2369 ~ 2423行，采用的也是经典的IIFE(立即调用函数表达式)方式实现的：</p>
+<pre><code>//AbstractHistory类
+var AbstractHistory = (function (History$$1) {
+  function AbstractHistory (router, base) {
+    //借用父类的构造函数
+    History$$1.call(this, router, base);
+    this.stack = [];
+    this.index = -1;
+  }
+  //经典的类继承
+  if ( History$$1 ) AbstractHistory.__proto__ = History$$1;
+  AbstractHistory.prototype = Object.create( History$$1 &amp;&amp; History$$1.prototype );
+  AbstractHistory.prototype.constructor = AbstractHistory;
+  //实现响应的push方法
+  AbstractHistory.prototype.push = function push (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    this.transitionTo(location, function (route) {
+      this$1.stack = this$1.stack.slice(0, this$1.index + 1).concat(route);
+      this$1.index++;
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+  //实现响应的replace方法
+  AbstractHistory.prototype.replace = function replace (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    this.transitionTo(location, function (route) {
+      this$1.stack = this$1.stack.slice(0, this$1.index).concat(route);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+  //实现响应的go方法
+  AbstractHistory.prototype.go = function go (n) {
+    var this$1 = this;
+
+    var targetIndex = this.index + n;
+    if (targetIndex &lt; 0 || targetIndex &gt;= this.stack.length) {
+      return
+    }
+    var route = this.stack[targetIndex];
+    this.confirmTransition(route, function () {
+      this$1.index = targetIndex;
+      this$1.updateRoute(route);
+    });
+  };
+  //实现响应的getCurrentLocation方法
+  AbstractHistory.prototype.getCurrentLocation = function getCurrentLocation () {
+    var current = this.stack[this.stack.length - 1];
+    return current ? current.fullPath : '/'
+  };
+  //实现响应的ensureURL方法
+  AbstractHistory.prototype.ensureURL = function ensureURL () {
+    // noop
+  };
+
+  return AbstractHistory;
+}(History));
+</code></pre>
+
+<p>它于HTML5History和HashHistory的模式基本上是一样的，但是它不支持滚动行为。另外，它采用的是stack数组来存储每次的路由历史，这个也是与前面两种类型有区别的。</p>
+<p>该类继承自History类，继承的方式也是经典的原型继承方式，我们来大体看一下：</p>
+<p>该函数的构造函数中首先借用父类的构造函数（2371行）：</p>
+<pre><code>//借用父类的构造函数
+History$$1.call(this, router, base);
+</code></pre>
+
+<p>然后实现原型继承（2376 ~ 2379）：</p>
+<pre><code>  //经典的类继承
+  if ( History$$1 ) AbstractHistory.__proto__ = History$$1;
+  AbstractHistory.prototype = Object.create( History$$1 &amp;&amp; History$$1.prototype );
+  AbstractHistory.prototype.constructor = AbstractHistory;
+</code></pre>
+
+<p>这样就完成了从History类继承。</p>
+<p>HashHistory类定义了一些与浏览器操作有关的原型函数，这些函数的名称与HTML5History、HashHistory几乎完全一样，我们分别来看一下。</p>
+<h4>7.1.1 原型函数</h4>
+<h5>7.1.1.1 AbstractHistory.prototype.push</h5>
+<p>AbstractHistory.prototype.push定义在源码的2380 ~ 2388行，AbstractHistory模式下push的实现与前两种有所差异，因为这种模式下的history是通过statck数组记录的，所以push就是把当前路由加入到数组中，然后执行transitionTo方法：</p>
+<pre><code>//实现响应的push方法
+AbstractHistory.prototype.push = function push (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    this.transitionTo(location, function (route) {
+      this$1.stack = this$1.stack.slice(0, this$1.index + 1).concat(route);
+      this$1.index++;
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+};
+</code></pre>
+
+<h5>7.1.1.2 AbstractHistory.prototype.replace</h5>
+<p>AbstractHistory.prototype.replace定义在源码的2390 ~ 2397行，同AbstractHistory.prototype.push类似，只不过这里的slice不一样(<code>this$1.stack.slice(0, this$1.index)</code>)：</p>
+<pre><code>  //实现响应的replace方法
+  AbstractHistory.prototype.replace = function replace (location, onComplete, onAbort) {
+    var this$1 = this;
+
+    this.transitionTo(location, function (route) {
+      this$1.stack = this$1.stack.slice(0, this$1.index).concat(route);
+      onComplete &amp;&amp; onComplete(route);
+    }, onAbort);
+  };
+</code></pre>
+
+<h5>7.1.1.3 AbstractHistory.prototype.go</h5>
+<p>AbstractHistory.prototype.go定义在源码的2399 ~ 2411行，前进/后退的时候就是取对应的索引，如果索引越界则会直接返回：</p>
+<pre><code>  //实现响应的go方法
+  AbstractHistory.prototype.go = function go (n) {
+    var this$1 = this;
+
+    var targetIndex = this.index + n;
+    if (targetIndex &lt; 0 || targetIndex &gt;= this.stack.length) {
+      return
+    }
+    var route = this.stack[targetIndex];
+    this.confirmTransition(route, function () {
+      this$1.index = targetIndex;
+      this$1.updateRoute(route);
+    });
+  };
+</code></pre>
+
+<h5>7.1.1.4 AbstractHistory.prototype.ensureURL</h5>
+<p>AbstractHistory.prototype.ensureURL是一个空函数：</p>
+<pre><code>//实现响应的ensureURL方法
+AbstractHistory.prototype.ensureURL = function ensureURL () {
+    // noop
+};
+</code></pre>
+
+<h5>7.1.1.5 AbstractHistory.prototype.getCurrentLocation</h5>
+<p>AbstractHistory.prototype.getCurrentLocation定义在源码的2413 ~ 2416行，直接取stack中存储的最后一个路由：</p>
+<pre><code>//实现响应的getCurrentLocation方法
+AbstractHistory.prototype.getCurrentLocation = function getCurrentLocation () {
+    var current = this.stack[this.stack.length - 1];
+    return current ? current.fullPath : '/'
+};
+</code></pre>
+
+<h1>第八章 VueRouter类</h1>
+<h3>8.1 VueRouter类源码分析</h3>
+<p>VueRouter类定义在vue-router源码的2427 ~ 2463行，我们来看一下它的实现。</p>
+<h4>8.1.1 成员属性</h4>
+<p>VueRouter的构造函数接收options作为参数，共定义了10个成员属性，分别是：</p>
+<ul>
+<li>app</li>
+<li>apps</li>
+<li>options。存储实例化时传递的options参数。</li>
+<li>beforeHooks。前置钩子函数。</li>
+<li>resolveHooks。解析钩子函数。</li>
+<li>afterHooks。后置钩子函数。</li>
+<li>matcher。是一个对象，包含match和addRoutes两个函数。</li>
+<li>fallback。类型: boolean。当浏览器不支持 history.pushState 控制路由是否应该回退到 hash 模式。默认值为 true。在 IE9 中，设置为 false 会使得每个 router-link 导航都触发整页刷新。它可用于工作在 IE9 下的服务端渲染应用，因为一个 hash 模式的 URL 并不支持服务端渲染</li>
+<li>mode。配置路由模式。</li>
+</ul>
+<h1></h1>
+<p><img src="/assets/vue-router1.png" /></p>
+<p><img src="https://i.imgur.com/EauyRTa.png" /></p>
+<h1></h1>
+<ul>
+<li>history。根据不同的mode来决定实例化什么样的history。hash模式实例化HashHistory类，history模式实例化Html5History类，abstract模式实例化AbstractHistory类。</li>
+</ul>
+<p>构造函数的源码如下：</p>
+<pre><code>var VueRouter = function VueRouter (options) {
+  if ( options === void 0 ) options = {};//没传递options时，赋默认值
+
+  this.app = null;//类型: Vue instance,配置了 router 的 Vue 根实例
+  this.apps = [];
+  this.options = options;//router实例上挂载options
+  this.beforeHooks = [];//全局前置守卫钩子
+  this.resolveHooks = [];//解析钩子
+  this.afterHooks = [];//后置钩子
+  this.matcher = createMatcher(options.routes || [], this);//根据routes和router实例来创建matcher
+
+  var mode = options.mode || 'hash';//模式
+  this.fallback = mode === 'history' &amp;&amp; !supportsPushState &amp;&amp; options.fallback !== false;
+  if (this.fallback) {
+    mode = 'hash';
+  }
+  if (!inBrowser) {//非浏览器模式下采用abstract模式
+    mode = 'abstract';
+  }
+  this.mode = mode;
+  //根据模式确定history属性
+  switch (mode) {
+    case 'history':
+      this.history = new HTML5History(this, options.base);
+      break
+    case 'hash':
+      this.history = new HashHistory(this, options.base, this.fallback);
+      break
+    case 'abstract':
+      this.history = new AbstractHistory(this, options.base);
+      break
+    default:
+      {
+        assert(false, (&quot;invalid mode: &quot; + mode));
+      }
+  }
+};
+</code></pre>
+
+<p>在实例化router的时候会给matcher属性赋值，调用的是createMatcher方法，该方法的实现比较复杂，我们接下来详细看看它的实现。</p>
+<h4>8.1.2 createMatcher方法</h4>
+<p>createMatcher方法定义在vue-router源码的1338 ~ 1501行，它的作用是根据router实例以及实例化时传递的options中的routes来生成一个matcher对象，这个对象包含addRoutes和match两个方法，addRoutes方法用于向pathList、pathMap、nameMap中增加路由，其实就是更新pathList、pathMap、nameMap。pathList存储的是所有路由(包括子路由)的path(子路由的path经过了规范化处理，也就是说会有链路区分)，pathMap是一个对象，存储的是path-&gt;record对，nameMap也是一个对象，存储的是name-&gt;record对。下面具体看一下它的实现：</p>
+<pre><code>//生成匹配者
+function createMatcher (
+  routes,//routes数组
+  router//router实例
+) {
+  //生成pathList、pathMap、nameMap映射表
+  var ref = createRouteMap(routes);
+  var pathList = ref.pathList;
+  var pathMap = ref.pathMap;
+  var nameMap = ref.nameMap;
+  //定义一个addRoutes方法，实际就是把routes加入到已有的routes从而更新了Map和List
+  function addRoutes (routes) {
+    createRouteMap(routes, pathList, pathMap, nameMap);
+  }
+  //返回一个匹配的路由
+  function match (
+    raw,
+    currentRoute,
+    redirectedFrom
+  ) {
+    var location = normalizeLocation(raw, currentRoute, false, router);
+    var name = location.name;
+
+    if (name) {
+      var record = nameMap[name];
+      {
+        warn(record, (&quot;Route with name '&quot; + name + &quot;' does not exist&quot;));
+      }
+      if (!record) { return _createRoute(null, location) }
+      var paramNames = record.regex.keys
+        .filter(function (key) { return !key.optional; })
+        .map(function (key) { return key.name; });
+
+      if (typeof location.params !== 'object') {
+        location.params = {};
+      }
+
+      if (currentRoute &amp;&amp; typeof currentRoute.params === 'object') {
+        for (var key in currentRoute.params) {
+          if (!(key in location.params) &amp;&amp; paramNames.indexOf(key) &gt; -1) {
+            location.params[key] = currentRoute.params[key];
+          }
+        }
+      }
+
+      if (record) {
+        location.path = fillParams(record.path, location.params, (&quot;named route \&quot;&quot; + name + &quot;\&quot;&quot;));
+        return _createRoute(record, location, redirectedFrom)
+      }
+    } else if (location.path) {
+      location.params = {};
+      for (var i = 0; i &lt; pathList.length; i++) {
+        var path = pathList[i];
+        var record$1 = pathMap[path];
+        if (matchRoute(record$1.regex, location.path, location.params)) {
+          return _createRoute(record$1, location, redirectedFrom)
+        }
+      }
+    }
+    // no match
+    return _createRoute(null, location)
+  }
+  //返回的也是一个路由
+  function redirect (
+    record,
+    location
+  ) {
+    var originalRedirect = record.redirect;
+    var redirect = typeof originalRedirect === 'function'
+        ? originalRedirect(createRoute(record, location, null, router))
+        : originalRedirect;
+
+    if (typeof redirect === 'string') {
+      redirect = { path: redirect };
+    }
+
+    if (!redirect || typeof redirect !== 'object') {
+      {
+        warn(
+          false, (&quot;invalid redirect option: &quot; + (JSON.stringify(redirect)))
+        );
+      }
+      return _createRoute(null, location)
+    }
+
+    var re = redirect;
+    var name = re.name;
+    var path = re.path;
+    var query = location.query;
+    var hash = location.hash;
+    var params = location.params;
+    query = re.hasOwnProperty('query') ? re.query : query;
+    hash = re.hasOwnProperty('hash') ? re.hash : hash;
+    params = re.hasOwnProperty('params') ? re.params : params;
+
+    if (name) {
+      // resolved named direct
+      var targetRecord = nameMap[name];
+      {
+        assert(targetRecord, (&quot;redirect failed: named route \&quot;&quot; + name + &quot;\&quot; not found.&quot;));
+      }
+      return match({
+        _normalized: true,
+        name: name,
+        query: query,
+        hash: hash,
+        params: params
+      }, undefined, location)
+    } else if (path) {
+      // 1. resolve relative redirect
+      var rawPath = resolveRecordPath(path, record);
+      // 2. resolve params
+      var resolvedPath = fillParams(rawPath, params, (&quot;redirect route with path \&quot;&quot; + rawPath + &quot;\&quot;&quot;));
+      // 3. rematch with existing query and hash
+      return match({
+        _normalized: true,
+        path: resolvedPath,
+        query: query,
+        hash: hash
+      }, undefined, location)
+    } else {
+      {
+        warn(false, (&quot;invalid redirect option: &quot; + (JSON.stringify(redirect))));
+      }
+      return _createRoute(null, location)
+    }
+  }
+
+  function alias (
+    record,
+    location,
+    matchAs
+  ) {
+    var aliasedPath = fillParams(matchAs, location.params, (&quot;aliased route with path \&quot;&quot; + matchAs + &quot;\&quot;&quot;));
+    var aliasedMatch = match({
+      _normalized: true,
+      path: aliasedPath
+    });
+    if (aliasedMatch) {
+      var matched = aliasedMatch.matched;
+      var aliasedRecord = matched[matched.length - 1];
+      location.params = aliasedMatch.params;
+      return _createRoute(aliasedRecord, location)
+    }
+    return _createRoute(null, location)
+  }
+
+  function _createRoute (
+    record,
+    location,
+    redirectedFrom
+  ) {
+    if (record &amp;&amp; record.redirect) {
+      return redirect(record, redirectedFrom || location)
+    }
+    if (record &amp;&amp; record.matchAs) {
+      return alias(record, location, record.matchAs)
+    }
+    return createRoute(record, location, redirectedFrom, router)
+  }
+
+  return {
+    match: match,//该方法用于返回一个匹配的路由
+    addRoutes: addRoutes//该方法用于新增路由映射
+  }
+}
+</code></pre>
+
+<p>可以看到，它首先调用的是createRouteMap方法，根据当前的routes来得到pathList、pathMap、nameMap。然后定义了局部函数addRoutes和match，将他们作为一个对象的属性返回。</p>
+<p>我们来看看createRouteMap的实现。它定义在vue-router源码的1108 ~ 1139行：</p>
+<pre><code>/*  */
+/*
+ * 根据routes构造pathList、pathMap、nameMap映射
+ * 核心是addRouteRecord函数
+ */
+function createRouteMap (
+  routes,
+  oldPathList,
+  oldPathMap,
+  oldNameMap
+) {
+  // the path list is used to control path matching priority
+  var pathList = oldPathList || [];
+  // $flow-disable-line
+  var pathMap = oldPathMap || Object.create(null);
+  // $flow-disable-line
+  var nameMap = oldNameMap || Object.create(null);
+  //遍历加上record
+  routes.forEach(function (route) {
+    addRouteRecord(pathList, pathMap, nameMap, route);
+  });
+
+  // ensure wildcard routes are always at the end
+  // 确保通配符路由总是在最后
+  for (var i = 0, l = pathList.length; i &lt; l; i++) {
+    if (pathList[i] === '*') {
+      pathList.push(pathList.splice(i, 1)[0]);
+      l--;
+      i--;
+    }
+  }
+
+  return {
+    pathList: pathList,
+    pathMap: pathMap,
+    nameMap: nameMap
+  }
+}
+</code></pre>
+
+<p>它接收四个参数。你可能注意到前面我们调用它时只传了第一个参数。那是因为最开始我们用options.routes去初始化时后三个参数肯定是不存在的，我们只用一个参数的目的就是为了初始化后三个参数pathList、pathMap、nameMap。 回过头来分析代码，首先会判断有没有后三个参数，如果没有的话就初始化为[]、{}、{}。 然后会遍历routes，调用addRouteRecord函数来实现真正的初始化/更新pathList、pathMap、nameMap。然后会调整pathList的顺序，确保通配符路由总是在列表最后。最后将pathList、pathMap、nameMap作为一个对象的属性返回。</p>
+<p>前面说了初始化/更新pathList、pathMap、nameMap实际上还是调用的addRouteRecord来实现的。它才是真正实现pathList、pathMap、nameMap初始化/更新的函数，它定义在vue-router的1141 ~ 1250行，我们来看看它的实现：</p>
+<pre><code>/*
+ * 根据route、parent、matchAs
+ * 构造出pathList、pathMap、nameMap
+ */
+function addRouteRecord (
+  pathList,
+  pathMap,
+  nameMap,
+  route,
+  parent,
+  matchAs
+) {
+  var path = route.path;
+  var name = route.name;
+  {
+    assert(path != null, &quot;\&quot;path\&quot; is required in a route configuration.&quot;);
+    assert(
+      typeof route.component !== 'string',
+      &quot;route config \&quot;component\&quot; for path: &quot; + (String(path || name)) + &quot; cannot be a &quot; +
+      &quot;string id. Use an actual component instead.&quot;
+    );
+  }
+
+  var pathToRegexpOptions = route.pathToRegexpOptions || {};
+  //规范化path
+  var normalizedPath = normalizePath(
+    path,
+    parent,
+    pathToRegexpOptions.strict
+  );
+
+  if (typeof route.caseSensitive === 'boolean') {
+    pathToRegexpOptions.sensitive = route.caseSensitive;
+  }
+  //record对象
+  var record = {
+    path: normalizedPath,
+    regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),
+    components: route.components || { default: route.component },
+    instances: {},
+    name: name,
+    parent: parent,
+    matchAs: matchAs,
+    redirect: route.redirect,
+    beforeEnter: route.beforeEnter,
+    meta: route.meta || {},
+    props: route.props == null
+      ? {}
+      : route.components
+        ? route.props
+        : { default: route.props }
+  };
+  //如果有孩子
+  if (route.children) {
+    // Warn if route is named, does not redirect and has a default child route.
+    // If users navigate to this route by name, the default child will
+    // not be rendered (GH Issue #629)
+    {
+      if (route.name &amp;&amp; !route.redirect &amp;&amp; route.children.some(function (child) { return /^\/?$/.test(child.path); })) {
+        warn(
+          false,
+          &quot;Named Route '&quot; + (route.name) + &quot;' has a default child route. &quot; +
+          &quot;When navigating to this named route (:to=\&quot;{name: '&quot; + (route.name) + &quot;'\&quot;), &quot; +
+          &quot;the default child route will not be rendered. Remove the name from &quot; +
+          &quot;this route and use the name of the default child route for named &quot; +
+          &quot;links instead.&quot;
+        );
+      }
+    }
+    route.children.forEach(function (child) {
+      var childMatchAs = matchAs
+        ? cleanPath((matchAs + &quot;/&quot; + (child.path)))
+        : undefined;
+        //递归调用
+      addRouteRecord(pathList, pathMap, nameMap, child, record, childMatchAs);
+    });
+  }
+  //设置了别名
+  if (route.alias !== undefined) {
+    var aliases = Array.isArray(route.alias)
+      ? route.alias
+      : [route.alias];
+
+    aliases.forEach(function (alias) {
+      var aliasRoute = {
+        path: alias,
+        children: route.children
+      };
+      //递归调用
+      addRouteRecord(
+        pathList,
+        pathMap,
+        nameMap,
+        aliasRoute,
+        parent,
+        record.path || '/' // matchAs
+      );
+    });
+  }
+  //是新的，跟新pathList、pathMap
+  //pathList里面存的是路径
+  //pathMap里面存的是record,路径为key
+  //
+  if (!pathMap[record.path]) {
+    pathList.push(record.path);
+    pathMap[record.path] = record;
+  }
+
+  if (name) {
+    //nameMap里面存的是record,路径为key
+    if (!nameMap[name]) {
+      nameMap[name] = record;
+    } else if (&quot;development&quot; !== 'production' &amp;&amp; !matchAs) {
+      warn(
+        false,
+        &quot;Duplicate named routes definition: &quot; +
+        &quot;{ name: \&quot;&quot; + name + &quot;\&quot;, path: \&quot;&quot; + (record.path) + &quot;\&quot; }&quot;
+      );
+    }
+  }
+}
+</code></pre>
+
+<p>addRouteRecord函数接收6个参数，实际上后面两个参数是在当route有children的时候做递归调用的。先过一下代码：</p>
+<p>首先会拿到route上定义的path和name和pathToRegexpOptions：</p>
+<pre><code>var path = route.path;
+var name = route.name;
+var pathToRegexpOptions = route.pathToRegexpOptions || {};
+</code></pre>
+
+<p>然后会对路径进行规范化，这个主要是考虑到route可能有children，而pathList、pathMap都是用path来区分的record，因此需要对路径处理。</p>
+<p>接下来就是根据route信息来创建record对象了：</p>
+<pre><code>//record对象
+  var record = {
+    path: normalizedPath,
+    regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),
+    components: route.components || { default: route.component },
+    instances: {},
+    name: name,
+    parent: parent,
+    matchAs: matchAs,
+    redirect: route.redirect,
+    beforeEnter: route.beforeEnter,
+    meta: route.meta || {},
+    props: route.props == null
+      ? {}
+      : route.components
+        ? route.props
+        : { default: route.props }
+  };
+</code></pre>
+
+<p>然后判断route有没有children，如果有的话则递归调用addRouteRecord更新pathList、pathMap、nameMap：</p>
+<pre><code>  //如果有孩子
+  if (route.children) {
+    // Warn if route is named, does not redirect and has a default child route.
+    // If users navigate to this route by name, the default child will
+    // not be rendered (GH Issue #629)
+    {
+      if (route.name &amp;&amp; !route.redirect &amp;&amp; route.children.some(function (child) { return /^\/?$/.test(child.path); })) {
+        warn(
+          false,
+          &quot;Named Route '&quot; + (route.name) + &quot;' has a default child route. &quot; +
+          &quot;When navigating to this named route (:to=\&quot;{name: '&quot; + (route.name) + &quot;'\&quot;), &quot; +
+          &quot;the default child route will not be rendered. Remove the name from &quot; +
+          &quot;this route and use the name of the default child route for named &quot; +
+          &quot;links instead.&quot;
+        );
+      }
+    }
+    route.children.forEach(function (child) {
+      var childMatchAs = matchAs
+        ? cleanPath((matchAs + &quot;/&quot; + (child.path)))
+        : undefined;
+        //递归调用
+      addRouteRecord(pathList, pathMap, nameMap, child, record, childMatchAs);
+    });
+  }
+</code></pre>
+
+<p>如果route设置了别名，还会以别名作为路由的path来更新pathList、pathMap、nameMap：</p>
+<pre><code>  //设置了别名
+  if (route.alias !== undefined) {
+    var aliases = Array.isArray(route.alias)
+      ? route.alias
+      : [route.alias];
+
+    aliases.forEach(function (alias) {
+      var aliasRoute = {
+        path: alias,
+        children: route.children
+      };
+      //递归调用
+      addRouteRecord(
+        pathList,
+        pathMap,
+        nameMap,
+        aliasRoute,
+        parent,
+        record.path || '/' // matchAs
+      );
+    });
+  }
+</code></pre>
+
+<p>更新pathList、pathMap的代码如下：</p>
+<pre><code>  //是新的，跟新pathList、pathMap
+  //pathList里面存的是路径
+  //pathMap里面存的是record,路径为key
+  //
+  if (!pathMap[record.path]) {
+    pathList.push(record.path);
+    pathMap[record.path] = record;
+  }
+</code></pre>
+
+<p>如果route定义了name属性，则还会更新nameMap:</p>
+<pre><code>if (name) {
+    //nameMap里面存的是record,路径为key
+    if (!nameMap[name]) {
+      nameMap[name] = record;
+    } else if (&quot;development&quot; !== 'production' &amp;&amp; !matchAs) {
+      warn(
+        false,
+        &quot;Duplicate named routes definition: &quot; +
+        &quot;{ name: \&quot;&quot; + name + &quot;\&quot;, path: \&quot;&quot; + (record.path) + &quot;\&quot; }&quot;
+      );
+    }
+  }
+</code></pre>
+
+<p>我们可以举个例子看看createRouteMap(routes)运行后得到的pathList、pathMap、nameMap：</p>
+<pre><code>// 1. 定义（路由）组件。
+// 可以从其他文件 import 进来
+const Foo = {
+  template: '&lt;div&gt;foo&lt;/div&gt;',
+  beforeRouteEnter (to, from, next) {
+    // 在渲染该组件的对应路由被 confirm 前调用
+    // 不！能！获取组件实例 `this`
+    // 因为当守卫执行前，组件实例还没被创建
+    console.log(to)
+    next()
+  },
+  beforeRouteUpdate (to, from, next) {
+    // 在当前路由改变，但是该组件被复用时调用
+    // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+    // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+    // 可以访问组件实例 `this`
+  },
+  beforeRouteLeave (to, from, next) {
+    // 导航离开该组件的对应路由时调用
+    // 可以访问组件实例 `this`
+    console.log(to)
+    next()
+  }
+}
+const Bar = { template: '&lt;div&gt;bar&lt;/div&gt;' }
+const BarChild = { template: '&lt;div&gt;barchild&lt;/div&gt;' }
+// 2. 定义路由
+// 每个路由应该映射一个组件。 其中&quot;component&quot; 可以是
+// 通过 Vue.extend() 创建的组件构造器，
+// 或者，只是一个组件配置对象。
+// 我们晚点再讨论嵌套路由。
+const routes = [
+  {
+      path: '/foo',
+      name: 'name-foo',
+      component: Foo,
+      alias: '/alias-foo'
+  },
+  {
+      path: '/bar',
+      component: Bar,
+      children: [{
+           path: 'posts',
+           name: 'name-barchild',
+           component: BarChild
+      }]
+  }
+]
+
+// 3. 创建 router 实例，然后传 `routes` 配置
+// 你还可以传别的配置参数, 不过先这么简单着吧。
+const router = new VueRouter({
+  routes // （缩写）相当于 routes: routes
+})
+</code></pre>
+
+<p>当执行到createMatcher函数中的<code>var ref = createRouteMap(routes);</code>时，我们可以看看ref的结果：</p>
+<p><img src="/assets/vue-router2.png" /></p>
+<p><img src="https://i.imgur.com/DGnJpRE.png" /></p>
+<p>每个path或name记录的都是一个record对象：</p>
+<p><img src="/assets/vue-router4.png" /></p>
+<p><img src="https://i.imgur.com/CyW4j5p.png" /></p>
+<p><img src="/assets/vue-router3.png" /></p>
+<p><img src="https://i.imgur.com/Yb8Ua2M.png" /></p>
+<p>这里面还用到了normalizePath函数，该函数定义在vue-router源码的1264 ~ 1269行：</p>
+<pre><code>/*
+ * 规范化路径
+ */
+function normalizePath (path, parent, strict) {
+  if (!strict) { path = path.replace(/\/$/, ''); }
+  if (path[0] === '/') { return path }
+  if (parent == null) { return path }
+  return cleanPath(((parent.path) + &quot;/&quot; + path))
+}
+</code></pre>
+
+<p>它所做的主要是对path做一定的检查：</p>
+<p>首先当path以斜线/结尾的时候将斜线去除。然后判断path是否以/开头，如果是则直接返回。最后调用cleanPath对path做进一步的处理。</p>
+<p>cleanPath定义在vue-router源码的645 ~ 647行，其参数是一个path，对于子路由的path而言，这里会用父亲的path和孩子的path以“/”连接起来作为新的path传进去处理：</p>
+<pre><code>//净化path，主要就是将连续两个//换成一个
+//'a//b///c/d//f'.replace(/\/\//g, '/') &quot;a/b//c/d/f&quot;
+//并没法完全净化，只会净化一次
+function cleanPath (path) {
+  return path.replace(/\/\//g, '/')
+}
+</code></pre>
+
+<p>从代码可以看出，cleanPath的主要目的就是将连着的两个//替换成单个/。</p>
+<p><strong>compileRouteRegex</strong></p>
+<p>除此之外，上述函数还调用了compileRouteRegex函数，compileRouteRegex函数用于将path编译成正则表达式，它实际上调用的是定义在vue-router源代码的1059~1076行的pathToRegexp函数。又根据path的具体类型（正则、String、Array）分别调用了regexpToRegexp、arrayToRegexp、stringToRegexp函数来实现。具体据不再展开了，反正最终就是在record上定义了一个regex属性，该属性的值就是path对应的正则表达式，且该正则表达式有一个keys数组属性。而keys里面又存储着该正则表达式的一些tokens。我们还是以上面的例子的一个路由的结果来看看：</p>
+<p><img src="/assets/vue-router5.png" /></p>
+<p><img src="https://i.imgur.com/ZrcT6K2.png" /></p>
+<h4>8.1.2 原型属性</h4>
+<p>除此成员属性之外，VueRouter还定了了prototypeAccessors原型属性：</p>
+<pre><code>//定义原型属性
+Object.defineProperties( VueRouter.prototype, prototypeAccessors );
+</code></pre>
+
+<p>prototypeAccessors在vue-router源码的2465行定义如下：</p>
+<pre><code>var prototypeAccessors = { currentRoute: { configurable: true } };
+</code></pre>
+
+<p>它上面还定义了一个get方法，用于拿到当前实例的history属性, 它的实现在vue-router源码的2475 ~ 2477行：</p>
+<pre><code>prototypeAccessors.currentRoute.get = function () {
+  return this.history &amp;&amp; this.history.current
+};
+</code></pre>
+
+<h4>8.1.3 原型方法</h4>
+<p>VueRouter类定义了<code>match</code>、<code>init</code>、<code>beforeEach</code>、<code>beforeResolve</code>、<code>afterEach</code>、<code>onReady</code>、<code>onError</code>、<code>push</code>、<code>replace</code>、<code>go</code>、<code>back</code>、<code>forward</code>、<code>getMatchedComponents</code>、<code>resolve</code>、<code>addRoutes</code> 15个原型方法。我们分别来看一下它的实现。</p>
+<h5>8.1.3.1 VueRouter.prototype.match方法</h5>
+<p>VueRouter.prototype.match方法定已在源码的2467 ~ 2473行，用于匹配出目标路由，它实际上调用的是matcher实例的match方法，该方法我们在前面已经介绍过了。</p>
+<pre><code>VueRouter.prototype.match = function match (
+  raw,
+  current,
+  redirectedFrom
+) {
+  return this.matcher.match(raw, current, redirectedFrom)
+};
+</code></pre>
+
+<h5>8.1.3.2 VueRouter.prototype.init方法</h5>
+<p>VueRouter.prototype.init方法定义在vue-router源码的2479 ~ 2517行，它实际上是在vue-router组件的install方法中被调用。
+它一方面将vue实例赋给app属性，另一方面也将app放入apps数组。除此之外还会注册一些监听器：</p>
+<pre><code>VueRouter.prototype.init = function init (app /* Vue component instance */) {
+    var this$1 = this;
+
+  &quot;development&quot; !== 'production' &amp;&amp; assert(
+    install.installed,
+    &quot;not installed. Make sure to call `Vue.use(VueRouter)` &quot; +
+    &quot;before creating root instance.&quot;
+  );
+
+  this.apps.push(app);
+
+  // main app already initialized.
+  if (this.app) {
+    return
+  }
+
+  this.app = app;
+
+  var history = this.history;
+
+  if (history instanceof HTML5History) {
+    history.transitionTo(history.getCurrentLocation());
+  } else if (history instanceof HashHistory) {
+    var setupHashListener = function () {
+      history.setupListeners();
+    };
+    history.transitionTo(
+      history.getCurrentLocation(),
+      setupHashListener,
+      setupHashListener
+    );
+  }
+
+  history.listen(function (route) {
+    this$1.apps.forEach(function (app) {
+      app._route = route;
+    });
+  });
+};
+</code></pre>
+
+<h5>8.1.3.3 VueRouter.prototype.beforeEach方法</h5>
+<p>可以用来注册一个全局前置守卫，我们看看官方文档对它的详细描述：</p>
+<p><img src="/assets/vue-router6.png" /></p>
+<p><img src="https://i.imgur.com/eObRcwr.png" /></p>
+<p>该方法定义在vue-router源码的2519 ~ 2521行：</p>
+<pre><code>//钩子函数
+//把fn加入到beforeHooks列表
+VueRouter.prototype.beforeEach = function beforeEach (fn) {
+  return registerHook(this.beforeHooks, fn)
+};
+</code></pre>
+
+<p>它实际上调用的是registerHook函数，用于在router实例的全局前置守卫属性beforeHooks上注册钩子函数fn。registerHook函数定义在vue-router源码的2609 ~ 2615行：</p>
+<pre><code>function registerHook (list, fn) {
+  list.push(fn);//把fn加入到钩子函数
+  return function () {//返回一个函数，当函数被执行时用于从列表中移除fn
+    var i = list.indexOf(fn);
+    if (i &gt; -1) { list.splice(i, 1); }
+  }
+}
+</code></pre>
+
+<p>我们可以看到，registerHook其实就是把钩子函数fn放到router实例的全局前置守卫属性beforeHooks数组中，并且返回一个函数，当这个返回的函数被执行时会将注册的fn从beforeHooks数组中移除，也就是实现解绑功能。</p>
+<h5>8.1.3.4 VueRouter.prototype.beforeResolve方法</h5>
+<p>beforeResolve和beforeEach方法基本类似，可以用来注册一个全局解析守卫，我们看看官方文档对它的详细描述：</p>
+<p><img src="/assets/vue-router7.png" /></p>
+<p><img src="https://i.imgur.com/giWB91H.png" /></p>
+<p>该方法定义在vue-router源码的2523 ~ 2525行：</p>
+<pre><code>//把fn加入到resolveHooks列表
+VueRouter.prototype.beforeResolve = function beforeResolve (fn) {
+  return registerHook(this.resolveHooks, fn)
+};
+</code></pre>
+
+<p>它实际上调用的也是registerHook函数，用于在router实例的全局解析守卫属性resolveHooks上注册钩子函数fn。 registerHook函数在前面已经讲过了，这里不再赘述。</p>
+<h5>8.1.3.5 VueRouter.prototype.afterEach方法</h5>
+<p>顾名思义，可以用来注册一个全局后置守卫，我们看看官方文档对它的详细描述：</p>
+<p><img src="/assets/vue-router8.png" /></p>
+<p><img src="https://i.imgur.com/LrspUDC.png" /></p>
+<p>该方法定义在vue-router源码的2527 ~ 2529行：</p>
+<pre><code>//把fn加入到afterHooks列表
+VueRouter.prototype.afterEach = function afterEach (fn) {
+  return registerHook(this.afterHooks, fn)
+};
+</code></pre>
+
+<p>它实际上调用的还是registerHook函数，用于在router实例的全局后置守卫属性afterHooks上注册钩子函数fn。 registerHook函数在前面已经讲过了，这里不再赘述。</p>
+<h5>8.1.3.6 VueRouter.prototype.onReady方法</h5>
+<p>该方法定义在vue-router源码的xxx行，它接收cb, errorCb两个参数，用于注册ready时的回调。当History实例的当前ready状态为true时，会执行cb回调，否则将cb回调函数放入实例的readyCbs队列。如果提供了errorCb参数，则将errorCb加入readyErrorCbs队列。其源码如下：</p>
+<pre><code>VueRouter.prototype.onReady = function onReady (cb, errorCb) {
+  this.history.onReady(cb, errorCb);
+};
+</code></pre>
+
+<p>可以看到，它实际上就是调用的History类中定义的onReady函数，这个函数我们在History类中已经详细介绍过。</p>
+<h5>8.1.3.7 VueRouter.prototype.onError方法</h5>
+<p>VueRouter.prototype.onError方法定义在vue-router源码的2535 ~ 2537行，它接收一个errorCb参数，用于注册错误的回调。它会把errorCb加入到history实例的errorCbs队列。其源码如下：</p>
+<pre><code>VueRouter.prototype.onError = function onError (errorCb) {
+  this.history.onError(errorCb);
+};
+</code></pre>
+
+<h5>8.1.3.8 VueRouter.prototype.push方法</h5>
+<p>VueRouter.prototype.push方法定义在源码的2539 ~ 2541行，它实际上调用的是history实例的push方法。相当于对三种History模式的push方法又做了一层封装：</p>
+<pre><code>VueRouter.prototype.push = function push (location, onComplete, onAbort) {
+  this.history.push(location, onComplete, onAbort);
+};
+</code></pre>
+
+<h5>8.1.3.9 VueRouter.prototype.replace方法</h5>
+<p>VueRouter.prototype.replace方法定义在源码的2543 ~ 2545行，它实际上调用的是history实例的replace方法。相当于对三种History模式的replace方法又做了一层封装：</p>
+<pre><code>VueRouter.prototype.replace = function replace (location, onComplete, onAbort) {
+  this.history.replace(location, onComplete, onAbort);
+};
+</code></pre>
+
+<h5>8.1.3.10 VueRouter.prototype.go方法</h5>
+<p>VueRouter.prototype.go方法定义在vue-router源码的2547 ~ 2549行，用于实现编程式地前进/后退，它实际上调用的是挂载在router实例上的history属性的go方法，而router实例上的history属性的go方法实际上调用的是window.history.go(n)，这一点我们在三种History类中都已经介绍过了。</p>
+<pre><code>VueRouter.prototype.go = function go (n) {
+  this.history.go(n);
+};
+</code></pre>
+
+<h5>8.1.3.11 VueRouter.prototype.back方法</h5>
+<p>VueRouter.prototype.back定义在vue-router源码的2551 ~ 2553行，它实际上调用的是VueRouter.prototype.go(-1)，用于实现编程式地后退:</p>
+<pre><code>VueRouter.prototype.back = function back () {
+  this.go(-1);
+};
+</code></pre>
+
+<h5>8.1.3.12 VueRouter.prototype.forward方法</h5>
+<p>VueRouter.prototype.forward方法定义在vue-router源码的2555 ~ 2557行，它实际上调用的是VueRouter.prototype.go(1)，用于实现编程式地前进:</p>
+<pre><code>VueRouter.prototype.forward = function forward () {
+  this.go(1);
+};
+</code></pre>
+
+<h5>8.1.3.13 VueRouter.prototype.getMatchedComponents方法</h5>
+<p>VueRouter.prototype.getMatchedComponents方法定义在源码的2559 ~ 2573行，它返回目标位置或是当前路由匹配的组件数组（是数组的定义/构造类，不是实例）。通常在服务端渲染的数据预加载时时候。</p>
+<pre><code>VueRouter.prototype.getMatchedComponents = function getMatchedComponents (to) {
+  var route = to
+    ? to.matched
+      ? to
+      : this.resolve(to).route
+    : this.currentRoute;
+  if (!route) {
+    return []
+  }
+  return [].concat.apply([], route.matched.map(function (m) {
+    return Object.keys(m.components).map(function (key) {
+      return m.components[key]
+    })
+  }))
+};
+</code></pre>
+
+<p>我们来看看前面使用过的例子：</p>
+<pre><code>let router
+const Home = { template: '&lt;div&gt;home&lt;/div&gt;' }
+const Foo = { template: '&lt;div&gt;foo&lt;/div&gt;' }
+const Bar = {
+  template: `
+    &lt;div&gt;
+      bar
+      &lt;div style=&quot;height:1500px&quot;&gt;&lt;/div&gt;
+      &lt;p id=&quot;anchor&quot;&gt;Anchor&lt;/p&gt;
+    &lt;/div&gt;
+  `
+}
+
+// scrollBehavior:
+// - only available in html5 history mode
+// - defaults to no scroll behavior
+// - return false to prevent scroll
+const scrollBehavior = (to, from, savedPosition) =&gt; {
+  if (savedPosition) {
+    // savedPosition is only available for popstate navigations.
+    return savedPosition
+  } else {
+    const position = {}
+    // new navigation.
+    // scroll to anchor by returning the selector
+    if (to.hash) {
+      position.selector = to.hash
+    }
+    // check if any matched route config has meta that requires scrolling to top
+    // console.log(to.matched)
+    if (to.matched.some(m =&gt; m.meta.scrollToTop)) {
+      // cords will be used if no selector is provided,
+      // or if the selector didn't match any element.
+      position.x = 0
+      position.y = 0
+    }
+    console.log(router.getMatchedComponents())
+    // if the returned position is falsy or an empty object,
+    // will retain current scroll position.
+    return position
+  }
+}
+
+router = new VueRouter({
+  mode: 'hash',
+  base: '/',
+  scrollBehavior,
+  routes: [
+    { path: '/', component: Home, meta: { scrollToTop: true }},
+    { path: '/foo', component: Foo },
+    { path: '/bar', component: Bar, meta: { scrollToTop: true }}
+  ]
+})
+
+new Vue({
+  router,
+  template: `
+    &lt;div id=&quot;app&quot;&gt;
+      &lt;h1&gt;Scroll Behavior&lt;/h1&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;router-link to=&quot;/&quot;&gt;/&lt;/router-link&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;router-link to=&quot;/foo&quot;&gt;/foo&lt;/router-link&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;router-link to=&quot;/bar&quot;&gt;/bar&lt;/router-link&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;router-link tag=&quot;div&quot; to=&quot;/bar#anchor&quot;&gt;&lt;a&gt;/bar#anchor&lt;/a&gt;&lt;/router-link&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;router-view class=&quot;view&quot;&gt;&lt;/router-view&gt;
+    &lt;/div&gt;
+  `
+}).$mount('#app')
+</code></pre>
+
+<p>点击各个路由，得到的输出结果如下：</p>
+<p><img src="/assets/vue-router9.png" /></p>
+<p><img src="https://i.imgur.com/0VcqbZG.png" /></p>
+<h5>8.1.3.14 VueRouter.prototype.resolve方法</h5>
+<p>resolve方法用于解析目标位置，它定义在vue-router源码的2575 ~ 2598行，它通常用在路由跳转的时候，这个我们在“<strong>router-link组件</strong>”这一章节介绍过，它主要是根据目标location，当前路由来解析出一个关于目标路由的对象，这个对象包含目标路由、location以及href:</p>
+<pre><code>VueRouter.prototype.resolve = function resolve (
+  to,
+  current,
+  append
+) {
+  var location = normalizeLocation(
+    to,
+    current || this.history.current,
+    append,
+    this
+  );
+  var route = this.match(location, current);
+  var fullPath = route.redirectedFrom || route.fullPath;
+  var base = this.history.base;
+  var href = createHref(base, fullPath, this.mode);
+  return {
+    location: location,
+    route: route,
+    href: href,
+    // for backwards compat
+    normalizedTo: location,
+    resolved: route
+  }
+};
+</code></pre>
+
+<h5>8.1.3.15 VueRouter.prototype.addRoutes方法</h5>
+<p>VueRouter.prototype.addRoutes方法用于动态添加更多的路由规则。参数必须是一个符合 routes 选项要求的数组。我们还记得，router实例的matcher是一个对象，这个对象有一个addRoutes方法，VueRouter.prototype.addRoutes方法就是调用的前述的方法完成的。addRoutes方法的最终还是调用的createRouteMap生成路由映射。因为我们在初始化matcher时就已经创建过一次路由映射了，所以这里相当于就是更新路由映射，即更新pathLsit、pathMap、nameMap三个数组。</p>
+<pre><code>VueRouter.prototype.addRoutes = function addRoutes (routes) {
+  this.matcher.addRoutes(routes);
+  if (this.history.current !== START) {
+    this.history.transitionTo(this.history.getCurrentLocation());
+  }
+};
+</code></pre>
+
+<h1>第九章 install方法</h1>
+<p>vue-router也就是一个vue插件，所以它必然也有一个install方法用于插件的注册，vue-router的install方法定义在源码的526 ~ 572行，它主要是完成了钩子函数的混入以及router-view组件、router-link组件的注册，我们来具体看看：</p>
+<pre><code>function install (Vue) {
+  if (install.installed &amp;&amp; _Vue === Vue) { return }
+  install.installed = true;
+
+  _Vue = Vue;
+
+  var isDef = function (v) { return v !== undefined; };
+
+  var registerInstance = function (vm, callVal) {
+    var i = vm.$options._parentVnode;
+    if (isDef(i) &amp;&amp; isDef(i = i.data) &amp;&amp; isDef(i = i.registerRouteInstance)) {
+      i(vm, callVal);
+    }
+  };
+
+  Vue.mixin({
+    beforeCreate: function beforeCreate () {
+      if (isDef(this.$options.router)) {
+        this._routerRoot = this;
+        this._router = this.$options.router;
+        this._router.init(this);
+        Vue.util.defineReactive(this, '_route', this._router.history.current);
+      } else {
+        this._routerRoot = (this.$parent &amp;&amp; this.$parent._routerRoot) || this;
+      }
+      registerInstance(this, this);
+    },
+    destroyed: function destroyed () {
+      registerInstance(this);
+    }
+  });
+
+  Object.defineProperty(Vue.prototype, '$router', {
+    get: function get () { return this._routerRoot._router }
+  });
+
+  Object.defineProperty(Vue.prototype, '$route', {
+    get: function get () { return this._routerRoot._route }
+  });
+
+  Vue.component('router-view', View);
+  Vue.component('router-link', Link);
+
+  var strats = Vue.config.optionMergeStrategies;
+  // use the same hook merging strategy for route hooks
+  strats.beforeRouteEnter = strats.beforeRouteLeave = strats.beforeRouteUpdate = strats.created;
+}
+</code></pre>
+
+<p>最开始，为了保证正确且只安装一次，会检查Vue是否引入以及Vue-Router已经被安装过：</p>
+<pre><code>if (install.installed &amp;&amp; _Vue === Vue) { return }
+      install.installed = true;
+</code></pre>
+
+<p>随后会混入vue-router插件的beforeCreate和destroyed钩子函数：</p>
+<pre><code>Vue.mixin({
+    beforeCreate: function beforeCreate () {
+      if (isDef(this.$options.router)) {
+        this._routerRoot = this;
+        this._router = this.$options.router;
+        this._router.init(this);
+        Vue.util.defineReactive(this, '_route', this._router.history.current);
+      } else {
+        this._routerRoot = (this.$parent &amp;&amp; this.$parent._routerRoot) || this;
+      }
+      registerInstance(this, this);
+    },
+    destroyed: function destroyed () {
+      registerInstance(this);
+    }
+  });
+</code></pre>
+
+<p>在beforeCreate钩子函数中会将vue实例挂载在vue实例自身的_routerRoot属性上，将router实例挂在在vue实例自身的_router属性上，接着调用router实例的init方法。init方法我们在VueRouter类中已经介绍过了。 并且还会定义_router属性为响应式的。</p>
+<p>随后会注册router-view、router-link组件，采用的也是全局注册到Vue上：</p>
+<pre><code>Vue.component('router-view', View);
+Vue.component('router-link', Link);
+</code></pre>
+
+<p>最后定义了beforeRouteEnter、beforeRouteLeave、beforeRouteUpdate守卫的合并策略，他们的合并策略和vue的created钩子函数的合并策略是一样的。</p>
+<p>最后看一个例子的vue实例：</p>
+<p><img src="/assets/vue-router10.png" /></p>
+<p><img src="https://i.imgur.com/lJeW2WX.png" /></p>
+<h1>第十章 辅助函数</h1>
+<p>vue-router还提供了一些辅助性的函数便于程序的编写，主要有断言、警告和错误三个辅助函数：</p>
+<pre><code>function assert (condition, message) {
+  if (!condition) {
+    throw new Error((&quot;[vue-router] &quot; + message))
+  }
+}
+
+function warn (condition, message) {
+  if (&quot;development&quot; !== 'production' &amp;&amp; !condition) {
+    typeof console !== 'undefined' &amp;&amp; console.warn((&quot;[vue-router] &quot; + message));
+  }
+}
+
+function isError (err) {
+  return Object.prototype.toString.call(err).indexOf('Error') &gt; -1
+}
+</code></pre>
+
+<h1>第十一章 总结</h1>
+<p>本书是对vue-router源码阅读后所做的总结，必然会存在错误和纰漏，欢迎拍砖。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
