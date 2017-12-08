@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ElementUI中clickoutside.js的实现</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+</style>
+</head>
+<body>
+<h1>ElementUI中clickoutside.js的实现</h1>
+<h3>1、 概述</h3>
+<p>我们在写前端的时候经常遇到这样一种场景，希望鼠标点击到元素外面的时候执行某种操作，比如说，点击空白处，菜单收起。这种场合其实是很多的，ElementUI将这种场景进行了抽象，巧妙地运用Vue的<strong>自定义指令</strong>的方式实现了这样的功能，该指定的使用方式如下：</p>
+<pre><code>/**
+ * v-clickoutside
+ * @desc 点击元素外面才会触发的事件
+ * @example
+ * ```vue
+ * &lt;div v-element-clickoutside=&quot;handleClose&quot;&gt;
+ * ```
+ */
+</code></pre>
+
+<h3>2、重温Vue自定义指令</h3>
+<p>要想先看源码得先知道vue中自定义指定是如何使用的，其实不用指定我们也可以完成类似的功能，但是指令使得它实现起来更通用，更方便。下面我们复习一下vue官网对自定义指令的描述。</p>
+<blockquote>
+<p>除了核心功能默认内置的指令 (v-model 和 v-show)，Vue 也允许注册自定义指令。注意，在 Vue2.0 中，代码复用和抽象的主要形式是组件。然而，有的情况下，你仍然需要对普通 DOM 元素进行底层操作，这时候就会用到自定义指令</p>
+</blockquote>
+<p>指令的注册方法非常简单，全局注册的话直接使用Vue.directive(name, options)的形式：</p>
+<pre><code>// 注册一个全局自定义指令 `v-focus`
+Vue.directive('focus', {
+  // 当被绑定的元素插入到 DOM 中时……
+  inserted: function (el) {
+    // 聚焦元素
+    el.focus()
+  }
+})
+</code></pre>
+
+<p>局部注册的话只需要在组件中定义directives属性，类似如下：</p>
+<pre><code>directives: {
+  focus: {
+    // 指令的定义
+    inserted: function (el) {
+      el.focus()
+    }
+  }
+}
+</code></pre>
+
+<p>注册完后只需要像下面这样使用就可以了：</p>
+<pre><code>&lt;input v-focus type=&quot;text&quot; value=&quot;&quot;&gt;
+</code></pre>
+
+<p>指令也可以接收参数和修饰符，比如v-testdrective:foo.a.b.x中，foo就是参数，a, b, x 就是修饰符。</p>
+<p>编写自定义指令比较关键的地方是要明白各个（一共5个）钩子函数的使用，直接从官网copy过来：</p>
+<p><img src="https://i.imgur.com/EqCF0aB.png" /></p>
+<p>每个钩子函数都有4个参数，各个参数的意义如下：</p>
+<p><img src="https://i.imgur.com/1p6hIRK.png" /></p>
+<p>下面是官网的一个自定义指令的例子：</p>
+<p><img src="https://i.imgur.com/TV9IA6J.png" /></p>
+<h3>3、ElementUI中v-clickoutside的实现</h3>
+<p>ElementUI中v-clickoutside是在clickoutside.js中实现的，我们来看看它的源码：</p>
+<p>1 ~ 14行源码如下：</p>
+<pre><code>import Vue from 'vue';
+import { on } from 'element-ui/src/utils/dom';
+
+const nodeList = [];
+const ctx = '@@clickoutsideContext';
+
+let startClick;
+
+!Vue.prototype.$isServer &amp;&amp; on(document, 'mousedown', e =&gt; (startClick = e));
+
+!Vue.prototype.$isServer &amp;&amp; on(document, 'mouseup', e =&gt; {
+  nodeList.forEach(node =&gt; node[ctx].documentHandler(e, startClick));
+});
+</code></pre>
+
+<p>该源码引入了我们在<strong>ElementUI中Dom.js源码阅读</strong>中定义的事件绑定函数on。 上述这段代码先在document上注册了mousedown和mouseup两个事件的事件响应函数。 定义了上下文常量ctx，用startClick保存mousedown事件，定义了nodeList存储触发事件的dom，也就钩子的第一个参数。</p>
+<p>后面的代码，就是v-clickoutside自定义指令的真正实现代码，它只使用了三个钩子bind,update,unbind：</p>
+<pre><code>/**
+ * v-clickoutside
+ * @desc 点击元素外面才会触发的事件
+ * @example
+ * ```vue
+ * &lt;div v-element-clickoutside=&quot;handleClose&quot;&gt;
+ * ```
+ */
+export default {
+  bind(el, binding, vnode) {
+    const id = nodeList.push(el) - 1;
+    const documentHandler = function(mouseup = {}, mousedown = {}) {
+      if (!vnode.context ||
+        !mouseup.target ||
+        !mousedown.target ||
+        el.contains(mouseup.target) ||
+        el.contains(mousedown.target) ||
+        el === mouseup.target ||
+        (vnode.context.popperElm &amp;&amp;
+        (vnode.context.popperElm.contains(mouseup.target) ||
+        vnode.context.popperElm.contains(mousedown.target)))) return;
+
+      if (binding.expression &amp;&amp;
+        el[ctx].methodName &amp;&amp;
+        vnode.context[el[ctx].methodName]) {
+        vnode.context[el[ctx].methodName]();
+      } else {
+        el[ctx].bindingFn &amp;&amp; el[ctx].bindingFn();
+      }
+    };
+    el[ctx] = {
+      id,
+      documentHandler,
+      methodName: binding.expression,
+      bindingFn: binding.value
+    };
+  },
+
+  update(el, binding) {
+    el[ctx].methodName = binding.expression;
+    el[ctx].bindingFn = binding.value;
+  },
+
+  unbind(el) {
+    let len = nodeList.length;
+
+    for (let i = 0; i &lt; len; i++) {
+      if (nodeList[i][ctx].id === el[ctx].id) {
+        nodeList.splice(i, 1);
+        break;
+      }
+    }
+  }
+};
+</code></pre>
+
+<p>bind方法在指令所绑定的dom上定义了ctx属性，在这个属性上挂载了一个对象：</p>
+<pre><code>{
+  id,
+  documentHandler,
+  methodName: binding.expression,
+  bindingFn: binding.value
+}
+</code></pre>
+
+<p>这个对象包含这个我们给这个dom的编号，这个编号就是按进入nodeList数组的顺序从0开始进行的编号，以及自定义的一个documentHandler函数，以及我们自定义指令所绑定的<strong>表达式的名字</strong>，对于下面的例子而言, 表达式的名字就是指handleClose。以及<strong>表达式的值<strong>, 对于下面这个例子而言，</strong>表达式的值</strong>就是指我们在组件中实际定义的handleClose方法。</p>
+<pre><code>/**
+ * v-clickoutside
+ * @desc 点击元素外面才会触发的事件
+ * @example
+ * ```vue
+ * &lt;div v-element-clickoutside=&quot;handleClose&quot;&gt;
+ * ```
+ */
+</code></pre>
+
+<p>回过头来继续看documentHandler函数，这个函数首先判断用户点击的是不是el自身，如果是的话直接返回，不做任何处理。如果点击的不是所绑定的元素本身则，则分两种情况，如果vnode.context中已经有了我们所绑定的方法，则执行vnode.context上的相应方法，如果没有则直接执行我们绑定的bindingFn。</p>
+<p>接下来看update钩子的实现，update钩子主要用于更新我们前面给dom，也就是el，绑定的那个对象，主要就是methodName和bindingFn属性：</p>
+<pre><code>  update(el, binding) {
+    el[ctx].methodName = binding.expression;
+    el[ctx].bindingFn = binding.value;
+  },
+</code></pre>
+
+<p>最后使用到的一个钩子就是unbind钩子，用于将对应dom所绑定的事件从nodeList中移除：</p>
+<pre><code>unbind(el) {
+    let len = nodeList.length;
+
+    for (let i = 0; i &lt; len; i++) {
+      if (nodeList[i][ctx].id === el[ctx].id) {
+        nodeList.splice(i, 1);
+        break;
+      }
+    }
+}
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

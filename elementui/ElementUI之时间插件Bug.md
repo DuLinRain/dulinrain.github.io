@@ -14,3 +14,7 @@ Element时间插件可以定义快捷时间，如图：
 修复方法就是自己定义CSS覆盖Element的CSS:
 
 ![](http://i.imgur.com/wq1Dtno.png)
+
+修复结果：
+
+![](http://i.imgur.com/zIrMHZw.png)

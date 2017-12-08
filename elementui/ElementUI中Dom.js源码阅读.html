@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ElementUI中Dom.js源码阅读</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+</style>
+</head>
+<body>
+<h1>ElementUI中Dom.js源码阅读</h1>
+<h3>1、概述</h3>
+<p>ElementUI中为了方便进行Dom相关的操作封装了一些DOM相关的代码在dom.js文件里面，事实上在Vue1.x中也封装过dom操作相关的操作，也叫dom.js，这篇文章的目的不是学习Vue1.x中dom.js的实现，而是学学ElementUI中dom.js的实现，实际上这里的代码完全可以部分或者全部的拿出来在别的场合使用。</p>
+<h3>2、源码分析</h3>
+<p>源码3~8行定义了一些常量：</p>
+<pre><code>import Vue from 'vue';
+
+const isServer = Vue.prototype.$isServer;
+const SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
+const MOZ_HACK_REGEXP = /^moz([A-Z])/;
+const ieVersion = isServer ? 0 : Number(document.documentMode);
+</code></pre>
+
+<p>isServer是vue上的一个属性，可以判断vue是工作在客户端还是服务器端，SPECIAL_CHARS_REGEXP则是正则表达式，用于将带：、-等符号。</p>
+<p>ieVersion用来判断IE的版本号，这个巧妙地利用了<code>document.documentMode</code>这个属性，这个属性<strong>在IE浏览器下会显示IE的版本号，在其它的浏览器下会显示undefined</strong>。</p>
+<h4>2.1、 trim方法</h4>
+<p>源码10 ~ 13行定义了trim方法，用于去除字符串两侧的空格，我们来看看它的实现：</p>
+<pre><code>/* istanbul ignore next */
+const trim = function(string) {
+  return (string || '').replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '');
+};
+</code></pre>
+
+<p>可以看到，他是用的正则来搞定的，但是，他这个正则考虑的比我们通常情况下考虑的东西要更周全，它不仅考虑了空格，还考虑了<code>\uFEFF</code>, 这个东西我之前也不知道是啥，看完这个源码才了解到，这个东西叫做「字节次序标记字符（Byte Order Mark）」，也就是 BOM，它是ES5中才有的空白符。</p>
+<h4>2.2、 camelCase方法</h4>
+<p>源码14 ~ 19行定义了camelCase方法，就是用的我们前面定义的SPECIAL_CHARS_REGEXP来将字符中的<code>：、-</code>号删掉，并将它后面的字符转换成大写，也就是驼峰式。</p>
+<p>这里可以正常复习一下replace第二个参数是函数的时候，这个函数的参数都是什么意思，我们直接粘贴MDN上的说明：</p>
+<p><img src="https://i.imgur.com/b6rGQJm.png" /></p>
+<h4>2.3、 on方法</h4>
+<p>22 ~ 36行定义了on函数，用于监听事件，它的实现方法是采用的IIFE实现的，里面根据浏览器的类型确定是IE监听模式还是W3C浏览器：</p>
+<pre><code>export const on = (function() {
+  if (!isServer &amp;&amp; document.addEventListener) {
+    return function(element, event, handler) {
+      if (element &amp;&amp; event &amp;&amp; handler) {
+        element.addEventListener(event, handler, false);
+      }
+    };
+  } else {
+    return function(element, event, handler) {
+      if (element &amp;&amp; event &amp;&amp; handler) {
+        element.attachEvent('on' + event, handler);
+      }
+    };
+  }
+})();
+</code></pre>
+
+<h4>2.4、 off方法</h4>
+<p>39 ~ 53定义了off函数，用于解绑事件，同上面的实现方法几乎一样：</p>
+<pre><code>/* istanbul ignore next */
+export const off = (function() {
+  if (!isServer &amp;&amp; document.removeEventListener) {
+    return function(element, event, handler) {
+      if (element &amp;&amp; event) {
+        element.removeEventListener(event, handler, false);
+      }
+    };
+  } else {
+    return function(element, event, handler) {
+      if (element &amp;&amp; event) {
+        element.detachEvent('on' + event, handler);
+      }
+    };
+  }
+})();
+</code></pre>
+
+<h4>2.5、 once方法</h4>
+<p>56 ~ 64行定义了once函数，用于仅仅绑定一次，这个once在很多库里面都有实现，大致的思路都是一样的，就是利用上面的on和off方法，当绑定的事件执行完之后进行解绑：</p>
+<pre><code>export const once = function(el, event, fn) {
+  var listener = function() {
+    if (fn) {
+      fn.apply(this, arguments);
+    }
+    off(el, event, listener);
+  };
+  on(el, event, listener);
+};
+</code></pre>
+
+<h4>2.6、 hasClass方法</h4>
+<p>67 ~ 75封装了一个hasClass函数，用于判断某个dom对象是否拥有某个类：</p>
+<pre><code>export function hasClass(el, cls) {
+  if (!el || !cls) return false;
+  if (cls.indexOf(' ') !== -1) throw new Error('className should not contain space.');
+  if (el.classList) {
+    return el.classList.contains(cls);// contains方法
+  } else {
+    return (' ' + el.className + ' ').indexOf(' ' + cls + ' ') &gt; -1;
+  }
+};
+</code></pre>
+
+<p>我们看到，这里边先判断了dom上的classList属性是否存在，如果不存在的话，则判断dom上的className属性是否存在。而我们从可以看到，其实dom上面这两个东西都有的：</p>
+<pre><code>&lt;div id=&quot;app&quot; class=&quot;a b c&quot;&gt;哈哈&lt;/div&gt;
+</code></pre>
+
+<p><img src="https://i.imgur.com/02McyMy.png" /></p>
+<p>其实是因为，在低于IE9版本以下的浏览器下，dom是没有classList属性的。我们可以通过下面的例子看看：</p>
+<p><img src="https://i.imgur.com/SVoqssJ.png" /></p>
+<p>所以说，上面会分两种情况进行判断。</p>
+<h4>2.7、 addClass方法</h4>
+<p>78 ~ 98行封装了一个addClass方法，用于向某个dom对象添加相应的类，它的实现如下：</p>
+<pre><code>export function addClass(el, cls) {
+  if (!el) return;
+  var curClass = el.className;
+  var classes = (cls || '').split(' ');
+
+  for (var i = 0, j = classes.length; i &lt; j; i++) {
+    var clsName = classes[i];
+    if (!clsName) continue;
+
+    if (el.classList) {
+      el.classList.add(clsName);// add方法
+    } else {
+      if (!hasClass(el, clsName)) {
+        curClass += ' ' + clsName;
+      }
+    }
+  }
+  if (!el.classList) {
+    el.className = curClass;
+  }
+};
+</code></pre>
+
+<p>可以看到它任然是对&lt;=IE9版本的IE浏览器做了兼容。同时我们也可以看到，该方法支持同时添加多个class，多个class名字需要用空白格分隔。</p>
+<h4>2.8、 removeClass方法</h4>
+<p>101 ~ 121行定义了removeClass方法，用于删除指定的一个或多个类，多个类同样以空白格分隔：</p>
+<pre><code>/* istanbul ignore next */
+export function removeClass(el, cls) {
+  if (!el || !cls) return;
+  var classes = cls.split(' ');
+  var curClass = ' ' + el.className + ' ';
+
+  for (var i = 0, j = classes.length; i &lt; j; i++) {
+    var clsName = classes[i];
+    if (!clsName) continue;
+
+    if (el.classList) {
+      el.classList.remove(clsName);// remove方法
+    } else {
+      if (hasClass(el, clsName)) {
+        curClass = curClass.replace(' ' + clsName + ' ', ' ');
+      }
+    }
+  }
+  if (!el.classList) {
+    el.className = trim(curClass);
+  }
+};
+</code></pre>
+
+<p>不知道大家有没有注意到，在前面几个方法中用到了classList，那这个classList可能大家并不是很了解，大家可能会认为它是一个数组，但是又会感到疑惑，数组好像没有contains、add、remove方法啊？所以我们这里讲一讲这个classList。</p>
+<p><strong>Element.classList</strong> 是一个只读属性，返回一个元素的类属性的实时 DOMTokenList集合。使用 classList 访问类列表可以方便地替代使用element.className作为空格分隔访问元素的方式。</p>
+<p>它的语法如下：</p>
+<pre><code>let elementClasses = elementNodeReference.classList;
+</code></pre>
+
+<p>elementClasses 是一个 DOMTokenList 表示 elementNodeReference 的类属性 。如果类属性未设置或为空，那么 elementClasses.length 返回 0。element.classList 本身是只读的，虽然你可以使用 add() 和 remove() 方法修改它。</p>
+<p>dom对象提供了很多方法用来操作classList属性：</p>
+<p><img src="https://i.imgur.com/C7UeTM9.png" /></p>
+<p>一些实例如下：</p>
+<pre><code>// div是具有class =“foo bar”的&lt;div&gt;元素的对象引用
+div.classList.remove(&quot;foo&quot;);
+div.classList.add(&quot;anotherclass&quot;);
+
+// 如果visible被设置则删除它，否则添加它
+div.classList.toggle(&quot;visible&quot;);
+
+// 添加/删除 visible，取决于测试条件，i小于10
+div.classList.toggle(&quot;visible&quot;, i &lt; 10);
+
+alert(div.classList.contains(&quot;foo&quot;));
+
+//添加或删除多个类
+div.classList.add(&quot;foo&quot;,&quot;bar&quot;);
+div.classList.remove(&quot;foo&quot;, &quot;bar&quot;);
+</code></pre>
+
+<h4>2.9 getStyle方法</h4>
+<p>源码124~158行定义了getStyle方法，用于获取dom元素的样式：</p>
+<pre><code>export const getStyle = ieVersion &lt; 9 ? function(element, styleName) {
+  if (isServer) return;
+  if (!element || !styleName) return null;
+  styleName = camelCase(styleName);
+  if (styleName === 'float') {
+    styleName = 'styleFloat';
+  }
+  try {
+    switch (styleName) {
+      case 'opacity':
+        try {
+          return element.filters.item('alpha').opacity / 100;
+        } catch (e) {
+          return 1.0;
+        }
+      default:
+        return (element.style[styleName] || element.currentStyle ? element.currentStyle[styleName] : null);
+    }
+  } catch (e) {
+    return element.style[styleName];
+  }
+} : function(element, styleName) {
+  if (isServer) return;
+  if (!element || !styleName) return null;
+  styleName = camelCase(styleName);
+  if (styleName === 'float') {
+    styleName = 'cssFloat';
+  }
+  try {
+    var computed = document.defaultView.getComputedStyle(element, '');
+    return element.style[styleName] || computed ? computed[styleName] : null;
+  } catch (e) {
+    return element.style[styleName];
+  }
+};
+</code></pre>
+
+<p>我们可以看到，它对IE和非IE也做了区分，IE下，为了兼容IE9以下，它定义了字节的方法，也就是上述代码的上半部分：</p>
+<pre><code>function(element, styleName) {
+  if (isServer) return;
+  if (!element || !styleName) return null;
+  styleName = camelCase(styleName);
+  if (styleName === 'float') {
+    styleName = 'styleFloat';
+  }
+  try {
+    switch (styleName) {
+      case 'opacity':
+        try {
+          return element.filters.item('alpha').opacity / 100;
+        } catch (e) {
+          return 1.0;
+        }
+      default:
+        return (element.style[styleName] || element.currentStyle ? element.currentStyle[styleName] : null);
+    }
+  } catch (e) {
+    return element.style[styleName];
+  }
+}
+</code></pre>
+
+<p>这个方法用于直接拿到某个dom的某个style，它首先对用户指定的style做了一下规范化处理，统一转成了驼峰式，因为我们知道，我们写的css属性都是用-分隔的，但是在dom里面它是以驼峰的形式存储起来的。所以我们这里要预先规范化一下。</p>
+<p>代码接下来对float属性进行了处理，因为float属性在IE9以下的浏览器dom里面是以styleFloat属性存在的，我们可以用下面代码看看：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;html测试&lt;/title&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
+        .a {
+            float: left;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;app&quot; class=&quot;a b c&quot;&gt;哈哈&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p><img src="https://i.imgur.com/56NsNGz.png" /></p>
+<p>除此之外，代码接下来还对opacity属性进行了特殊的处理，因为IE低版本里面的透明度是使用滤镜filter来实现的，所以需要从filter属性上拿。</p>
+<p>最后IE虽然同时支持dom.style 和 dom.currentStyle，两个对象中的属性值可能不一样，比如刚才那个例子：</p>
+<p><img src="https://i.imgur.com/56NsNGz.png" /></p>
+<p>所以说，default：后面的那段代码对此也做了兼容性的处理。 它先从style上拿，如果不存在则从currentStyle上拿：</p>
+<pre><code>(element.style[styleName] || element.currentStyle ? element.currentStyle[styleName] : null);
+</code></pre>
+
+<p>下半部分则是对IE9+以及其它浏览器进行处理：</p>
+<pre><code>function(element, styleName) {
+  if (isServer) return;
+  if (!element || !styleName) return null;
+  styleName = camelCase(styleName);
+  if (styleName === 'float') {
+    styleName = 'cssFloat';
+  }
+  try {
+    var computed = document.defaultView.getComputedStyle(element, '');
+    return element.style[styleName] || computed ? computed[styleName] : null;
+  } catch (e) {
+    return element.style[styleName];
+  }
+};
+</code></pre>
+
+<p>同样它首先对style进行了规范化，然后同样对float属性进行了处理，这些说明了，float属性在任何浏览器dom中都是以cssFloat属性存储的。</p>
+<p>随后它用了下面这段代码来拿style：</p>
+<pre><code>var computed = document.defaultView.getComputedStyle(element, '');
+return element.style[styleName] || computed ? computed[styleName] : null;
+</code></pre>
+
+<p>这是因为在某些浏览器下，直接从dom.style属性中是拿不到style的，需要通过getComputedStyle来拿，比如说下面在chrome下面：</p>
+<p><img src="https://i.imgur.com/AqWYlof.png" /></p>
+<h4>2.10、 重温getComputedStyle</h4>
+<p>这里面还用到了getComputedStyle, 可能很多人对它还不熟悉，这里再来讲一下：</p>
+<blockquote>
+<p>getComputedStyle() 方法给出<strong>应用活动样式表后</strong>的元素的所有CSS属性的值，并解析这些值可能包含的任何基本计算</p>
+</blockquote>
+<p>第一个参数指定想要获取样式的dom， 第二个参数专用于指定伪元素，如果你不需要获取指定伪元素的style，你应该将它设置为null。这个函数返回的样式是一个实时的 CSSStyleDeclaration 对象，当元素的样式更改时，它会自动更新本身。</p>
+<p>可能在许多网上的演示代码中, getComputedStyle 是通过 document.defaultView 对象来调用的。 大部分情况下，这是不需要的， 因为可以直接通过window对象调用。但有一种情况，你必需要使用 defaultView,  那是在firefox3.6上访问子框架内的样式 (iframe)。</p>
+<p>我们来看一下使用getComputedStyle() 方法的基本的例子：</p>
+<pre><code>let elem1 = document.getElementById(&quot;elemId&quot;);
+let style = window.getComputedStyle(elem1, null);
+
+// 它等价于
+// let style = document.defaultView.getComputedStyle(elem1, null);
+</code></pre>
+
+<p>getComputedStyle 可以从伪元素拉取样式信息 (比如, ::after, ::before, ::marker, ::line-marker)。 一个获取伪元素的style的实例：</p>
+<pre><code>&lt;style&gt;
+    h3::after {
+        content: &quot;rocks!&quot;;
+    }
+&lt;/style&gt;
+
+&lt;h3&gt;generated content&lt;/h3&gt; 
+
+&lt;script&gt;
+    let h3 = document.querySelector('h3'), 
+    result = getComputedStyle(h3, '::after').content;
+    alert(`the generated content is: ${result}`);
+    console.log(`the generated content is: ${result}`); 
+    // the generated content is: &quot;rocks!&quot;
+&lt;/script&gt;
+</code></pre>
+
+<h3>3、 总结</h3>
+<p>ElementUI中的dom.js实际上对dom操作做了已经很好的封装了，我们完全可以直接拿出来在别的地方使用，但是了解其中的实现原理对我们实际写代码是很有帮助的。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
