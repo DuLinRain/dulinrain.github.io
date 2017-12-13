@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Babel编译器基本配置方法</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+</style>
+</head>
+<body>
+<h1>Babel编译器基本配置方法</h1>
+<h3>1 概述</h3>
+<p>Babel是一个编译器，从大的层面来说，它有三个主要的步鄹解析、转义、代码生成。 这个过程和大多数编译器是一样的。 Babel所做的工作就是将我们所做的代码进行某些转译工作，然后输入我们想要的代码。它的最常用的功能是对新版JS语言(如ES6， ES7， ES8)及语言的新特性(如stage-x)转译成ES5语言，以适应低版本的浏览器。 </p>
+<p><img src="https://i.imgur.com/Pnjmhdz.png" /></p>
+<p>Babel有常见的几种使用方式：</p>
+<ol>
+<li>使用<code>.babelrc</code>文件</li>
+<li>在package.json中配置</li>
+<li>命令行</li>
+</ol>
+<p>使用<code>.babelrc</code>文件的实例如下：</p>
+<pre><code>{
+  &quot;plugins&quot;: [&quot;transform-react-jsx&quot;],
+  &quot;ignore&quot;: [
+    &quot;foo.js&quot;,
+    &quot;bar/**/*.js&quot;
+  ]
+}
+</code></pre>
+
+<p>使用package.json配置的方法如下：</p>
+<pre><code>{
+  &quot;name&quot;: &quot;my-package&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;babel&quot;: {
+    // 在这里写配置
+  }
+}
+</code></pre>
+
+<p>Babel会在当前编译的文件所在的目录查找<code>.babelrc</code>文件，如果不存在，则会向上级目录中查找，直到找到一个<code>.babelrc</code>文件，或者是找到一个有着<code>&quot;babel&quot;: {}</code>配置的package.json文件。</p>
+<p>你可以在options中配置&quot;babelrc&quot;: false来禁用查找行为，如果是在命令行下使用--no-babelrc。</p>
+<h3>2 .babelrc配置文件介绍</h3>
+<p>Babel的配置主要是通过项目下的.babelrc文件来完成的，它有两个非常重要的属性： <strong>presets</strong>和<strong>plugins</strong>。 如下面所示：</p>
+<pre><code>{
+    &quot;presets&quot;: [],
+    &quot;plugins&quot;: []
+}
+</code></pre>
+
+<p>因为没有对它做任何的配置，所以对我们而言，它所做的工作就相当于<code>const babel = code =&gt; code;</code>, 也就是将代码原封不动地转译了一遍。</p>
+<p>比如：</p>
+<pre><code>test.js
+
+class Foo {
+  method() {}
+}
+</code></pre>
+
+<p>转译后的结果：</p>
+<pre><code>compiled.js
+class Foo {
+  method() {}
+}
+</code></pre>
+
+<p>完全没变。</p>
+<p>当然这并不是我们期望的，所以我们来看看presets和plugins的功能。</p>
+<h4>2.1 presets</h4>
+<p>presets通常被称作“预设”，presets通常是一系列plugins的集合，我们最常见到的应该是<code>babel-preset-es2015</code>, 比如你可能会在网上或者某些脚手架上看到它们的.babelrc像下面这样配置：</p>
+<p><img src="https://i.imgur.com/pAgD9if.png" /></p>
+<p><code>babel-preset-es2015</code>是一个官方提供的预设，用于将ES6语法转换成ES5语法，它实际上包含了下面这些plugins：</p>
+<p><img src="https://i.imgur.com/hutimp3.png" /></p>
+<p>实际上，如果你不想转换全部的ES6语法，或者你的原始代码里面并没有遇到所有上述ES6语法，你完全可以不指定presets, 仅仅在plugins里面指定你需要的plugin。 比如下面的代码只用到了ES6中的class， 所以我们其实只需要指定<code>transform-es2015-classes</code> plugin就OK了, 没有必要指定<code>babel-preset-es2015</code>预设：</p>
+<pre><code>test.js
+
+class Foo {
+  method() {}
+}
+</code></pre>
+
+<p>.babelrc配置如下：</p>
+<pre><code>{
+    &quot;presets&quot;: [
+    ],
+    &quot;plugins&quot;: [
+        &quot;transform-es2015-classes&quot;
+    ]
+}
+</code></pre>
+
+<p>转译后的代码如下：</p>
+<p>compiled.js</p>
+<p><img src="https://i.imgur.com/Uw8PAuw.png" /></p>
+<p>这里面可以注意到将ES6的class转成ES5的时候在前面插入了两个辅助函数_createClass和_classCallCheck。关于Babel在转换时的辅助函数，我们稍后会继续讨论。</p>
+<p>除了类似于<code>babel-preset-es2015</code>这种带完整年份的presets外，Babel官方还提供了Stage-X这种形式的presets，这个主要是为了处理还没有被正式批准成为标准的JS某个版本。 JS标准的诞生一般有5个步鄹：</p>
+<p><img src="https://i.imgur.com/p2muN86.png" /></p>
+<p>而对于presets而言，通常指定的是 stage-0, stage-1，stage-2, stage-3。 因为对于stage-4而言意味着已经成为标准，也就意味这可能已经有了完整年份的presets。</p>
+<p>除了前面提到的<code>babel-preset-es2015</code>预设外，Babel官方还提供了一些常用的预设：</p>
+<p><img src="https://i.imgur.com/tnvSGCM.png" /></p>
+<p>我们稍后会具体讲一下其中的几个主要的预设。在这之前，我们来看一看plugins的配置吧。</p>
+<h4>2.2 plugins</h4>
+<p>前面在讲解presets的时候已经对plugins有所涉及了，大体而言，plugins只是聚焦转译的某一方面，Babel官方列出了如下一些常用的plugins:</p>
+<p><img src="https://i.imgur.com/Y7SMh1m.png" /></p>
+<p><img src="https://i.imgur.com/2QqEfam.png" /></p>
+<p><img src="https://i.imgur.com/CIWP3x1.png" /></p>
+<p>这些plugins不仅涵盖基本的语法转译，还涉及代码压缩等等。</p>
+<p>plugins的介绍到此结束，我们接下来看看下面两个问题：</p>
+<ol>
+<li>同时指定了presets和plugins的时候它们调用的顺序是怎么样的呢？</li>
+<li>presets和plugins自身的调用顺序是怎么样的呢？</li>
+</ol>
+<h5>2.2.1 Plugin/Preset 顺序</h5>
+<p>对于前面两个问题，Babel有如下结论：</p>
+<ul>
+<li>Plugins 运行在 Presets 之前.</li>
+<li>Plugin 自身的顺序是从第一个到最后一个.</li>
+<li>Preset 自身的顺序正好相反 (即，从最后一个到第一个).</li>
+</ul>
+<p>比如，对于下面的例子：</p>
+<pre><code>{
+  &quot;plugins&quot;: [
+    &quot;transform-decorators-legacy&quot;,
+    &quot;transform-class-properties&quot;
+  ]
+}
+</code></pre>
+
+<p>它将会先运行<code>transform-decorators-legacy</code>，再运行<code>transform-class-properties</code>。</p>
+<p>而对于有如下配置的presets而言, 它按照stage-2, react, es2015顺序运行：</p>
+<pre><code>{
+  &quot;presets&quot;: [
+    &quot;es2015&quot;,
+    &quot;react&quot;,
+    &quot;stage-2&quot;
+  ]
+}
+</code></pre>
+
+<p>这通常是为了更好的后向兼容而设计的，因为大多数用户会将es2015列在stage-0前面。</p>
+<h5>2.2.2 Plugin/Preset 的Options参数</h5>
+<p>大多数presets和plugins都会提供options参数用于更加具体的设置他们的工作方式。 要使用options参数，你需要采用嵌套数组的形式，每一个preset/plugin为一个单独的数组，数组的第一个索引存放preset/plugin名称，第二个索引位置存放options对象。 比如：</p>
+<pre><code>{
+  &quot;plugins&quot;: [
+    [&quot;transform-async-to-module-method&quot;, {
+      &quot;module&quot;: &quot;bluebird&quot;,
+      &quot;method&quot;: &quot;coroutine&quot;
+    }]
+  ]
+}
+</code></pre>
+
+<p>以及</p>
+<pre><code>{
+  &quot;presets&quot;: [
+    [&quot;es2015&quot;, {
+      &quot;loose&quot;: true,
+      &quot;modules&quot;: false
+    }]
+  ]
+}
+</code></pre>
+
+<h4>2.3 .babelrc的其它配置项</h4>
+<p>除presets和plugins两个配置项外，实际上还有很多其它的配置项，完整的配置项列表如下：</p>
+<p><img src="https://i.imgur.com/O83RaYu.png" /></p>
+<h3>3 常用preset/plugin介绍</h3>
+<h4>3.1 babel-preset-env</h4>
+<p>不带任何options的<code>babel-preset-env</code>的效果等同于<code>babel-preset-latest</code>(也等同于同时设置<code>babel-preset-es2015</code>, <code>babel-preset-es2016</code>,  <code>babel-preset-es2017</code>)。 也就是说，下面的三种设置都是等效的：</p>
+<h1></h1>
+<pre><code>{
+  &quot;presets&quot;: [&quot;env&quot;]
+}
+</code></pre>
+
+<h1></h1>
+<pre><code>{
+  &quot;presets&quot;: [&quot;babel-preset-latest&quot;]
+}
+</code></pre>
+
+<h1></h1>
+<pre><code>{
+  &quot;presets&quot;: [&quot;babel-preset-es2015&quot;, &quot;babel-preset-es2016&quot;, &quot;babel-preset-es2017&quot;]
+}
+</code></pre>
+
+<h1></h1>
+<p>当然，前提是你需要安装对应的包。</p>
+<p>你也可以在babel-preset-env中指定只包含你想要支持的浏览器的polyfill和transforms。这样可以是你最终的代码体积减少一些。</p>
+<p>下面这个例子包含的polyfill和transforms只会将源码转换成支持最近2个版本的浏览器，以及&gt;=7的safari浏览器。 它使用的是<a href="https://github.com/ai/browserslist">browserslist</a> 库来解析浏览器信息, 所以你可以使用任何<a href="https://github.com/ai/browserslist#queries">browserslist支持的查询格式</a>.</p>
+<pre><code>{
+  &quot;presets&quot;: [
+    [&quot;env&quot;, {
+      &quot;targets&quot;: {
+        &quot;browsers&quot;: [&quot;last 2 versions&quot;, &quot;safari &gt;= 7&quot;]
+      }
+    }]
+  ]
+}
+</code></pre>
+
+<p>类似的，如果你的目标是node而不是浏览器，你也可以像下面来配置：</p>
+<pre><code>{
+  &quot;presets&quot;: [
+    [&quot;env&quot;, {
+      &quot;targets&quot;: {
+        &quot;node&quot;: &quot;6.10&quot;
+      }
+    }]
+  ]
+}
+</code></pre>
+
+<p>你也可以像下面这样指定Babel将代码只编译成适应当前node版本的代码：</p>
+<pre><code>{
+  &quot;presets&quot;: [
+    [&quot;env&quot;, {
+      &quot;targets&quot;: {
+        &quot;node&quot;: &quot;current&quot;
+      }
+    }]
+  ]
+}
+</code></pre>
+
+<p><code>babel-preset-env</code>的常用配置如下：</p>
+<p><strong>targets</strong></p>
+<pre><code>值： { [string]: number | string }, 默认为 {}
+
+用于设置环境和版本，我们推荐使用string，因为在某些有镜像版本的情况下适用，比如： `node: &quot;6.10&quot;`
+
+一些可选的环境有chrome, opera, edge, firefox, safari, ie, ios, android, node, electron
+</code></pre>
+
+<p><strong>targets.node</strong></p>
+<pre><code>值： number | string | &quot;current&quot; | true
+如果你想要编译成当前版本node所支持的语法，你可以指定为`&quot;node&quot;: true` 或 `&quot;node&quot;: &quot;current&quot;`, 这种设置和` &quot;node&quot;: process.versions.node`效果一样.
+</code></pre>
+
+<p><strong>targets.browsers</strong></p>
+<pre><code>值： Array&lt;string&gt; | string
+</code></pre>
+
+<p><strong>loose</strong></p>
+<pre><code>值： boolean 默认false。
+用于以一种松散模式转译
+</code></pre>
+
+<p><strong>modules</strong></p>
+<pre><code>&quot;amd&quot; | &quot;umd&quot; | &quot;systemjs&quot; | &quot;commonjs&quot; | false, 默认为 &quot;commonjs&quot;
+将ES6模块语法转成指定的模块语法
+</code></pre>
+
+<p><strong>useBuiltIns</strong></p>
+<pre><code>值： boolean， 默认false
+使用内置的babel-polyfill, 这个稍后再讲
+</code></pre>
+
+<h4>3.2 babel-runtime &amp; transform-runtime</h4>
+<p>transform-runtime是一个plugin，使用时需要先安装babel-runtime。 </p>
+<p>为了实现 ECMAScript 规范的细节，Babel 会使用“助手”方法来保持生成代码的整洁。</p>
+<p>由于这些助手方法可能会特别长并且会被添加到每一个文件的顶部，比如我们前面的ES6 class这个例子的编译结果：</p>
+<p><img src="https://i.imgur.com/Uw8PAuw.png" /></p>
+<p>可以看到上面插入了一段非常混乱的代码，使得输出代码看起来很不干净。</p>
+<p>我们可以使用babel-plugin-transform-runtime把它们统一移动到一个单一的“运行时（runtime）”中去。只需要安装babel-runtime和babel-plugin-transform-runtime这两个包，然后修改配置文件如下：</p>
+<pre><code>{
+    &quot;presets&quot;: [
+    ],
+    &quot;plugins&quot;: [
+        &quot;transform-runtime&quot;,
+        &quot;transform-es2015-classes&quot;
+    ]
+}
+</code></pre>
+
+<p>test.js不变：</p>
+<pre><code>class Foo {
+  method() {}
+}
+</code></pre>
+
+<p>最后的输出结果如下：</p>
+<p>compiled.js</p>
+<p><img src="https://i.imgur.com/t2o8rr1.png" /></p>
+<p>可以看到，最后得到的代码非常的干净。</p>
+<h4>3.3 babel-polyfill</h4>
+<p>babel-polyfill既不是preset也不是plugin，放在这里讲是因为，虽然Babel可以编译所有新的js语法，但是对于js API来说，并不是如此。 比如下面的例子：</p>
+<pre><code>test.js
+
+function addAll() {
+  return Array.from(arguments).reduce((a, b) =&gt; a + b);
+}
+</code></pre>
+
+<p>.babelrc配置如下：</p>
+<pre><code>{
+    &quot;presets&quot;: [
+        &quot;es2015&quot;
+    ],
+    &quot;plugins&quot;: [
+    ]
+}
+</code></pre>
+
+<p>输出如下：</p>
+<pre><code>function addAll() {
+  return Array.from(arguments).reduce(function (a, b) {
+    return a + b;
+  });
+}
+</code></pre>
+
+<p>可以看到，它仅仅只是把箭头函数换成了普通函数，对于Array.from没有做任何的转换，但是Array.from在某些(大部分是IE)浏览器下是不支持的。所以我们使用babel-polyfill。 </p>
+<p>Babel 用了优秀的 core-js 用作 polyfill，并且还有定制化的 regenerator 来让 generators（生成器）和 async functions（异步函数）正常工作。使用babel-polyfill只需要在代码顶部引入即可：</p>
+<pre><code>import &quot;babel-polyfill&quot;;
+</code></pre>
+
+<p>我们来看一下引入babel-polyfill后效果：</p>
+<pre><code>test.js
+
+import &quot;babel-polyfill&quot;;
+function addAll() {
+  return Array.from(arguments).reduce((a, b) =&gt; a + b);
+}
+</code></pre>
+
+<p>.babelrc配置不变</p>
+<p>输出如下：</p>
+<pre><code>function addAll() {
+  return Array.from(arguments).reduce(function (a, b) {
+    return a + b;
+  });
+}
+</code></pre>
+
+<p><img src="https://i.imgur.com/pmUKh3M.png" /></p>
+<p>可以看到，没有太大的差异，只是把ES6的模块换成了commonJS模块的用法。</p>
+<p>前面说了babel-preset-env预设有一个useBuiltIns，它的作用不是简单的把ES6的<code>import &quot;babel-polyfill&quot;;</code>替换成<code>require(&quot;babel-polyfill&quot;)</code>, 它会更具体点：</p>
+<p>原始文件：</p>
+<pre><code>test.js
+
+import &quot;babel-polyfill&quot;;
+
+function addAll() {
+  return Array.from(arguments).reduce((a, b) =&gt; a + b);
+}
+</code></pre>
+
+<p>.babelrc配置:</p>
+<pre><code>{
+    &quot;presets&quot;: [
+        [&quot;env&quot;, {
+            useBuiltIns: true
+        }]
+    ],
+    &quot;plugins&quot;: [
+    ]
+}
+</code></pre>
+
+<p>输出：
+	require(&quot;core-js/modules/es6.math.tanh&quot;);</p>
+<pre><code>require(&quot;core-js/modules/es6.math.trunc&quot;);
+
+require(&quot;core-js/modules/es7.array.includes&quot;);
+
+require(&quot;core-js/modules/es7.object.values&quot;);
+
+require(&quot;core-js/modules/es7.object.entries&quot;);
+
+require(&quot;core-js/modules/es7.object.get-own-property-descriptors&quot;);
+
+require(&quot;core-js/modules/es7.string.pad-start&quot;);
+
+require(&quot;core-js/modules/es7.string.pad-end&quot;);
+
+require(&quot;core-js/modules/web.timers&quot;);
+
+require(&quot;core-js/modules/web.immediate&quot;);
+
+require(&quot;core-js/modules/web.dom.iterable&quot;);
+
+require(&quot;regenerator-runtime/runtime&quot;);
+
+//....这里还有很多个类似的require
+
+
+function addAll() {
+  return Array.from(arguments).reduce(function (a, b) {
+    return a + b;
+  });
+}
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
