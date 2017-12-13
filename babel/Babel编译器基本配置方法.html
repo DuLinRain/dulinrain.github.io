@@ -586,7 +586,13 @@ class Foo {
 <p>compiled.js</p>
 <p><img src="https://i.imgur.com/t2o8rr1.png" /></p>
 <p>可以看到，最后得到的代码非常的干净。</p>
-<h4>3.3 babel-polyfill</h4>
+<h4>3.3 transform-vue-jsx</h4>
+<p>babel-plugin-transform-vue-jsx是一个用于转换Vue中JSX语法的插件。 我们知道vue中是可以直接支持JSX语法的，这通常是在组件的render函数中使用的。虽然在实际项目开发中不用JSX语法完全可以进行Vue项目开发，但是JSX语法任然使用的很普遍。</p>
+<p>举个例子，在<a href="http://element.eleme.io">ElementUI</a>中存在一个<a href="http://element.eleme.io/#/zh-CN/component/upload">Upload组件</a>，这个组件就是在render函数中使用的JSX语法：</p>
+<p><img src="https://i.imgur.com/4D4lBoX.png" /></p>
+<p>但是使用JSX语法需要我们在.babelrc中配置babel-plugin-transform-vue-jsx插件，如下：</p>
+<p><img src="https://i.imgur.com/h5ycpXO.png" /></p>
+<h4>3.4 babel-polyfill</h4>
 <p>babel-polyfill既不是preset也不是plugin，放在这里讲是因为，虽然Babel可以编译所有新的js语法，但是对于js API来说，并不是如此。 比如下面的例子：</p>
 <pre><code>test.js
 
