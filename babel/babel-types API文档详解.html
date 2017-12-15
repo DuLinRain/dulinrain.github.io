@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>babel-types API文档</title>
+<title>babel-types API文档详解</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 /* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
@@ -313,7 +313,7 @@ img {
 <h1>babel-types API文档详解</h1>
 <h3>@babel/types</h3>
 <blockquote>
-<p>这个模块包含了一些用于手动地创建AST以及检查AST类型的方法.</p>
+<p>这个模块包含了一些用于手动地创建AST以及检查AST类型的方法。 你在编写Babel插件时会经常用到</p>
 </blockquote>
 <h2>Install</h2>
 <p><code>sh
@@ -412,14 +412,22 @@ t.assignmentExpression(operator, left, right)</code></p>
 <h3>assignmentPattern</h3>
 <p><code>javascript
 t.assignmentPattern(left, right)</code></p>
-<p>See also <code>t.isAssignmentPattern(node, opts)</code> and <code>t.assertAssignmentPattern(node, opts)</code>.</p>
-<p>Aliases: <code>Pattern</code>, <code>PatternLike</code>, <code>LVal</code></p>
+<p>另见 <code>t.isAssignmentPattern(node, opts)</code> and <code>t.assertAssignmentPattern(node, opts)</code>.</p>
+<p>别名: <code>Pattern</code>, <code>PatternLike</code>, <code>LVal</code></p>
 <ul>
 <li><code>left</code>: <code>Identifier | ObjectPattern | ArrayPattern</code> (required)</li>
 <li><code>right</code>: <code>Expression</code> (required)</li>
 <li><code>decorators</code>: <code>Array&lt;Decorator&gt;</code> (default: <code>null</code>)</li>
 <li><code>typeAnnotation</code>: <code>TypeAnnotation | TSTypeAnnotation | Noop</code> (default: <code>null</code>)</li>
 </ul>
+<p>示例：实现 <code>a = b===1</code></p>
+<pre><code>var left = t.identifier(&quot;a&quot;)
+var right = t.binaryExpression(&quot;===&quot;, t.identifier(&quot;b&quot;), t.numericLiteral(1))
+t.assignmentPattern(left, right)
+</code></pre>
+
+<p>输出：</p>
+<p><img src="https://i.imgur.com/KiioLyl.png" /></p>
 <hr />
 <h3>awaitExpression</h3>
 <p><code>javascript
@@ -516,24 +524,33 @@ t.breakStatement(label)</code></p>
 <h3>callExpression</h3>
 <p><code>javascript
 t.callExpression(callee, arguments)</code></p>
-<p>See also <code>t.isCallExpression(node, opts)</code> and <code>t.assertCallExpression(node, opts)</code>.</p>
-<p>Aliases: <code>Expression</code></p>
+<p>另见 <code>t.isCallExpression(node, opts)</code> and <code>t.assertCallExpression(node, opts)</code>.</p>
+<p>别名: <code>Expression</code></p>
 <ul>
-<li><code>callee</code>: <code>Expression</code> (required)</li>
-<li><code>arguments</code>: <code>Array&lt;Expression | SpreadElement | JSXNamespacedName&gt;</code> (required)</li>
+<li><code>callee</code>: <code>Expression</code> (required) 其实就是函数名</li>
+<li><code>arguments</code>: <code>Array&lt;Expression | SpreadElement | JSXNamespacedName&gt;</code> (required) 参数</li>
 <li><code>optional</code>: <code>true | false</code> (default: <code>null</code>)</li>
 <li><code>typeParameters</code>: <code>TypeParameterInstantiation | TSTypeParameterInstantiation</code> (default: <code>null</code>)</li>
 </ul>
+<p>示例： 实现 <code>func(a, b)</code></p>
+<pre><code>var callee = t.identifier(&quot;func&quot;)
+t.callExpression(callee, [t.identifier(&quot;a&quot;), t.identifier(&quot;b&quot;)])
+</code></pre>
+
+<p><img src="https://i.imgur.com/t7H5caK.png" /></p>
 <hr />
 <h3>catchClause</h3>
 <p><code>javascript
 t.catchClause(param, body)</code></p>
-<p>See also <code>t.isCatchClause(node, opts)</code> and <code>t.assertCatchClause(node, opts)</code>.</p>
-<p>Aliases: <code>Scopable</code>, <code>BlockParent</code></p>
+<p>另见 <code>t.isCatchClause(node, opts)</code> and <code>t.assertCatchClause(node, opts)</code>.</p>
+<p>别名: <code>Scopable</code>, <code>BlockParent</code></p>
 <ul>
 <li><code>param</code>: <code>Identifier</code> (default: <code>null</code>)</li>
 <li><code>body</code>: <code>BlockStatement</code> (required)</li>
 </ul>
+<p>示例： <code>t.catchClause(t.identifier(&quot;a&quot;), t.blockStatement([]))</code> 实现<code>catch(e) {}</code></p>
+<p>输出：</p>
+<p><img src="https://i.imgur.com/uNroKkI.png" /></p>
 <hr />
 <h3>classBody</h3>
 <p><code>javascript
@@ -590,25 +607,36 @@ t.classImplements(id, typeParameters)</code></p>
 <h3>classMethod</h3>
 <p><code>javascript
 t.classMethod(kind, key, params, body, computed, static)</code></p>
-<p>See also <code>t.isClassMethod(node, opts)</code> and <code>t.assertClassMethod(node, opts)</code>.</p>
-<p>Aliases: <code>Function</code>, <code>Scopable</code>, <code>BlockParent</code>, <code>FunctionParent</code>, <code>Method</code></p>
+<p>另见 <code>t.isClassMethod(node, opts)</code> and <code>t.assertClassMethod(node, opts)</code>.</p>
+<p>别名: <code>Function</code>, <code>Scopable</code>, <code>BlockParent</code>, <code>FunctionParent</code>, <code>Method</code></p>
 <ul>
-<li><code>kind</code>: <code>&quot;get&quot; | &quot;set&quot; | &quot;method&quot; | &quot;constructor&quot;</code> (default: <code>'method'</code>)</li>
-<li><code>key</code>: if computed then <code>Expression</code> else <code>Identifier | Literal</code> (required)</li>
-<li><code>params</code>: <code>Array&lt;LVal&gt;</code> (required)</li>
-<li><code>body</code>: <code>BlockStatement</code> (required)</li>
-<li><code>computed</code>: <code>boolean</code> (default: <code>false</code>)</li>
-<li><code>static</code>: <code>boolean</code> (default: <code>null</code>)</li>
+<li><code>kind</code>: <code>&quot;get&quot; | &quot;set&quot; | &quot;method&quot; | &quot;constructor&quot;</code> (default: <code>'method'</code>) 方法类型</li>
+<li><code>key</code>: if computed then <code>Expression</code> else <code>Identifier | Literal</code> (required) 方法名可以是计算出来的，也就是[xxx]</li>
+<li><code>params</code>: <code>Array&lt;LVal&gt;</code> (required) 方法参数</li>
+<li><code>body</code>: <code>BlockStatement</code> (required) 方法体</li>
+<li><code>computed</code>: <code>boolean</code> (default: <code>false</code>) 是否是计算来的？</li>
+<li><code>static</code>: <code>boolean</code> (default: <code>null</code>) 是否是静态方法？</li>
 <li><code>abstract</code>: <code>boolean</code> (default: <code>null</code>)</li>
 <li><code>access</code>: <code>&quot;public&quot; | &quot;private&quot; | &quot;protected&quot;</code> (default: <code>null</code>)</li>
 <li><code>accessibility</code>: <code>&quot;public&quot; | &quot;private&quot; | &quot;protected&quot;</code> (default: <code>null</code>)</li>
-<li><code>async</code>: <code>boolean</code> (default: <code>false</code>)</li>
+<li><code>async</code>: <code>boolean</code> (default: <code>false</code>) 是否是异步方法</li>
 <li><code>decorators</code>: <code>Array&lt;Decorator&gt;</code> (default: <code>null</code>)</li>
 <li><code>generator</code>: <code>boolean</code> (default: <code>false</code>)</li>
 <li><code>optional</code>: <code>boolean</code> (default: <code>null</code>)</li>
 <li><code>returnType</code>: <code>TypeAnnotation | TSTypeAnnotation | Noop</code> (default: <code>null</code>)</li>
 <li><code>typeParameters</code>: <code>TypeParameterDeclaration | TSTypeParameterDeclaration | Noop</code> (default: <code>null</code>)</li>
 </ul>
+<p>示例： 得到下面代码的AST节点：</p>
+<pre><code>constructor(&quot;a&quot;){  
+}
+</code></pre>
+
+<p>思路： kind设置为constructor，key设置为Identifier，params设置为Identifier数组，body设置为BlockStatement就可以了。</p>
+<pre><code>t.classMethod(&quot;constructor&quot;, t.identifier(&quot;constructor&quot;), [t.identifier(&quot;a&quot;)], t.blockStatement([]))
+</code></pre>
+
+<p>输出：</p>
+<p><img src="https://i.imgur.com/IMeV08k.png" /></p>
 <hr />
 <h3>classProperty</h3>
 <p><code>javascript
@@ -631,8 +659,8 @@ t.classProperty(key, value, typeAnnotation, decorators, computed)</code></p>
 <h3>conditionalExpression</h3>
 <p><code>javascript
 t.conditionalExpression(test, consequent, alternate)</code></p>
-<p>See also <code>t.isConditionalExpression(node, opts)</code> and <code>t.assertConditionalExpression(node, opts)</code>.</p>
-<p>Aliases: <code>Expression</code>, <code>Conditional</code></p>
+<p>另见 <code>t.isConditionalExpression(node, opts)</code> and <code>t.assertConditionalExpression(node, opts)</code>.</p>
+<p>别名: <code>Expression</code>, <code>Conditional</code></p>
 <ul>
 <li><code>test</code>: <code>Expression</code> (required)</li>
 <li><code>consequent</code>: <code>Expression</code> (required)</li>
@@ -651,8 +679,11 @@ t.continueStatement(label)</code></p>
 <h3>debuggerStatement</h3>
 <p><code>javascript
 t.debuggerStatement()</code></p>
-<p>See also <code>t.isDebuggerStatement(node, opts)</code> and <code>t.assertDebuggerStatement(node, opts)</code>.</p>
-<p>Aliases: <code>Statement</code></p>
+<p>另见 <code>t.isDebuggerStatement(node, opts)</code> and <code>t.assertDebuggerStatement(node, opts)</code>.</p>
+<p>别名: <code>Statement</code></p>
+<p>示例： <code>t.debuggerStatement()</code></p>
+<p>输出:</p>
+<p><img src="https://i.imgur.com/pPyz0Mb.png" /></p>
 <hr />
 <h3>declareClass</h3>
 <p><code>javascript
@@ -686,14 +717,17 @@ t.declareExportDeclaration(declaration, specifiers, source)</code></p>
 <li><code>source</code> (required)</li>
 </ul>
 <hr />
-<h3>declareFunction</h3>
+<h3>declareFunction(函数声明)</h3>
 <p><code>javascript
 t.declareFunction(id)</code></p>
-<p>See also <code>t.isDeclareFunction(node, opts)</code> and <code>t.assertDeclareFunction(node, opts)</code>.</p>
-<p>Aliases: <code>Flow</code>, <code>FlowDeclaration</code>, <code>Statement</code>, <code>Declaration</code></p>
+<p>另见 <code>t.isDeclareFunction(node, opts)</code> and <code>t.assertDeclareFunction(node, opts)</code>.</p>
+<p>别名: <code>Flow</code>, <code>FlowDeclaration</code>, <code>Statement</code>, <code>Declaration</code></p>
 <ul>
 <li><code>id</code> (required)</li>
 </ul>
+<p>示例： <code>t.declareFunction(t.identifier(&quot;test&quot;))</code></p>
+<p>输出：</p>
+<p><img src="https://i.imgur.com/kMrWLYo.png" /></p>
 <hr />
 <h3>declareInterface</h3>
 <p><code>javascript
@@ -756,6 +790,12 @@ t.declareVariable(id)</code></p>
 <ul>
 <li><code>id</code> (required)，id</li>
 </ul>
+<p>示例： 实现<code>var a</code></p>
+<pre><code>t.declareVariable(t.identifier(&quot;a&quot;))
+</code></pre>
+
+<p>输出：</p>
+<p><img src="https://i.imgur.com/zFaTRxO.png" /></p>
 <hr />
 <h3>declaredPredicate</h3>
 <p><code>javascript
@@ -915,25 +955,39 @@ t.file(program, comments, tokens)</code></p>
 <h3>forInStatement</h3>
 <p><code>javascript
 t.forInStatement(left, right, body)</code></p>
-<p>See also <code>t.isForInStatement(node, opts)</code> and <code>t.assertForInStatement(node, opts)</code>.</p>
-<p>Aliases: <code>Scopable</code>, <code>Statement</code>, <code>For</code>, <code>BlockParent</code>, <code>Loop</code>, <code>ForXStatement</code></p>
+<p>另见 <code>t.isForInStatement(node, opts)</code> and <code>t.assertForInStatement(node, opts)</code>.</p>
+<p>别名: <code>Scopable</code>, <code>Statement</code>, <code>For</code>, <code>BlockParent</code>, <code>Loop</code>, <code>ForXStatement</code></p>
 <ul>
-<li><code>left</code>: <code>VariableDeclaration | LVal</code> (required)</li>
-<li><code>right</code>: <code>Expression</code> (required)</li>
-<li><code>body</code>: <code>Statement</code> (required)</li>
+<li><code>left</code>: <code>VariableDeclaration | LVal</code> (required) 是一个变量声明</li>
+<li><code>right</code>: <code>Expression</code> (required) 是一个Expression，也可以是identifier</li>
+<li><code>body</code>: <code>Statement</code> (required) 循环体</li>
 </ul>
+<p>示例： 实现下面的</p>
+<pre><code>for (var a in b){ }
+</code></pre>
+
+<p>代码： <code>t.forInStatement(t.variableDeclaration(&quot;var&quot;, [t.variableDeclarator(t.identifier(&quot;a&quot;))]), t.identifier(&quot;b&quot;), t.blockStatement([]))</code></p>
+<p>输出：</p>
+<p><img src="https://i.imgur.com/VUDMPHV.png" /></p>
 <hr />
 <h3>forOfStatement</h3>
 <p><code>javascript
 t.forOfStatement(left, right, body)</code></p>
-<p>See also <code>t.isForOfStatement(node, opts)</code> and <code>t.assertForOfStatement(node, opts)</code>.</p>
-<p>Aliases: <code>Scopable</code>, <code>Statement</code>, <code>For</code>, <code>BlockParent</code>, <code>Loop</code>, <code>ForXStatement</code></p>
+<p>另见 <code>t.isForOfStatement(node, opts)</code> and <code>t.assertForOfStatement(node, opts)</code>.</p>
+<p>别名: <code>Scopable</code>, <code>Statement</code>, <code>For</code>, <code>BlockParent</code>, <code>Loop</code>, <code>ForXStatement</code></p>
 <ul>
 <li><code>left</code>: <code>VariableDeclaration | LVal</code> (required)</li>
 <li><code>right</code>: <code>Expression</code> (required)</li>
 <li><code>body</code>: <code>Statement</code> (required)</li>
 <li><code>await</code>: <code>boolean</code> (default: <code>false</code>)</li>
 </ul>
+<p>示例： 实现下面的</p>
+<pre><code>for (var a of b){ }
+</code></pre>
+
+<p>代码： <code>t.forOfStatement(t.variableDeclaration(&quot;var&quot;, [t.variableDeclarator(t.identifier(&quot;a&quot;))]), t.identifier(&quot;b&quot;), t.blockStatement([]))</code></p>
+<p>输出：</p>
+<p><img src="https://i.imgur.com/hFdk6So.png" /></p>
 <hr />
 <h3>forStatement</h3>
 <p><code>javascript
@@ -941,11 +995,31 @@ t.forStatement(init, test, update, body)</code></p>
 <p>See also <code>t.isForStatement(node, opts)</code> and <code>t.assertForStatement(node, opts)</code>.</p>
 <p>Aliases: <code>Scopable</code>, <code>Statement</code>, <code>For</code>, <code>BlockParent</code>, <code>Loop</code></p>
 <ul>
-<li><code>init</code>: <code>VariableDeclaration | Expression</code> (default: <code>null</code>)</li>
-<li><code>test</code>: <code>Expression</code> (default: <code>null</code>)</li>
-<li><code>update</code>: <code>Expression</code> (default: <code>null</code>)</li>
-<li><code>body</code>: <code>Statement</code> (required)</li>
+<li><code>init</code>: <code>| Expression</code> (default: <code>null</code>) </li>
+<li><code>test</code>: <code>Expression</code> (default: <code>null</code>) 测试条件</li>
+<li><code>update</code>: <code>Expression</code> (default: <code>null</code>) 更新语句</li>
+<li><code>body</code>: <code>Statement</code> (required) 循环体</li>
 </ul>
+<p>示例： <code>for (var a=0; a&lt; 10; a++){ }</code></p>
+<p>思路： 需要一个变量声明，2个二元表达式，1个函数体</p>
+<pre><code>//var a = 10, 也就是 init
+var declarator = t.variableDeclarator(t.identifier(&quot;a&quot;), t.numericLiteral(10))
+var init = t.variableDeclaration(&quot;var&quot;, [declarator])
+
+// a&lt;10, 也就是 test
+var test = t.binaryExpression(&quot;&lt;&quot;, t.identifier(&quot;a&quot;), t.numericLiteral(10))
+
+// a++, 也就是 update
+var update = t.updateExpression(&quot;++&quot;, t.identifier(&quot;a&quot;), false)
+
+// body, 也就是{}
+t.blockStatement([])
+
+t.forStatement(init, test, update, t.blockStatement([]))
+</code></pre>
+
+<p>输出：</p>
+<p><img src="https://i.imgur.com/OPeK5Hh.png" /></p>
 <hr />
 <h3>functionDeclaration(函数声明)</h3>
 <p><code>javascript
@@ -2288,17 +2362,20 @@ t.templateLiteral(quasis, expressions)</code></p>
 <li><code>expressions</code>: <code>Array&lt;Expression&gt;</code> (required)</li>
 </ul>
 <hr />
-<h3>thisExpression</h3>
+<h3>thisExpression(this表达式)</h3>
 <p><code>javascript
 t.thisExpression()</code></p>
-<p>See also <code>t.isThisExpression(node, opts)</code> and <code>t.assertThisExpression(node, opts)</code>.</p>
-<p>Aliases: <code>Expression</code></p>
+<p>另见 <code>t.isThisExpression(node, opts)</code> and <code>t.assertThisExpression(node, opts)</code>.</p>
+<p>别名: <code>Expression</code></p>
+<p>示例： <code>t.thisExpression()</code></p>
+<p>输出：</p>
+<p><img src="https://i.imgur.com/whqPRSy.png" /></p>
 <hr />
 <h3>thisTypeAnnotation</h3>
 <p><code>javascript
 t.thisTypeAnnotation()</code></p>
-<p>See also <code>t.isThisTypeAnnotation(node, opts)</code> and <code>t.assertThisTypeAnnotation(node, opts)</code>.</p>
-<p>Aliases: <code>Flow</code>, <code>FlowBaseAnnotation</code></p>
+<p>另见 <code>t.isThisTypeAnnotation(node, opts)</code> and <code>t.assertThisTypeAnnotation(node, opts)</code>.</p>
+<p>别名: <code>Flow</code>, <code>FlowBaseAnnotation</code></p>
 <hr />
 <h3>throwStatement</h3>
 <p><code>javascript
@@ -2312,13 +2389,27 @@ t.throwStatement(argument)</code></p>
 <h3>tryStatement</h3>
 <p><code>javascript
 t.tryStatement(block, handler, finalizer)</code></p>
-<p>See also <code>t.isTryStatement(node, opts)</code> and <code>t.assertTryStatement(node, opts)</code>.</p>
-<p>Aliases: <code>Statement</code></p>
+<p>另见 <code>t.isTryStatement(node, opts)</code> and <code>t.assertTryStatement(node, opts)</code>.</p>
+<p>别名: <code>Statement</code></p>
 <ul>
-<li><code>block</code>: <code>BlockStatement</code> (required)</li>
-<li><code>handler</code>: <code>CatchClause</code> (default: <code>null</code>)</li>
-<li><code>finalizer</code>: <code>BlockStatement</code> (default: <code>null</code>)</li>
+<li><code>block</code>: <code>BlockStatement</code> (required)也就是try的逻辑</li>
+<li><code>handler</code>: <code>CatchClause</code> (default: <code>null</code>) 也就是catch的逻辑</li>
+<li><code>finalizer</code>: <code>BlockStatement</code> (default: <code>null</code>) 也就是finally的逻辑</li>
 </ul>
+<p>示例： 实现<code>try {} catch(e){} finally {}</code></p>
+<p>思路：  </p>
+<pre><code>// block
+// t.blockStatement([])
+// handler
+// t.catchClause(t.identifier(&quot;a&quot;), t.blockStatement([]))
+// finalizer
+// t.blockStatement([])
+
+t.tryStatement(t.blockStatement([]), t.catchClause(t.identifier(&quot;a&quot;), t.blockStatement([])), t.blockStatement([]))
+</code></pre>
+
+<p>输出： </p>
+<p><img src="https://i.imgur.com/vKiQpLn.png" /></p>
 <hr />
 <h3>tupleTypeAnnotation</h3>
 <p><code>javascript
@@ -2486,12 +2577,18 @@ t.voidTypeAnnotation()</code></p>
 <h3>whileStatement</h3>
 <p><code>javascript
 t.whileStatement(test, body)</code></p>
-<p>See also <code>t.isWhileStatement(node, opts)</code> and <code>t.assertWhileStatement(node, opts)</code>.</p>
-<p>Aliases: <code>Statement</code>, <code>BlockParent</code>, <code>Loop</code>, <code>While</code>, <code>Scopable</code></p>
+<p>另见 <code>t.isWhileStatement(node, opts)</code> and <code>t.assertWhileStatement(node, opts)</code>.</p>
+<p>别名: <code>Statement</code>, <code>BlockParent</code>, <code>Loop</code>, <code>While</code>, <code>Scopable</code></p>
 <ul>
-<li><code>test</code>: <code>Expression</code> (required)</li>
-<li><code>body</code>: <code>BlockStatement | Statement</code> (required)</li>
+<li><code>test</code>: <code>Expression</code> (required) while里面的东西</li>
+<li><code>body</code>: <code>BlockStatement | Statement</code> (required) while循环体内的内容</li>
 </ul>
+<p>示例： <code>t.whileStatement(t.identifier(&quot;a&quot;), t.blockStatement([]))</code> 实现 <code>while(a){}</code></p>
+<p>输出：</p>
+<p><img src="https://i.imgur.com/nLi9myl.png" /></p>
+<p>示例： <code>t.whileStatement(t.binaryExpression(&quot;===&quot;, t.identifier(&quot;a&quot;), t.numericLiteral(10)), t.blockStatement([]))</code>实现<code>while(a===10){}</code></p>
+<p>输出：</p>
+<p><img src="https://i.imgur.com/7New5B9.png" /></p>
 <hr />
 <h3>withStatement</h3>
 <p><code>javascript
@@ -2512,6 +2609,9 @@ t.yieldExpression(argument, delegate)</code></p>
 <li><code>argument</code>: <code>Expression</code> (default: <code>null</code>)</li>
 <li><code>delegate</code>: <code>boolean</code> (default: <code>false</code>)</li>
 </ul>
+<p>示例： <code>t.yieldExpression(t.numericLiteral(10))</code></p>
+<p>输出：</p>
+<p><img src="https://i.imgur.com/tDIKw0o.png" /></p>
 <hr />
 <!-- end generated section -->
 
