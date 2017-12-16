@@ -590,7 +590,16 @@ class Foo {
 <p>babel-plugin-transform-vue-jsx是一个用于转换Vue中JSX语法的插件。 我们知道vue中是可以直接支持JSX语法的，这通常是在组件的render函数中使用的。虽然在实际项目开发中不用JSX语法完全可以进行Vue项目开发，但是JSX语法任然使用的很普遍。</p>
 <p>举个例子，在<a href="http://element.eleme.io">ElementUI</a>中存在一个<a href="http://element.eleme.io/#/zh-CN/component/upload">Upload组件</a>，这个组件就是在render函数中使用的JSX语法：</p>
 <p><img src="https://i.imgur.com/4D4lBoX.png" /></p>
-<p>但是使用JSX语法需要我们在.babelrc中配置babel-plugin-transform-vue-jsx插件，如下：</p>
+<p>但是使用JSX语法需要先安装相应的包：</p>
+<pre><code>npm install\
+  babel-plugin-syntax-jsx\
+  babel-plugin-transform-vue-jsx\
+  babel-helper-vue-jsx-merge-props\
+  babel-preset-env\
+  --save-dev
+</code></pre>
+
+<p>然后我们在.babelrc中配置babel-plugin-transform-vue-jsx插件，如下：</p>
 <p><img src="https://i.imgur.com/h5ycpXO.png" /></p>
 <h4>3.4 babel-polyfill</h4>
 <p>babel-polyfill既不是preset也不是plugin，放在这里讲是因为，虽然Babel可以编译所有新的js语法，但是对于js API来说，并不是如此。 比如下面的例子：</p>
@@ -701,6 +710,21 @@ function addAll() {
 }
 </code></pre>
 
+<h3>4. 陷阱</h3>
+<h4>4.1 Polyfills</h4>
+<p>为了让一些特殊的特性生效，你需要使用特殊的polyfill，你也可以引入整个polyfill来省事儿，也可以只针对特定的特性引入特定的polyfill，比如：</p>
+<p><img src="https://i.imgur.com/gELYkfr.png" /></p>
+<p>这些插件也有一些有<code>loose</code>选项。</p>
+<h4>4.2 Classes</h4>
+<p>由于ES5的限制，内置的一些类，比如Date, Array, DOM等等是无法继承的，你可以使用这个 <a href="https://github.com/loganfsmyth/babel-plugin-transform-builtin-extend">babel-plugin-transform-builtin-extend </a>插件来polyfill。 这个插件时基于Object.setPrototypeOf 和 Reflect.construct来实现的，但他任然有一些限制。</p>
+<h4>4.3 ES5</h4>
+<p>一些babel假定你的代码工作目标环境是ES5，所以如果你在ES5一下的环境使用，可能会出问题，可以使用<code>babel-polyfill</code>来hack.</p>
+<h4>4.4 Internet Explorer</h4>
+<h5>4.4.1 Classes (&lt;=IE10)</h5>
+<p>如果你想继承一个类的话，那么这个类的static属性是通过<code>__proto__</code>来hack实现的。这个在&lt;=IE10的版本会出问题。所以在&lt;=IE10的版本下，static属性是不会被继承的。 对于使用<code>super()</code>语法的<code>class</code>, 也会有问题。 你可以在<a href="http://babeljs.io/docs/plugins/transform-es2015-classes">es2015-classes</a>中开启<code>loose</code>选项来hack它。</p>
+<h5>4.4.2 Getters/setters (&lt;=IE8)</h5>
+<p>在IE8，<code>Object.defineProperty</code>只能用在DOM对象上，这个是很不幸的，因为我们可能需要设置Getters/setters。 所以如果你想在&lt;=IE8使用它，你就不能使用Getters/setters。</p>
+<p>默认情况下，当与Babel一起使用模块时，会导出一个不可枚举的<code>__esModule</code>属性。 这是通过使用在&lt;=IE8版本中不支持的<code>Object.defineProperty</code>完成的。 解决方法是在相应的模块插件中启用<code>loose</code>选项。</p>
 
 </body>
 </html>
