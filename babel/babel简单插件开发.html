@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>babel简单插件开发</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+</style>
+</head>
+<body>
+<h1>babel简单插件开发</h1>
+<p>前面我们已经介绍了插件的基本开发方法，现在就让我们用所学的知识开发一些简单的babel插件吧</p>
+<h3>1. babel-plugin-transform-minify-booleans插件</h3>
+<p>我们知道在使用<code>uglifyjs</code>等压缩插件进行压缩后的js代码中，<code>true</code>和<code>false</code>基本上都被替换成了<code>!0</code>和<code>!1</code>，这样使得代码体积缩小。 这些通常通过webpack中的<code>uglifyjs-webpack-plugin</code>插件或者babel中的<code>babel-minify</code> preset来完成的。 这里我们不考虑压缩插件的其它功能，仅仅考虑对Boolean值的压缩，用babel的话是如何实现的呢？</p>
+<p>前面说了，插件的开发其实就是自定义<strong>转译</strong>过程，也就是手动操作AST树。 而对于minify-booleans插件而言，我们需要将<code>BooleanLiteral</code>替换成两个一元表达式(<code>unaryExpression</code>)节点。 我们在<a href="https://dulinrain.github.io/babel/babel-types%20API%E6%96%87%E6%A1%A3%E8%AF%A6%E8%A7%A3.html">babel-types API文档详解</a>一文中已经详细介绍了如何构造unaryExpression AST节点。 比如：</p>
+<pre><code>对于!0
+t.unaryExpression(&quot;!&quot;, t.numericLiteral(0), true)
+
+对于!1
+t.unaryExpression(&quot;!&quot;, t.numericLiteral(1), true)
+</code></pre>
+
+<p>有了这些基础，我们就非常容易开发minify-booleans插件了，套路就是自定义一个visitor(访问者)，然后检测到<code>BooleanLiteral</code>寻访对象后将它替换成<code>unaryExpression</code>节点即可。  其代码实现如下：</p>
+<pre><code>module.exports = function ({types: t}) {//解构出babel-types对象
+    const TRUE = t.unaryExpression(&quot;!&quot;, t.numericLiteral(0), true)
+    const FALSE = t.unaryExpression(&quot;!&quot;, t.numericLiteral(1), true)
+    return {
+        name: 'transform-minify-booleans',
+        visitor: {
+            BooleanLiteral(path) {
+                path.replaceWith(path.node.value? TRUE: FALSE)；//替换AST节点
+            }
+        }
+    }
+
+};
+</code></pre>
+
+<p>结果如下：</p>
+<pre><code>test.js
+
+var a = {ok: true, cacel: false}
+</code></pre>
+
+<h1></h1>
+<pre><code>.babelrc如下
+
+{
+    &quot;plugins&quot;: [
+        &quot;./myfirstplugin.js&quot; //前面的插件
+    ]
+}
+</code></pre>
+
+<h1></h1>
+<pre><code>compiled.js
+
+var a = { ok: !0, cacel: !1 };
+</code></pre>
+
+<p>实际上，babel官网有一个<a href="http://babeljs.io/docs/plugins/transform-minify-booleans/">transform-minify-booleans</a>插件，它实际上就是像上面写的那样实现的。</p>
+<h3>2. babel-plugin-minify-infinity插件</h3>
+<p>该插件的目的是为了将代码中的<code>Infinity</code>用<code>1/0</code>替换掉，这样可以对代码量有一点点的缩减。 </p>
+<p>同上面的套路一样，我们分析它的实现原理，就是检查每个Identifier，如果这个Identifier是Infinity，那么将它替换成二元表达式：</p>
+<pre><code>t.binaryExpression('/', t.numericLiteral(0), t.numericLiteral(0))
+</code></pre>
+
+<p>而Infinity在babel-type中的名字是&quot;Infinity&quot;, 这个我们可以测试一下，对于<code>a=Inifinity</code>，它的AST节点：</p>
+<p><img src="https://i.imgur.com/8CGHwJh.png" /></p>
+<p>所以我们需要在visitor中判断节点名字是不是&quot;Infinity&quot;，如果是则替换。所以代码可以写成如下：</p>
+<pre><code>module.exports = function ({types: t}) {//解构出babel-types对象
+    const INFINITY = t.binaryExpression('/', t.numericLiteral(0), t.numericLiteral(0))
+    return {
+        name: 'minify-infinity',
+        visitor: {
+            Identifier(path) {
+                if (path.node.name !== &quot;Infinity&quot;) {
+                    return;
+                }
+                path.replaceWith(INFINITY)
+            }
+        }
+    }
+
+};
+</code></pre>
+
+<p>实际上，babel官网有一个<a href="http://babeljs.io/docs/plugins/minify-infinity/">minify-infinity</a>插件，它的实现思路和上面基本一样，只是做了更严谨的判断。 它的源码如下所示：</p>
+<pre><code>module.exports = function({ types: t }) {
+  const INFINITY = t.binaryExpression(
+    &quot;/&quot;,
+    t.numericLiteral(1),
+    t.numericLiteral(0)
+  );
+  return {
+    name: &quot;minify-infinity&quot;,
+    visitor: {
+      // Infinity -&gt; 1 / 0
+      Identifier(path) {
+        if (path.node.name !== &quot;Infinity&quot;) {
+          return;
+        }
+
+        // It's a referenced identifier
+        if (path.scope.getBinding(&quot;Infinity&quot;)) {
+          return;
+        }
+
+        if (path.parentPath.isObjectProperty({ key: path.node })) {
+          return;
+        }
+
+        if (path.parentPath.isMemberExpression()) {
+          return;
+        }
+
+        if (path.isLVal() &amp;&amp; !path.parentPath.isExpressionStatement()) {
+          return;
+        }
+
+        path.replaceWith(INFINITY);
+      }
+    }
+  };
+};
+</code></pre>
+
+<h3>3. babel-plugin-transform-undefined-to-void插件</h3>
+<p>我们知道，用void 0表示undefined比直接使用undefined有很多的优势，具体这里不展开，可以参考我写的<a href="https://dulinrain.github.io/es6/%E4%BD%BF%E7%94%A8ES6%E8%A7%A3%E6%9E%84%E8%AF%AD%E6%B3%95%E8%BF%9B%E8%A1%8C%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96.html">使用ES6解构语法进行代码优化</a>这篇文章。</p>
+<p>babel-plugin-transform-undefined-to-void插件的目的就是将代码中的undefiend用void 0替换。 具体的思路呢就是检测Identifier，然后如果节点的名字是&quot;undefined&quot;就直接用一元表达式(unaryExpression)节点<code>t.unaryExpression(&quot;void&quot;, t.numericLiteral(0), true)</code>替换。 代码如下：</p>
+<pre><code>module.exports = function({ types: t }) {
+  const VOID_0 = t.unaryExpression(&quot;void&quot;, t.numericLiteral(0), true);
+  return {
+    name: &quot;transform-undefined-to-void&quot;,
+    visitor: {
+      Identifier(path) {
+        if (path.node.name === 'undefined') {
+            path.replaceWith(VOID_0)
+        }
+      }
+    }
+  };
+};
+</code></pre>
+
+<p>效果就是：</p>
+<p><img src="https://i.imgur.com/7RERkix.png" /></p>
+<p>实际上，babel官网有一个<a href="http://babeljs.io/docs/plugins/transform-undefined-to-void/">transform-undefined-to-void</a>插件，它的实现思路和上面基本一样，只是监听的visitor对象是<code>ReferencedIdentifier</code>。 它的源码如下所示：</p>
+<pre><code>module.exports = function({ types: t }) {
+  const VOID_0 = t.unaryExpression(&quot;void&quot;, t.numericLiteral(0), true);
+
+  return {
+    name: &quot;transform-undefined-to-void&quot;,
+    visitor: {
+      ReferencedIdentifier(path) {
+        if (path.node.name === &quot;undefined&quot;) {
+          path.replaceWith(VOID_0);
+        }
+      }
+    }
+  };
+};
+</code></pre>
+
+<h3>4. babel-plugin-transform-simplify-comparison-operators插件</h3>
+<p>我们知道，在JS中<code>===</code>和<code>==</code>，以及<code>!==</code>和 <code>!=</code>的意义是不一样的，但是如果他们左右两边的类型是一样的话，那么<code>===</code>可以用<code>==</code>替换，<code>!==</code>可以用 <code>!=</code>替换， 这样又可以对我们的代码做一点点的缩减。</p>
+<p>所以我们来实现一个babel-plugin-transform-simplify-comparison-operators插件。 其思路主要是检测BinaryExprssion对象，检查operator是不是<code>===</code>和<code>!==</code>，如果不是，直接返回，如果是，再判断left和right类型是不是一样的，如果是则替换operator,否则返回。</p>
+<p>它的代码实现如下：</p>
+<pre><code>module.exports = function({ types: t }) {
+  return {
+    name: &quot;transform-simplify-comparison-operators&quot;,
+    visitor: {
+      BinaryExpression(path) {
+        var operator = path.node.operator
+        if (operator !== '===' &amp;&amp; operator !== '!==') {
+            return
+        }
+        var left = path.get(&quot;left&quot;)
+        var right = path.get(&quot;right&quot;)
+        var strictMatch = left.baseTypeStrictlyMatches(right);
+        if (strictMatch) {
+          path.node.operator = path.node.operator.slice(0, 2);
+        }
+      }
+    }
+  };
+};
+</code></pre>
+
+<p>效果：</p>
+<p><img src="https://i.imgur.com/WL8JpRl.png" /></p>
+<p>实际上，babel官网有一个<a href="http://babeljs.io/docs/plugins/transform-simplify-comparison-operators/">transform-simplify-comparison-operators</a>插件，它的实现思路和上面基本一样。 它的源码如下所示：</p>
+<pre><code>module.exports = function() {
+  return {
+    name: &quot;transform-simplify-comparison-operators&quot;,
+    visitor: {
+      // simplify comparison operations if we're 100% certain
+      // that each value will always be of the same type
+      BinaryExpression(path) {
+        const { node } = path;
+        const op = node.operator;
+        if (op !== &quot;===&quot; &amp;&amp; op !== &quot;!==&quot;) {
+          return;
+        }
+
+        const left = path.get(&quot;left&quot;);
+        const right = path.get(&quot;right&quot;);
+        const strictMatch = left.baseTypeStrictlyMatches(right);
+        if (strictMatch) {
+          node.operator = node.operator.slice(0, -1);
+        }
+      }
+    }
+  };
+};
+</code></pre>
+
+<h3>5. babel-plugin-minify-flip-comparisons插件</h3>
+<p>我们这个插件的目的是对<strong>比较表达式</strong>进行翻转，什么意思呢？比如 a===1, 这样的比较表达式，当比较表达式的右边是一个常量的时候我们将它翻转到前面，变成 1===a。 这确保了比较的一致性，并增加了gzip可以匹配的字符串的长度。虽然这个插件不会以任何方式缩短输出，但是它可以对基于重复的压缩算法进行优化，例如gzip。</p>
+<p>而这样的<strong>比较表达式</strong>基本上都是二元表达式(BinaryExpression), 主要有<code>==</code>，<code>===</code>，<code>!=</code>, <code>!==</code>, <code>*</code>, <code>&amp;</code>, <code>^</code>, <code>|</code> 以及<code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>。而对于前8种BinaryExpression，我们可以直接交换它的left和right节点即可。 对于后四种，我们不仅要交换它的<code>left</code>和<code>right</code>节点，还得将<code>operator</code>改变，这样才能保证原始表达式的意义不变。</p>
+<p>其中，<code>==</code>，<code>===</code>，<code>!=</code>, <code>!==</code>在babel-types里面由<code>t.EQUALITY_BINARY_OPERATORS</code>数组表示，<code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>在babel-types里面由<code>t.BOOLEAN_NUMBER_BINARY_OPERATORS</code>数组表示。</p>
+<p>所以，我们程序的思路大概是这样：</p>
+<p>1、 自定义转义过程，定义visitor, 处理BinaryExpression对象</p>
+<pre><code>module.exports = function ({types: t}) {//解构出babel-types对象
+    return {
+        name: 'minify-flip-comparisons',
+        visitor: {
+            BinaryExpression(path) {
+                //这里写处理逻辑
+            }
+        }
+    }
+
+};
+</code></pre>
+
+<p>2、 对BinaryExpression节点的right进行检查，确保是需要转换的情况, 如果不是，直接return。</p>
+<pre><code>var right = path.node.right
+if (!t.isLiteral(right) &amp;&amp; //确保是字面量
+    !t.isVoid0(right) &amp;&amp; //也可以是void0
+    !(t.isUnaryExpression(right) &amp;&amp; t.isLiteral(argument)) &amp;&amp; // 可以是一元表达式，但一元表达式的参数必须是字面量
+    !t.isObjectExpression(right) &amp;&amp; // 也可以是对象
+    !t.isArrayExpression(right) //也可以是数组
+) {
+    return; // 以上任何一个不满足都直接return
+}
+</code></pre>
+
+<p>3、 对于<code>==</code>，<code>===</code>，<code>!=</code>, <code>!==</code>, <code>*</code>, <code>&amp;</code>, <code>^</code>, <code>|</code>这四种情况，直接交换left和right节点。</p>
+<pre><code>var right = path.node.right
+var left = path.node.left
+var operator = path.node.operator
+
+if ( t.EQUALITY_BINARY_OPERATORS.indexOf(operator) !== -1 ||
+    [&quot;*&quot;, &quot;^&quot;, &quot;&amp;&quot;, &quot;|&quot;].indexOf(operator) !== -1
+) {
+    path.node.right = left
+    path.node.left = right
+    return;
+}
+</code></pre>
+
+<p>4、对于<code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>，既交换节点，也更改符号。</p>
+<pre><code>if ( t.BOOLEAN_NUMBER_BINARY_OPERATORS.indexOf(operator) !== -1 ) {
+    path.node.right = left
+    path.node.left = right
+    switch (operator) {
+        case '&gt;':
+            operator = '&lt;'
+            break
+        case '&gt;=':
+            operator = '&lt;='
+            break
+        case '&lt;':
+            operator = '&gt;'
+            break
+        case '&lt;=':
+            operator = '&gt;='
+            break
+    }
+    path.node.operator = operator
+    return;
+}
+</code></pre>
+
+<p>至此，我们的这个插件就编写完了，整个代码经过稍微的整理后如下, 实际上这个就是babel官网<a href="http://babeljs.io/docs/plugins/minify-flip-comparisons/">minify-flip-comparisons</a>插件的源码实现：</p>
+<pre><code>module.exports = function({ types: t }) {
+  const isVoid0 = require(&quot;babel-helper-is-void-0&quot;)(t);
+
+  return {
+    name: &quot;minify-flip-comparisons&quot;,
+    visitor: {
+      // flip comparisons with a pure right hand value, this ensures
+      // consistency with comparisons and increases the length of
+      // strings that gzip can match
+      // typeof blah === 'function' -&gt; 'function' === typeof blah
+      BinaryExpression(path) {
+        const { node } = path;
+        const { right, left } = node;
+
+        // Make sure we have a constant on the right.
+        if (
+          !t.isLiteral(right) &amp;&amp;
+          !isVoid0(right) &amp;&amp;
+          !(t.isUnaryExpression(right) &amp;&amp; t.isLiteral(right.argument)) &amp;&amp;
+          !t.isObjectExpression(right) &amp;&amp;
+          !t.isArrayExpression(right)
+        ) {
+          return;
+        }
+
+        // Commutative operators.
+        if (
+          t.EQUALITY_BINARY_OPERATORS.indexOf(node.operator) &gt;= 0 ||
+          [&quot;*&quot;, &quot;^&quot;, &quot;&amp;&quot;, &quot;|&quot;].indexOf(node.operator) &gt;= 0
+        ) {
+          node.left = right;
+          node.right = left;
+          return;
+        }
+
+        if (t.BOOLEAN_NUMBER_BINARY_OPERATORS.indexOf(node.operator) &gt;= 0) {
+          node.left = right;
+          node.right = left;
+          let operator;
+          switch (node.operator) {
+            case &quot;&gt;&quot;:
+              operator = &quot;&lt;&quot;;
+              break;
+            case &quot;&lt;&quot;:
+              operator = &quot;&gt;&quot;;
+              break;
+            case &quot;&gt;=&quot;:
+              operator = &quot;&lt;=&quot;;
+              break;
+            case &quot;&lt;=&quot;:
+              operator = &quot;&gt;=&quot;;
+              break;
+          }
+          node.operator = operator;
+          return;
+        }
+      }
+    }
+  };
+};
+</code></pre>
+
+<p>它的转换效果如下：</p>
+<p><img src="https://i.imgur.com/qcCVn6f.png" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
