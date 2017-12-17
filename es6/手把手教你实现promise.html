@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>手把手教你实现promise</title>
+<title>手把手教你实现Promise</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 /* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
@@ -856,6 +856,8 @@ function addToTaskQueue(task) {
 }
 </code></pre>
 
+<h3>五、 进一步分析</h3>
+<p>虽然我们的Promise实现了ES6中promise的大部分功能，但是，我们的Promsie用起来还是和ES6的不太一样，最起码，我们的Promsie构造函数没法传参数，然后就是没有all方法，没有race方法。 而且，我们的Promise使用ES6中Class语法写的，可能需要Babel转译后才能在某些低版本浏览器下运行，我已我们接下来尝试用ES5的语法形式来实现，并且实现一些其它的方法。</p>
 
 </body>
 </html>
