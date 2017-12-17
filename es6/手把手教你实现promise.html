@@ -311,7 +311,7 @@ img {
 </head>
 <body>
 <h1>手把手教你实现Promise</h1>
-<p>我们都知道，Promise是ES6标准，但是Promise其实早就有了，它实际上就是javascript中的承诺模式。 承诺模式是一种设计模式，在上世纪70年代就出现了。 我们今天将首先以简单的形式呈现ES6中promise是如何工作的，然后进一步地实现一个Promise。</p>
+<p>我们都知道，Promise是ES6标准，但是Promise其实早就有了，它实际上就是javascript中的承诺模式。 承诺模式是一种设计模式，在上世纪70年代就出现了。而promise的本质是异步编程，其内部也是用setTimeout(xxx, 0)来实现的， 我们今天将首先以简单的形式呈现ES6中promise是如何工作的，然后进一步地实现一个Promise。</p>
 <p><img src="https://i.imgur.com/v9BwVqc.png" /></p>
 <h3>一、 基本实现</h3>
 <p>我们都知道，ES6中的Promise是一个class，我们在使用的时候需要new一个promise实例，promise拥有三种状态pending, fullfilled，rejected。 然后Promise通常有两个原型方法resolve和reject用来设置promise的状态，它还有一个原型方法then用来接收结果。 在仅考虑这些的情景下，让我们来实现一个基本的Promise。 这里直接采用ES6的Class语法。</p>
