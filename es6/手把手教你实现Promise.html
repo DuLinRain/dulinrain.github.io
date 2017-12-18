@@ -856,8 +856,33 @@ function addToTaskQueue(task) {
 }
 </code></pre>
 
-<h3>五、 进一步分析</h3>
-<p>虽然我们的Promise实现了ES6中promise的大部分功能，但是，我们的Promsie用起来还是和ES6的不太一样，最起码，我们的Promsie构造函数没法传参数，然后就是没有all方法，没有race方法。 而且，我们的Promise使用ES6中Class语法写的，可能需要Babel转译后才能在某些低版本浏览器下运行，我已我们接下来尝试用ES5的语法形式来实现，并且实现一些其它的方法。</p>
+<h3>五、 构造函数接收参数</h3>
+<p>前面我们提到过，我们的Promise现在还不支持在实例化时接收参数，这导致我们的Promise用起来和ES6的Promsie还是有点不一样，那么我们来让它支持这一个功能。实现它很简单，我们只需要将我们的resolve和reject方法传递给实例化时的函数即可。如下：</p>
+<pre><code>constructor(callback) {
+    this.promiseState = 'pending'// 初始化为pending状态
+    this.promiseResult = void 0 // 初始化为undefined
+    this.fullfillReactions = [] // 注册成功的行为
+    this.rejectReactions = [] // 注册失败的行为
+    this.alreadyResolved = false
+    if (typeof callback === 'function') {
+        callback(this.resolve.bind(this), this.reject.bind(this))
+    }
+}
+</code></pre>
+
+<p>这样，我们的Promise完全可以按照ES6的方式使用了，如下：</p>
+<pre><code>let p = new MyPromise(function (resolve, reject) {
+    resolve(123)
+}).then(value =&gt; {
+    console.log(value) // 123
+    throw new Error('来自then的错误')
+}).catch(e =&gt; {
+    console.log(e.message) // 来自then的错误
+})
+</code></pre>
+
+<h3>六、 进一步分析</h3>
+<p>虽然我们的Promise实现了ES6中promise的大部分功能，但是，我们的Promsie用起来还是和ES6的不太一样，我们的Promsie没有all方法，没有race方法。 而且，我们的Promise使用ES6中Class语法写的，可能需要Babel转译后才能在某些低版本浏览器下运行，我已我们接下来尝试用ES5的语法形式来实现，并且实现一些其它的方法。</p>
 
 </body>
 </html>
