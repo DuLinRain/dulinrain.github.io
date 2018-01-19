@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MVC模式</title>
+</head>
+<body>
+<script src="./observer.js"></script>
+<script src="./ContactorForm.js"></script>
+<script src="./ContactorList.js"></script>
+<script src="./ContactorModel.js"></script>
+<script src="./ContactorView.js"></script>
+<script src="./ContactorController.js"></script>
+<script>
+    var contactorForm = new ContactorForm()
+    var contactorlist = new ContactorList()
+    var model = new ContactorModel(['linyu03', 'linyu04'])
+    var view = new ContactorView([contactorForm, contactorlist])
+    var controller = new ContactorController(view, model)
+</script>
+</body>
+</html>

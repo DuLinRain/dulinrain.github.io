@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>手把手教你实现一个简单的编译器</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+</style>
+</head>
+<body>
+<h1>手把手教你实现一个简单的编译器</h1>
+<h3>1、 概述</h3>
+<p>今天我们将学习开发一个编译器，但是呢，这个编译器并不是说什么都能都编译，它只是一个超级小的编译器，主要用于说明编译器的一些基本的原理。</p>
+<p><img src="https://i.imgur.com/90dyLwe.png" /></p>
+<p>我们这个编译器可以将类似于<a href="https://baike.baidu.com/item/LISP/22083?fr=aladdin">lisp语言</a>的函数调用编译成类似于C语言的函数调用。如果你对lisp语言和C语言这两者都不熟悉，没关系，什么语言其实无所谓，但接下来还是会给你一个快速的介绍。</p>
+<p>如果我们有两个函数分别是add和subtract,如果用它们来计算下面的表达式：</p>
+<pre><code>2 + 2
+4 - 2
+2 + （4 - 2）
+</code></pre>
+
+<p>那么在lisp语言中它可能长这样子：</p>
+<pre><code>(add 2 2) // 2 + 2
+(subtract 4 2) // 4 - 2
+(add 2 (subtract 4 2)) // 2 + （4 - 2）
+</code></pre>
+
+<p>而在C语言中它长这个样子：</p>
+<pre><code>add(2, 2)
+subtract(4, 2)
+add(2, subtract(4, 2))
+</code></pre>
+
+<p>相当简单吧？</p>
+<p>好吧，这是因为这仅仅只是我们这个编译器所需要处理的情形。 这既不是list语言的完整语法，也不是C语言的完整语法。 但这点语法已经足以用来演示现代编译器所做的大部分工作。</p>
+<p>大部分编译器所做的工作都可以分解为三个主要的步鄹： 解析、转换和代码生成。</p>
+<ol>
+<li>解析。 解析就是将原始代码转换成代码的抽象表示。</li>
+<li>转换。 转换就是以这个抽象表示为基础，做编译器想做的任何事情。</li>
+<li>代码生成。 代码生成就是将转换后的抽象表示变成新的代码。</li>
+</ol>
+<h3>2、 解析</h3>
+<p>解析通常分为两个阶段：<strong>词法分析</strong>和<strong>句法分析</strong>。 </p>
+<ol>
+<li>词法分析。 词法分析通常是使用一个<strong>标记器</strong>(或词法分析器)将原始代码拆分成叫做<strong>标记</strong>的东西。而标记是一些微小的对象组成的数组，它们通常用来描述一些孤立的语法片段，它们可以是数字、标签、标点符号、操作符等等。</li>
+<li>语法分析。 语法分析将词法分析得到的标记重新格式化为用于描述语法的每个部分及其相互关系的表示。 这被称为<strong>中间表示</strong>或<strong>抽象语法树</strong>(AST)。抽象语法树(简称AST)是一个深度嵌套的对象，用于以一种既好用又能提供很多信息的形式表式代码。</li>
+</ol>
+<p>对于下面的语法：</p>
+<pre><code>(add 2 (subtract 4 2))
+</code></pre>
+
+<p>标记可能长下面这个样子：</p>
+<pre><code>[
+      { type: 'paren',  value: '('        },
+      { type: 'name',   value: 'add'      },
+      { type: 'number', value: '2'        },
+      { type: 'paren',  value: '('        },
+      { type: 'name',   value: 'subtract' },
+      { type: 'number', value: '4'        },
+      { type: 'number', value: '2'        },
+      { type: 'paren',  value: ')'        },
+      { type: 'paren',  value: ')'        },
+]
+</code></pre>
+
+<p>然后它对应的抽象语法树(AST)可能长下面这个样子：</p>
+<pre><code>{
+  type: 'Program',
+  body: [{
+    type: 'CallExpression',
+    name: 'add',
+    params: [{
+      type: 'NumberLiteral',
+      value: '2',
+    }, {
+      type: 'CallExpression',
+      name: 'subtract',
+      params: [{
+        type: 'NumberLiteral',
+        value: '4',
+      }, {
+        type: 'NumberLiteral',
+        value: '2',
+      }]
+    }]
+  }]
+}
+</code></pre>
+
+<h3>3、 转换</h3>
+<p>在解析之后，编译器的下一步鄹是转换。 同样，这不过就是将最后一步的抽象语法树(AST)拿过来对它做一定的改变。这种改变多种多样，可以是在同一种语言中进行改变，也可以直接将抽象语法树转换成另外一种完全不同的新语言。</p>
+<p>让我们来看看我们将如何转换一个抽象语法树(AST)。</p>
+<p>你可能已经注意到，我们的抽象语法树里面有一些非常类似的元素。 这些元素对象有一个type属性。 这每一个对象元素都被称为一个<strong>AST节点</strong>。 这些节点上定义的属性用于描述AST树上的一个独立部分。</p>
+<p>我们可以为数字字面量(NumberLiteral)建立一个节点:</p>
+<pre><code>{
+  type: 'NumberLiteral',
+  value: '2',
+}
+</code></pre>
+
+<p>或者是为调用表达式(CallExpression)创建一个节点：</p>
+<pre><code>{
+  type: 'CallExpression',
+  name: 'subtract',
+  params: [...nested nodes go here...],
+}
+</code></pre>
+
+<p>当转换AST树的时候，我们可能需要对它进行add、remove、replace等操作。 我们可以增加新节点，删除节点或者我们完全可以将AST树搁一边不理，然后基于它创建一个全新的AST。</p>
+<p>由于我们这个编译器的目标是将lisp语言转换成C语言，所以我们会聚焦创建一个专门用于目标语言(在这里是C语言)的全新AST。</p>
+<h4>3.1 遍历</h4>
+<p>为了浏览所有这些节点，我们需要能够遍历它们。 这个遍历过程是对AST的每个节点进行深度优先访问。</p>
+<pre><code>{
+  type: 'Program',
+  body: [{
+    type: 'CallExpression',
+    name: 'add',
+    params: [{
+      type: 'NumberLiteral',
+      value: '2'
+    }, {
+      type: 'CallExpression',
+      name: 'subtract',
+      params: [{
+        type: 'NumberLiteral',
+        value: '4'
+      }, {
+        type: 'NumberLiteral',
+        value: '2'
+      }]
+    }]
+  }]
+}
+</code></pre>
+
+<p>所以对于上面的AST，我们需要像这样走：</p>
+<ol>
+<li>Program - 从AST树的顶层开始。</li>
+<li>CallExpression (add) - 移动到Program的body属性的第一个元素。</li>
+<li>NumberLiteral (2) - 移动到CallExpression(add)的第一个参数。</li>
+<li>CallExpression (subtract) - 移动到CallExpression(add)的第二个参数。</li>
+<li>NumberLiteral (4) - 移动到CallExpression(subtract)的第一个参数。</li>
+<li>NumberLiteral (2) - 移动到CallExpression(subtract)的第二个参数。</li>
+</ol>
+<p>如果我们直接操作这个AST而不是创建一个单独的AST，我们可能需要在这里引入各种抽象概念。 但是我们正在尝试做的事情，只需要访问树中的每个节点就足够了。</p>
+<p>使用“访问”这个词的原因是因为这个词能够很好的表达如何在对象结构上操作元素。</p>
+<h4>3.2 访问者</h4>
+<p>这里最基本的思路就是我们创建一个<strong>访问者对象</strong>，这个对象拥有一些方法，这些方法可以接受不同的节点类型。</p>
+<p>比如下面这样：</p>
+<pre><code>var visitor = {
+  NumberLiteral() {},
+  CallExpression() {},
+};
+</code></pre>
+
+<p>当我们遍历AST的时候，一旦我们碰到一个与指定类型相匹配的节点，我们就会调用<strong>访问者对象</strong>上的方法。</p>
+<p>为了让这个函数比较好用，我们给它传递了该节点以及它的父节点：</p>
+<pre><code>var visitor = {
+  NumberLiteral(node, parent) {},
+  CallExpression(node, parent) {},
+};
+</code></pre>
+
+<p>然而，这里也会有可能出现在退出时调用东西。 想象一下我们前面提到的树结构：</p>
+<pre><code>    - Program
+      - CallExpression
+        - NumberLiteral
+        - CallExpression
+          - NumberLiteral
+          - NumberLiteral
+</code></pre>
+
+<p>当我们往下遍历的时候，我们会遇到最终的分支。 当我们访问完所有的分支后我们退出。 所以向下遍历树，我们进入节点，然后向上回溯的时候我们退出节点。</p>
+<pre><code> -&gt; Program (enter)
+  -&gt; CallExpression (enter)
+    -&gt; Number Literal (enter)
+    &lt;- Number Literal (exit)
+    -&gt; Call Expression (enter)
+       -&gt; Number Literal (enter)
+       &lt;- Number Literal (exit)
+       -&gt; Number Literal (enter)
+       &lt;- Number Literal (exit)
+    &lt;- CallExpression (exit)
+  &lt;- CallExpression (exit)
+ &lt;- Program (exit)
+</code></pre>
+
+<p>为了支持这种方式，我们的访问者对象需要改成下面这个样子：</p>
+<pre><code>var visitor = {
+  NumberLiteral: {
+    enter(node, parent) {},
+    exit(node, parent) {},
+  }
+};
+</code></pre>
+
+<h4>4、 代码生成</h4>
+<p>编译器的最后一步是代码生成。有时候编译器在这一步会重复做一些<strong>转换</strong>步鄹做过的事情。 但是对代码生成而言，它所做的大部分工作就是将我们的AST树stringify一下输出，也就是转换成字符串输出。</p>
+<p>代码生成有多种工作方式，有一些编译器会重复利用前面生成的标记，另一些编译器会创建代码的单独表示，以便线性地打印节点，但是据我说知，大多数编译器的策略是使用我们刚刚创建的那个AST，这是我们将要关注的。</p>
+<p>实际上，我们的代码生成器将知道如何打印AST的所有不同节点类型，并且它将递归地调用自己来打印嵌套节点，直到将所有内容打印成一长串代码。</p>
+<p>而就是这样！ 这就是编译器的所有差异部分。</p>
+<p>现在不是说每个编译器看起来都和我在这里描述的完全一样。 编译器有许多不同的用途，他们可能需要比我详细的更多的步骤。</p>
+<p>但是现在您应该对大多数编译器的轮廓有一个总体的高层次的概念。</p>
+<p>现在我已经解释了所有这些，你应该可以写好自己的编译器了是吧？</p>
+<p>只是在开玩笑的啦，我会在这里继续提供帮助，所以我们开始吧！</p>
+<h3>5、编译器的代码实现</h3>
+<p>前面说了，整个编译器大概可以分为三步：解析、转换、代码生成。而解析又可以分成两步：词法解析和句法解析。所以一共需要四个函数就可以实现了。我们来分别看一下:</p>
+<h4>5.1、 解析的实现</h4>
+<h3>5.1.1、 词法解析之tokenizer实现</h3>
+<p>我们将从编译器的第一步——<strong>解析</strong>——开始，利用tokenizer函数进行词法分析。</p>
+<p>我们将把字符串代码拆分成由标记组成的数组：</p>
+<pre><code>(add 2 (subtract 4 2))   =&gt;   [{ type: 'paren', value: '(' }, ...]
+</code></pre>
+
+<p>我们的tokenizer接收一个代码字符串， 然后接下来做两个事情：</p>
+<pre><code>function tokenizer(input) {
+
+  // 一个current变量，类似于游标，用于跟踪我们在代码字符串中的位置
+  let current = 0;
+
+  // 以及一个tockens数组，用于将我们分解的标记存放其中
+  let tokens = [];
+
+  // 我们创建一个while循环，在这里面我们设置我们的current变量，这个变量会随着循环的深入而不断增加
+  //
+  // 这么做是因为tockens可能会是任意长度
+  while (current &lt; input.length) {
+
+    // 我们还会存储变量current所在位置的字符
+    let char = input[current];
+
+    // 我们首先要检查的是左括弧，这个将会在稍后用于CallExpression，但是此时我们只关心左括弧字符
+    //
+    // 我们检查看看有没有左括弧:
+    if (char === '(') {
+
+      // 如果有，则建立一个对象，其type属性是paren，值为左括弧, 然后我们将这个对象加入tokens数组
+      tokens.push({
+        type: 'paren',
+        value: '(',
+      });
+
+      // 接着我们增加current变量，也就是移动游标
+      current++;
+
+      // 然后进行下一轮循环.
+      continue;
+    }
+
+    // 接着我们检查右括弧，我们按照前面的套路来做：检查右括弧，新增一个标记，增加current, 进行下一轮循环
+    if (char === ')') {
+      tokens.push({
+        type: 'paren',
+        value: ')',
+      });
+      current++;
+      continue;
+    }
+
+    // 接着，我们检查空白格。 这很有趣，因为我们关注空白格是因为它将字符串分隔开，但是我们并不需要将空白格存为标记,我们
+    // 可以直接扔掉它，所以这里我们仅仅检查空白格是否存在，如果它存在我们就进入下一轮循环
+
+    let WHITESPACE = /\s/;
+    if (WHITESPACE.test(char)) {
+      current++;
+      continue;
+    }
+
+    // 下一个类型的标记是数字，这和我们前面见到的不同，因为一个数字可能是任意个字符组成，并且我们需要捕获整个字符序列作为一个标记
+    //
+    //   (add 123 456)
+    //        ^^^ ^^^
+    //  比如上面的就只有两个独立的数字标记
+    //
+    // 所以当我们遇到序列中的第一个数字的时候开始进一步处理.
+    let NUMBERS = /[0-9]/;
+    if (NUMBERS.test(char)) {
+
+      // 我们在这里面创建了一个value字符，用于拼接数字字符
+      let value = '';
+
+      // 接下来我们遍历后面的每一个字符直到遇到一个非数字字符，将这些字符和前面的value变量拼接起来, 并且改变current游标
+      while (NUMBERS.test(char)) {
+        value += char;
+        char = input[++current];
+      }
+
+      // 这之后我们将创建数字标记并加入tokens数组
+      tokens.push({ type: 'number', value });
+
+      // 然后我们继续
+      continue;
+    }
+
+    // 我们也支持字符串，字符串就是用双引号(&quot;)包裹的一段文本，比如
+    //
+    //   (concat &quot;foo&quot; &quot;bar&quot;)
+    //            ^^^   ^^^ 字符串标记
+    //
+    // 我们先检查左双引号:
+    if (char === '&quot;') {
+      // 创建一个value变量用于保存字符串.
+      let value = '';
+
+      // 我们将忽略双引号，因为我们关心的是双引号包裹的文本.
+      char = input[++current];
+
+      // 然后我们遍历后面的字符串，直到我们遇到右双引号
+      while (char !== '&quot;') {
+        value += char;
+        char = input[++current];
+      }
+
+      // 忽略右双引号，同理，因为我们关心的是双引号包裹的文本.
+      char = input[++current];
+
+      // 创建类型为string的标记，并放进tockens数组
+      tokens.push({ type: 'string', value });
+
+      continue;
+    }
+
+    // 最后一种类型的标记是name标记，这是一串字符而不是数字,也就是lisp语法中的函数名
+    //
+    //   (add 2 4)
+    //    ^^^
+    //    name 标记
+    //
+    let LETTERS = /[a-z]/i;
+    if (LETTERS.test(char)) {
+      let value = '';
+
+      // 同理，我们遍历，并将它们拼接起来
+      while (LETTERS.test(char)) {
+        value += char;
+        char = input[++current];
+      }
+
+      // 并且创建一个类型为name的标记，存储于tokens数组
+      tokens.push({ type: 'name', value });
+
+      continue;
+    }
+
+    // 最后，如果我们到这里还没有匹配一个字符, 我们将抛出一个错误然后退出
+    throw new TypeError('I dont know what this character is: ' + char);
+  }
+
+   // 在tokenizer函数的末尾我们将tokens数组返回
+  return tokens;
+}
+</code></pre>
+
+<p>举个例子，对于<code>(add 123 456)</code>这段lisp语言代码，tokenizer化之后得到的结果如下：</p>
+<p><img src="https://i.imgur.com/l3XPuv5.png" /></p>
+<h3>5.1.2、 句法解析之parser实现</h3>
+<p>句法解析的目标就是将tokens数组转换成AST。也就是下面的过程：</p>
+<pre><code>[{ type: 'paren', value: '(' }, ...]   =&gt;   { type: 'Program', body: [...] }
+</code></pre>
+
+<p>所以，我们定义一个parse函数，接收我们的tokens数组作为参数：</p>
+<pre><code>function parser(tokens) {
+
+  // 同样我们维持一个current变量用作游标
+  let current = 0;
+
+  // 但是这次我们使用递归而不是while循环，所以我们定义了walk函数
+  function walk() {
+
+    // 在walk函数内部，我们首先拿到tokens数组中current索引处存放的标记
+    let token = tokens[current];
+
+    // 我们将把每种类型的标记以另外一种结构关系存储，以体现句法关系
+    // 首先从数字token开始
+    //
+    // 我们检查看有没有数字token
+    if (token.type === 'number') {
+
+      // 如果有，我们移动游标
+      current++;
+
+      // 并且我们会返回一个叫做“NumberLiteral”的新的AST节点并且将它的value属性设置为我们标记对象的value属性
+      return {
+        type: 'NumberLiteral',
+        value: token.value,
+      };
+    }
+
+    // 如果我们有string类型的标记，我们会和数字类型类似，创建一个叫做“StringLiteral”的AST节点
+    if (token.type === 'string') {
+      //同样移动游标
+      current++;
+
+      return {
+        type: 'StringLiteral',
+        value: token.value,
+      };
+    }
+
+    // 接下来我们查找CallExpressions. 我们是通过左括弧来开始这个过程的
+    if (
+      token.type === 'paren' &amp;&amp;
+      token.value === '('
+    ) {
+
+      // 我们将忽略左括弧，因为在AST里面，AST就是有句法关系的，所以我们不关心左括弧本身了
+      token = tokens[++current];
+
+      // 我们创建一个叫做CallExpression的基础节点，并且将节点的名字设置为当前标记的value属性，
+      // 因为左括弧标记的下一个标记就是函数名字
+      let node = {
+        type: 'CallExpression',
+        name: token.value,
+        params: [],
+      };
+
+      // 我们移动游标，忽略掉name标记，因为函数名已经存起在CallExpression中了
+      token = tokens[++current];
+
+      // 然后现在我们遍历每一个标记，找到CallExpression的参数直至遇到右括弧
+      //
+      // 现在，这里就是递归出场的地方了，为了避免陷入无限的嵌套节点解析，我们采用递归的方式来搞定这个事情
+      //
+      // 为了更好的解释这个东西，我们以我们的Lisp代码举例，你可以看到，add的参数是一个数字以及一个嵌套的CallExpression，
+      // 这个嵌套的函数调用包含它自己的数字参数
+      //
+      //   (add 2 (subtract 4 2))
+      //
+      // 你特可以从它的tokens数组中发现它有很多右括弧
+      //
+      //   [
+      //     { type: 'paren',  value: '('        },
+      //     { type: 'name',   value: 'add'      },
+      //     { type: 'number', value: '2'        },
+      //     { type: 'paren',  value: '('        },
+      //     { type: 'name',   value: 'subtract' },
+      //     { type: 'number', value: '4'        },
+      //     { type: 'number', value: '2'        },
+      //     { type: 'paren',  value: ')'        }, &lt;&lt;&lt; 右括弧
+      //     { type: 'paren',  value: ')'        }, &lt;&lt;&lt; 右括弧
+      //   ]
+      //
+      // 我们将依赖于嵌套的walk函数来增加我们的游标
+
+      // 所以我们创建一个while循环，这个while循环将一直进行直到遇到一个类型是paren的标记并且这个标记的值是一个右括弧
+      while (
+        (token.type !== 'paren') ||
+        (token.type === 'paren' &amp;&amp; token.value !== ')')
+      ) {
+        // 我们将调用walk函数，这个函数将返回一个节点, 我们将把这个返回的节点放到当前节点的params
+        // 数组中存储起来，这样嵌套关系再AST里面就体现出来了
+        node.params.push(walk());
+        token = tokens[current];
+      }
+
+      // 最后，我们需要最后一次移动游标用于忽略右括弧
+      current++;
+
+      // 并且返回节点
+      return node;
+    }
+
+    // 同样，如果我们没有识别出标记的类型，我们也会抛出一个错误
+    throw new TypeError(token.type);
+  }
+
+  // 现在walk函数已经定义好了， 我们需要定义我们的AST树了，这个AST树有一个“Program”根节点：
+  let ast = {
+    type: 'Program',
+    body: [],
+  };
+
+  // 然后我们要启动我们的walk函数, 将AST节点放入根节点的body数组里面
+  //
+  // 我们在循环里面做这个是因为，我们可能会遇到连着的多个函数调用，比如说像这样的：
+  //
+  //   (add 2 2)
+  //   (subtract 4 2)
+  //启动walk
+  while (current &lt; tokens.length) {
+    ast.body.push(walk());
+  }
+
+  // 在解析函数的最后，我们将返回生成的AST.
+  return ast;
+}
+</code></pre>
+
+<p>任然以前面的例子举例，我们解析后得到的AST如下：</p>
+<p><img src="https://i.imgur.com/1rQ9egG.png" /></p>
+<h4>5.2、 转换的实现</h4>
+<p>现在我们已经有了我们的AST，我们想要一个访问者可以访问不同的节点，无论何时匹配到对应的节点类型的时候，我们都可以调用访问者上的方法。
+所以我们定义一个旅行者函数，这个函数接收两个参数，第一个参数为AST树，第二个参数是一个访问者。这个访问者需要实现不同类型的AST节点需要调用的一些方法：</p>
+<pre><code>traverse(ast, {
+  Program: {
+    enter(node, parent) {
+      // ...
+    },
+    exit(node, parent) {
+      // ...
+    },
+  },
+
+  CallExpression: {
+    enter(node, parent) {
+      // ...
+    },
+    exit(node, parent) {
+      // ...
+    },
+  },
+
+  NumberLiteral: {
+    enter(node, parent) {
+      // ...
+    },
+    exit(node, parent) {
+      // ...
+    },
+  },
+});
+</code></pre>
+
+<h5>5.2.1 、traverser函数实现</h5>
+<p>因此，我们的旅行者函数的实现如下，它接收AST和一个访问者作为参数，并且在里面还定义了两个方法：</p>
+<pre><code>function traverser(ast, visitor) {
+
+  // 定义一个traverseArray函数，可以是我们迭代一个数组，然后调用我们稍后定义的traverseNode函数
+  function traverseArray(array, parent) {
+    array.forEach(child =&gt; {
+      traverseNode(child, parent);
+    });
+  }
+
+  // traverseNode函数接收一个AST节点以及它的父节点，所以它也可以传递给我们的访问者函数
+  function traverseNode(node, parent) {
+
+    // 我们首先检查访问者匹配类型的方法
+    let methods = visitor[node.type];
+
+    // 如果该AST节点类型存在enter方法，我们将以当前node及其父节点作为参数调用该方法
+    if (methods &amp;&amp; methods.enter) {
+      methods.enter(node, parent);
+    }
+
+    // 接下来我们会根据节点类型来把事情划分开来
+    switch (node.type) {
+
+      // 首先我们从顶级节点Program开始，由于该顶级节点有一个叫做body的属性，这个属性中是一个AST节点组成的数组
+      // 我们将调用traverseArray函数来递归它
+      //
+      // (记住traverseArray函数会反过来调用traverseNode函数，所以我们让这个AST被递归的访问)
+      case 'Program':
+        traverseArray(node.body, node);
+        break;
+
+      // 接下来我们对CallExpression节点做同样的事情，并且访问它们的参数
+      case 'CallExpression':
+        traverseArray(node.params, node);
+        break;
+
+      // 对于数字节点以及字符串节点，他们没有任何的子节点,所以我们直接break.
+      case 'NumberLiteral':
+      case 'StringLiteral':
+        break;
+
+      // 并且再一次，如果没有识别出对应的节点类型，就抛出错误
+      default:
+        throw new TypeError(node.type);
+    }
+
+    // 如果访问者上有exit方法，我们将以该节点和它的父节点作为参数调用exit方法
+    if (methods &amp;&amp; methods.exit) {
+      methods.exit(node, parent);
+    }
+  }
+
+  // 最后，我们启动traverser，这是通过调用traverseNode实现的，并且traverseNode第二个参数是null，因为定级节点本身就没有父节点.
+  traverseNode(ast, null);
+}
+</code></pre>
+
+<h5>5.2.2 、transformer函数实现</h5>
+<p>前面我们已经写好了traverser函数，而traverser函数对节点的主要操作都是通过它的第二个参数，也就是访问者来完成的，在上面，我们并没有定义访问者的具体实现，只是定义了enter和exit两个接口，实际上这两个接口所做的事情就是<strong>转换</strong>步鄹真正干的事情。为此我们定义transformer函数。</p>
+<p>transformer函数接收AST，将它传递给traverser函数，并且transformer函数内部还为traverser函数提供访问者。最终transformer函数返回一个新建的AST。</p>
+<p>比如以前面那个例子为例，得到的AST和转换后的AST如下：</p>
+<pre><code>----------------------------------------------------------------------------
+Original AST                     |   Transformed AST
+----------------------------------------------------------------------------
+{                                |   {
+  type: 'Program',               |     type: 'Program',
+  body: [{                       |     body: [{
+    type: 'CallExpression',      |       type: 'ExpressionStatement',
+    name: 'add',                 |       expression: {
+    params: [{                   |         type: 'CallExpression',
+      type: 'NumberLiteral',     |         callee: {
+      value: '2'                 |           type: 'Identifier',
+    }, {                         |           name: 'add'
+      type: 'CallExpression',    |         },
+      name: 'subtract',          |         arguments: [{
+      params: [{                 |           type: 'NumberLiteral',
+        type: 'NumberLiteral',   |           value: '2'
+        value: '4'               |         }, {
+      }, {                       |           type: 'CallExpression',
+        type: 'NumberLiteral',   |           callee: {
+        value: '2'               |             type: 'Identifier',
+      }]                         |             name: 'subtract'
+    }]                           |           },
+  }]                             |           arguments: [{
+}                                |             type: 'NumberLiteral',
+                                 |             value: '4'
+-------------------------------- |           }, {
+                                 |             type: 'NumberLiteral',
+                                 |             value: '2'
+                                 |           }]
+                                 |         }
+                                 |       }
+                                 |     }]
+                                 |   }
+----------------------------------------------------------------------------
+</code></pre>
+
+<p>所以我们的transformer函数的具体实现如下：</p>
+<pre><code>function transformer(ast) {
+
+  // 我们将创建一个新的AST(即newAst)，它和我们原来的AST类似，有一个Program根节点
+  let newAst = {
+    type: 'Program',
+    body: [],
+  };
+
+  // 接下来，我们会做一些取巧的操作，我们在父节点上定义一个\_context属性，
+  // 我们会将节点放入父节点的\_context属性中
+  // 通常你会有更好的抽象(也许会复杂些)，但是在这里我们这样做使得事情变得相对简单
+  //
+  // 你仅仅需要记住的是，context是一个从老AST到新AST的引用
+  ast._context = newAst.body;
+
+  // 我们以老ast和一个访问者作为参数调用traverser函数
+  traverser(ast, {
+
+    // 第一个访问者的属性是用来处理NumberLiteral的
+    NumberLiteral: {
+      // 在enter方法中会对节点进行访问.
+      enter(node, parent) {
+        // 在这里面我们会创建一个新的AST节点，这个节点任然以NumberLiteral命名
+        // 我们会将这个节点放入该节点父亲的\_context属性中
+        parent._context.push({
+          type: 'NumberLiteral',
+          value: node.value,
+        });
+      },
+    },
+
+    // 接下来是StringLiteral
+    StringLiteral: {
+      enter(node, parent) {
+        parent._context.push({
+          type: 'StringLiteral',
+          value: node.value,
+        });
+      },
+    },
+
+    // 接下来是CallExpression
+    CallExpression: {
+      enter(node, parent) {
+
+        // 我们创建一个新的节点CallExpression，它有一个嵌套的标识符
+        let expression = {
+          type: 'CallExpression',
+          callee: {
+            type: 'Identifier',
+            name: node.name,
+          },
+          arguments: [],
+        };
+
+        // 接下来，我们在原始的CallExpression节点上定义一个新的context用于引用
+        // expression变量上的arguments属性
+        // 这样我们可以加入参数
+        node._context = expression.arguments;
+
+        // 接着我们检查父节点是不是一个CallExpression节点
+        // 如果不是
+        if (parent.type !== 'CallExpression') {
+
+          // 我们将用一个ExpressionStatement节点包裹这个CallExpression节点
+          // 这么做是因为顶级CallExpression节点实际上就是statement
+          // 也就是说，如果某个CallExpression节点的父节点不是CallExpression节点
+          // 那么这个CallExpression节点应该就是函数声明
+          expression = {
+            type: 'ExpressionStatement',
+            expression: expression,
+          };
+        }
+
+        // 最后我们将这个新的CallExpression(可能被ExpressionStatement包裹)
+        // 放入parent._context
+        parent._context.push(expression);
+      },
+    }
+  });
+
+  // 在transformer函数的最后，我们把我们刚创建的新AST返回
+  return newAst;
+}
+</code></pre>
+
+<p>我们同样以前面的例子来看一下新创建AST长什么样子：</p>
+<p><img src="https://i.imgur.com/V6pnJMb.png" /></p>
+<h4>5.3、 代码生成的实现</h4>
+<p>现在让我们进入我们的最后一个步鄹：代码生成。我们的代码生成函数会递归的调用自己用来打印它的节点到一个很大的字符串。也就是完成由newAST到代码的过程：</p>
+<pre><code>newAst =&gt; generator   =&gt; output
+</code></pre>
+
+<h5>5.3.1 codeGenerator的实现</h5>
+<pre><code>function codeGenerator(node) {
+
+  // 我们会根据节点的type类型来将事情分别处理
+  switch (node.type) {
+
+    // 如果我们有一个Program节点，我们将遍历body中的每一个节点并且对每一个节点递调用codeGenerator
+    // 函数，并且将它们的结果用一个换行符连接起来
+    case 'Program':
+      return node.body.map(codeGenerator)
+        .join('\n');
+
+    // 对于ExpressionStatement节点，我们将在节点的expression节点上调用
+    // codeGenerator函数，然后我们会加上一个分号(即；)
+    case 'ExpressionStatement':
+      return (
+        codeGenerator(node.expression) +
+        ';' // &lt;&lt; (...because we like to code the *correct* way)
+      );
+
+    // 对于CallExpression节点，我们会打印callee并开始一个做括弧
+    // 我们会遍历该节点的arguments属性，然后对每个属性调用codeGenerator方法,
+    // 将他们的结果用逗号分隔，最后在后面加一个右括弧
+    case 'CallExpression':
+      return (
+        codeGenerator(node.callee) +
+        '(' +
+        node.arguments.map(codeGenerator)
+          .join(', ') +
+        ')'
+      );
+
+    // 对于标识符，我们将返回节点的名字
+    case 'Identifier':
+      return node.name;
+
+    // 对于NumberLiteral节点，我们返回它的value属性
+    case 'NumberLiteral':
+      return node.value;
+
+    // 对于StringLiteral节点，我们用引号将它的value属性值包裹起来
+    case 'StringLiteral':
+      return '&quot;' + node.value + '&quot;';
+
+    // 如果没有识别节点，我们将抛出错误
+    default:
+      throw new TypeError(node.type);
+  }
+}
+</code></pre>
+
+<p>同样以上面例子举例，它的输出结果如图：</p>
+<p><img src="https://i.imgur.com/Wh7WKgC.png" /></p>
+<h3>6、编译器（compiler）的实现</h3>
+<p>现在，编译器的三大步鄹的代码都已经实现了，我们现在开始实现编译器，它的方式就是将三个步鄹链接起来，可以将这几个步鄹描述如下：</p>
+<pre><code>1. input  =&gt; tokenizer   =&gt; tokens
+2. tokens =&gt; parser      =&gt; ast
+3. ast    =&gt; transformer =&gt; newAst
+4. newAst =&gt; generator   =&gt; output
+</code></pre>
+
+<p>我们的编译器代码如下：</p>
+<pre><code>function compiler(input) {
+  let tokens = tokenizer(input);
+  let ast    = parser(tokens);
+  let newAst = transformer(ast);
+  let output = codeGenerator(newAst);
+
+  // and simply return the output!
+  return output;
+}
+</code></pre>
+
+<p>最后作为一个模块，我们希望别人去使用它，因为我们的每个函数都是相对独立的一个功能模块，所以我们将这里面的每个函数都导出：</p>
+<pre><code>module.exports = {
+  tokenizer,
+  parser,
+  traverser,
+  transformer,
+  codeGenerator,
+  compiler,
+};
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
