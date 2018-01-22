@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>手把手教你实现一个简单的MVVM模式</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>手把手教你实现一个简单的MVVM模式</h1>
+<h3>一、概述</h3>
+<p>在前面的<a href="https://dulinrain.github.io/handbyhand/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84MVC%E6%A8%A1%E5%BC%8F.html">手把手教你实现一个简单的MVC模式</a>和<a href="https://dulinrain.github.io/handbyhand/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84MVP%E6%A8%A1%E5%BC%8F.html">手把手教你实现一个简单的MVP模式</a>两篇文章中，我们已经讲了一个简单的MVC和MVP模式。对这些模式的套路和区别有了一定的了解。</p>
+<p>本文将讲解现在比较主流的MVVM（模型-视图-视图模型）模式，这是目前的Vue、Angular等框架普遍采取的一种设计模式。其实，MVVM模式也是对MVC、MVP模式的进一步的改进，它用视图模型（VM）代替MVP中的表示器（P），使得视图和模型的分离更加清晰。 我们知道MVP模式中，视图和模型已经分离的比较好了，但是在MVP模式中，视图中任然存在着调用原生API操作DOM的代码。MVVM模式所做的主要就是将这部分操作DOM的行为提取出来，放到视图模型（VM）中去，这就正是视图模型一词的由来，因为视图模型既要处理模型数据，又得操作与视图相关的DOM。</p>
+<p>MVVM模式与MVP模式的逻辑图类似，视图和模型只能通过视图模型来联系，所不同的是，模型和视图模型之间任然采用的是观察者模式进行消息传递，而视图（V）和视图模型（VM）则不再通过发布/订阅消息联系，而是在视图模型中直接绑定视图中的模板来进行交互。 绑定的方法通常可以通过模板中的一些标记，如HTML5 data-属性，当然也可以使用一些指令等等，Vue中就采用的是指令的方式。</p>
+<h3>二、观察者模式</h3>
+<p>MVVM模式仍然需要借助观察者模式来实现，只不过MVVM模式中的观察者仅仅用来实现模型和视图模型之间的消息传递。而这里的观察者模式的实现和MVC、MVP中的完全一样：</p>
+<pre><code>let observer = (function () {
+    let events = {}
+    return {
+        subscribe (eventName, callback) {
+            if (!events.hasOwmProperty(eventName)) {
+                events[eventName] = []
+            }
+            events[eventName].push(callback)
+        },
+        unsubscribe (eventName, callback) {
+            if (!events.hasOwmProperty(eventName)) {
+                return
+            }
+            events[eventName] = events[eventName].filter(x =&gt; x !== callback)
+        },
+        publish (eventName, ...args) {
+            if (!events.hasOwmProperty(eventName)) {
+                return
+            }
+            let callbacks = events[eventName]
+            for (let callback of callbacks) {
+                callback.apply(this, args)
+            }
+        }
+    }
+}())
+</code></pre>
+
+<h3>三、模型</h3>
+<p>MVVM模式只是对视图和视图模型部分做了改动，不涉及模型部分。因此模型的实现和MVC、MVP中的完全一样：</p>
+<pre><code>function ContactorModel (contactors = []) {
+    this.contactors = contactors
+}
+Object.assign(ContactorModel.prototype, {
+    getAllContatcors () {
+        return this.contactors
+    },
+    addContactor (contactor) {
+        this.contactors.unshift(contactor)
+        observer.publish('model.add.contactor', contactor)
+    },
+    removeContactor (contactor) {
+        this.contactors = this.contactors.filter(x =&gt; x !== contactor)
+        observer.publish('model.delete.contactor', contactor)
+    }
+})
+</code></pre>
+
+<h3>四、视图</h3>
+<p>MVVM模式中的视图和MVC、MVP中的有很大的不同，由于MVVM将大量的视图操作提取到了视图模型中来完成，因此MVVM的视图非常的简洁。大部分的场景下视图都是用一个简单的HTML或者模板来完成的。我们这里的视图也只是一个HTML，需要注意的是该HTML里面定义了大量的data-属性用于将视图和视图模型关联起来：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;MVVM模式&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;input type=&quot;text&quot; data-input/&gt;&lt;button data-add=&quot;addContactor&quot;&gt;添加&lt;/button&gt;
+    &lt;ul&gt;
+        &lt;li&gt;&lt;span data-text&gt;&lt;/span&gt;&lt;button data-remove=&quot;removeContactor&quot;&gt;删除&lt;/button&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;!--这里放js代码--&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h3>五、视图模型</h3>
+<p>视图模型的变化就比较大了，主要就是需要解析视图，然后将原视图中有关的DOM操作逻辑放到视图模型中。它的实现如下：</p>
+<pre><code>function ContactorModelView (view, model) {
+    let _ = this
+    _.view = view
+    _.model = model
+    _.methods = {
+        addContactor(contactor) {
+            _.model.addContactor(contactor)
+        },
+        removeContactor(contactor) {
+            _.model.removeContactor(contactor)
+        }
+    }
+    _.initinizer()
+    _.bindForm()
+    _.bindList()
+    _.bindEvents()
+}
+Object.assign(ContactorModelView.prototype, {
+    initinizer () {
+        this.addBtn = this.view.querySelector('[data-add]')
+        this.ul = this.view.querySelectorAll('ul')[0]
+        this.li = this.view.querySelectorAll('li')[0]
+    },
+    bindForm () {
+        let addMethod = this.addBtn.getAttribute('data-add')
+        let contactorInput = this.view.querySelector('[data-input]')
+        this.addBtn.addEventListener('click', () =&gt; {
+            let contactor = contactorInput.value
+            if (contactor === '') {
+                return
+            }
+            addMethod &amp;&amp; this.methods[addMethod] &amp;&amp; this.methods[addMethod](contactor)
+        }, false)
+    },
+    clearField () {
+        this.view.querySelector('[data-input]').value = ''
+    },
+    bindList () {
+        let _ = this
+        let contactors = _.model.getAllContatcors()
+        _.ul.innerHTML = ''
+        for (let contactor of contactors) {
+            let li = _.li.cloneNode(true)
+            li.querySelector('[data-text]').innerHTML = contactor
+            li.querySelector('[data-remove]').addEventListener('click', deleteEventCb(contactor), false)
+            _.ul.appendChild(li)
+        }
+        function deleteEventCb (contactor) {
+            return function (e) {
+                let deleteMethod = e.target.getAttribute('data-remove')
+                deleteMethod &amp;&amp; _.methods[deleteMethod] &amp;&amp; _.methods[deleteMethod](contactor)
+            }
+        }
+    },
+    bindEvents () {
+        let _ = this
+        function updateView () {
+            _.bindList()
+            _.clearField()
+        }
+        observer.subscribe('model.add.contactor', () =&gt; {
+            updateView()
+        })
+        observer.subscribe('model.delete.contactor', () =&gt; {
+            updateView()
+        })
+    }
+})
+</code></pre>
+
+<h3>六、 使用方法</h3>
+<p>有了这些之后，我们只需要将各个模块文件引入到视图页面，然后编写一点点代码即可使用了，最终完整的视图代码如下：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;MVVM模式&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;input type=&quot;text&quot; data-input/&gt;&lt;button data-add=&quot;addContactor&quot;&gt;添加&lt;/button&gt;
+    &lt;ul&gt;
+        &lt;li&gt;&lt;span data-text&gt;&lt;/span&gt;&lt;button data-remove=&quot;removeContactor&quot;&gt;删除&lt;/button&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;script src=&quot;./observer.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;./ContactorModel.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;./ContactorModelView.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+        let model = new ContactorModel(['lingyu03', 'linyu04'])
+        let view = document.body
+        let viewmodel = new ContactorModelView(view, model)
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>最后的效果可以点击这里<a href="https://dulinrain.github.io/mvvm/index.html">Demo</a>查看</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
