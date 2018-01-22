@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MVVM模式</title>
+</head>
+<body>
+    <input type="text" data-input/><button data-add="addContactor">添加</button>
+    <ul>
+        <li><span data-text></span><button data-remove="removeContactor">删除</button></li>
+    </ul>
+    <script src="./observer.js"></script>
+    <script src="./ContactorModel.js"></script>
+    <script src="./ContactorModelView.js"></script>
+    <script>
+        let model = new ContactorModel(['lingyu03', 'linyu04'])
+        let view = document.body
+        let viewmodel = new ContactorModelView(view, model)
+    </script>
+</body>
+</html>
