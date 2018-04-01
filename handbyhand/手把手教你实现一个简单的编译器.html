@@ -39,7 +39,13 @@ body>*:first-child {
 body>*:last-child {
   margin-bottom: 0 !important;
 }
-
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
 /* BLOCKS
 =============================================================================*/
 
@@ -306,6 +312,9 @@ img {
   width: 5px;
   -webkit-border-radius: 3px;
   background-color: #666;
+}
+h1 {
+	text-align: center;
 }
 </style>
 </head>
