@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
 <head>
 <title>ES6之解构</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -39,7 +39,13 @@ body>*:first-child {
 body>*:last-child {
   margin-bottom: 0 !important;
 }
-
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
 /* BLOCKS
 =============================================================================*/
 
@@ -289,6 +295,28 @@ img {
   max-width: 100%
 }
 </style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+h1 {
+	text-align: center;
+}
+</style>
 </head>
 <body>
 <h2>ES6之解构（destruction）</h2>
@@ -401,7 +429,7 @@ f(['a'])</p>
 <h4>7.2、解构时，不能同时声明和赋值</h4>
 <p>当我们解构一个东西时，它的源中的所有变量都是声明过的，你不能边声明，边赋值：</p>
 <p><img src="http://i.imgur.com/VSQWZYN.png" /></p>
-<p>上面这个例子在解构时，f是已经声明过的，b是没有声明过的，在解构的时候，给f赋值的同时，也在声明b。会报重复声明f的错误。</p>
+<p>上面这个例子在解构时，a是已经声明过的，b是没有声明过的，在解构的时候，给a赋值的同时，也在声明a。会报重复声明a的错误。</p>
 <p>解决的办法就是统一先声明：</p>
 <p><img src="http://i.imgur.com/uNhccAA.png" /></p>
 <p>或统一放到解构时</p>
