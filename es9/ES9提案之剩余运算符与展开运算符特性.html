@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ES9提案之剩余运算符与展开运算符特性</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>ES9提案之剩余运算符与展开运算符特性</h1>
+<p>剩余运算符/展开运算符是由<code>Sebastian Markbåge</code>提出的提案，它支持：</p>
+<ul>
+<li>剩余运算符可支持对象解构。当前，我们的剩余运算符只支持数组解构和参数定义。</li>
+<li>展开运算符可支持对象字面量。当前我们的展开运算符只支持数组字面量以及函数和方法调用。</li>
+</ul>
+<h3>一、剩余运算符在对象解构中的使用</h3>
+<p>在对象解构模式(参考<a href="https://dulinrain.github.io/es6/ES6之解构.html">ES6之解构</a>)中,剩余运算符将所有可枚举自有属性解构出来放在它的操作数上，除已经明确解构出来的部分属性外。比如说下面的例子：</p>
+<pre><code>const obj = {foo: 1, bar: 2, baz: 3};
+const {foo, ...rest} = obj;
+// Same as:
+// const foo = 1;
+// const rest = {bar: 2, baz: 3};
+</code></pre>
+
+<p>如果你使用对象解构来处理命名参数，剩余运算符可以让你能够收集所有剩下的参数：</p>
+<pre><code>function func({param1, param2, ...rest}) { // rest operator
+    console.log('All parameters: ',
+        {param1, param2, ...rest}); // spread operator
+    return param1 + param2;
+}
+</code></pre>
+
+<p><strong>语法限制</strong></p>
+<p>在每个对象字面量的顶层(最外层), 剩余运算符最多只能出现一次，并且必须出现在末尾：</p>
+<pre><code>const {...rest, foo} = obj; // 语法错误，只能放在末尾
+const {foo, ...rest1, ...rest2} = obj; // 语法错误，只能出现一次
+</code></pre>
+
+<p>但是，在嵌套情况下（也就是不在一个层级）你可以多次使用剩余运算符：</p>
+<pre><code>const obj = {
+    foo: {
+        a: 1,
+        b: 2,
+        c: 3,
+    },
+    bar: 4,
+    baz: 5,
+};
+const {foo: {a, ...rest1}, ...rest2} = obj;
+// Same as:
+// const a = 1;
+// const rest1 = {b: 2, c: 3};
+// const rest2 = {bar: 4, baz: 5};
+</code></pre>
+
+<h3>二、展开运算符在对象字面量中的使用</h3>
+<p>在对象字面量中，展开运算符将所有自身的可枚举自有属性插入到创建的对象字面量中：</p>
+<p><img src="https://i.imgur.com/TFqjvnh.jpg" /></p>
+<p><strong>注意</strong>，顺序有影响，即使在属性名不冲突的时候。因为对象会记录插入的顺序：</p>
+<p><img src="https://i.imgur.com/Kf97btL.jpg" /></p>
+<p>如果属性名有冲突，那顺序就更重要了，直接决定了哪一个会保留下来，哪一个会被覆盖：</p>
+<p><img src="https://i.imgur.com/Ei2qqHK.jpg" /></p>
+<h3>三、对象展开运算符的常见使用案例</h3>
+<p>在这一小节，我们将看一看哪些地方可以使用展开运算符。我也会讲述如何使用Object.assign()做同样的事。（Object.assign()和展开运算符非常相似，我们接下来会详细比较他们）</p>
+<h4>3.1 克隆对象</h4>
+<p><strong>克隆一个对象obj的可枚举自有属性</strong>：</p>
+<pre><code>const clone1 = {...obj};
+const clone2 = Object.assign({}, obj);
+</code></pre>
+
+<p>克隆出来的对象(在这里指clone1和clone2)的原型都是Object.prototype，Object.prototype也是创建对象字面量的默认原型。</p>
+<p><img src="https://i.imgur.com/VRdCcZn.jpg" /></p>
+<p><strong>克隆一个对象obj, 包括它的原型</strong>：</p>
+<pre><code>const clone1 = {__proto__: Object.getPrototypeof(obj), ...obj};
+const clone2 = Object.assign(Object.create(Object.getPrototypeof(obj)), obj)
+</code></pre>
+
+<p><strong>注意</strong>：代码中的<code>__proto__</code>只是在部分浏览器中支持，在Nodejs中是不支持的。</p>
+<h4>3.2 真正地克隆对象</h4>
+<p>有些时候，你不只是需要克隆一个对象的可枚举自有属性，你还需要克隆它的一些特性（比如<code>writable</code>, <code>enumerable</code>等）以及<code>getters</code> 和 <code>setters</code>。这个时候，<code>展开运算符</code>和<code>Object.assign</code>都做不到了。这个时候你需要使用属性描述符(参考： <a href="https://dulinrain.github.io/es7_8/ECMAScript2017之getOwnPropertyDescriptors.html">ECMAScript2017之getOwnPropertyDescriptors</a>):</p>
+<pre><code>const clone1 = Object.defineProperties({},
+    Object.getOwnPropertyDescriptors(obj));
+</code></pre>
+
+<p>如果你还想保留原型，那么你需要用到<code>Object.create()</code>:</p>
+<pre><code>const clone2 = Object.create(
+    Object.getPrototypeOf(obj),
+    Object.getOwnPropertyDescriptors(obj));
+</code></pre>
+
+<h4>3.3 陷阱：克隆总是浅的</h4>
+<p>你一定要记住的是，我们现在所看到的这几种克隆方式都是浅克隆，你只拿到了浅拷贝。如果克隆的对象的某个属性还是一个对象，那么我们拿到的只是那个对象的引用，也就是指向同一个地方，它不会递归地、深度地克隆自己。</p>
+<pre><code>const original = { prop: {} };
+const clone = Object.assign({}, original);
+
+console.log(original.prop === clone.prop); // true
+original.prop.foo = 'abc';
+console.log(clone.prop.foo); // abc
+</code></pre>
+
+<h4>3.4 其它使用案例</h4>
+<p><strong>合并两个对象：</strong></p>
+<pre><code>const merged = {...obj1, ...obj2};
+const merged = Object.assign({}, obj1, obj2);
+</code></pre>
+
+<p><strong>定义默认值：</strong></p>
+<pre><code>const DEFAULTS = {foo: 'a', bar: 'b'};
+const userData = {foo: 1};
+
+const data = {...DEFAULTS, ...userData};
+const data = Object.assign({}, DEFAULTS, userData);
+    // {foo: 1, bar: 'b'}
+</code></pre>
+
+<p><strong>非破坏性地更新对象的属性值：</strong></p>
+<pre><code>const obj = {foo: 'a', bar: 'b'};
+const obj2 = {...obj, foo: 1};
+const obj2 = Object.assign({}, obj, {foo: 1});
+    // {foo: 1, bar: 'b'}
+</code></pre>
+
+<p><strong>内联地指定属性的默认值：</strong></p>
+<pre><code>const userData = {foo: 1};
+const data = {foo: 'a', bar: 'b', ...userData};
+const data = Object.assign({}, {foo:'a', bar:'b'}, userData);
+    // {foo: 1, bar: 'b'}
+</code></pre>
+
+<h3>四、展开对象 VS Object.assign()</h3>
+<p>展开运算符和Object.assign()非常的相似，他们之间的唯一区别就是：展开运算符定义新的属性，而Object.assign()设置属性。这到底意味着什么我们接下来探讨。</p>
+<h4>4.1 使用Object.assign()的两种方式</h4>
+<p>有两种使用Object.assign()的方式。</p>
+<p>第一， 破坏性的(现有的对象被改变)</p>
+<pre><code>Object.assign(target, source1, source2);
+</code></pre>
+
+<p>这里，target被修改，source1, source2被拷贝给target。</p>
+<p>第二， 非破坏性的(任何现有的对象都不会改变)</p>
+<pre><code>const result = Object.assign({}, source1, source2);
+</code></pre>
+
+<p>这里，一个新的对象被通过对象字面量的方式创建，source1, source2被拷贝给它。最后这个新的对象被返回并赋值给result。</p>
+<p>展开运算符和上面的第二种方式非常相似。 接下来我们来看看，他们两到底哪里相似，又有哪些差别。</p>
+<h4>4.2 展开运算符和Object.assign()都是通过get来读取属性值的</h4>
+<p>在将源对象的属性值写入目标对象之前，展开运算符和Object.assign()都是通过get来读取源对象的属性值。因此，在这个过程中，getters 被转换成了普通数据属性。</p>
+<p>让我们来看下面一个例子：</p>
+<pre><code>const original = {
+    get foo() {
+        return 123;
+    }
+};
+</code></pre>
+
+<p>original对象拥有一个叫做foo（它的属性描述符有 <code>get</code> 和 <code>set</code> 两个属性）的getter。如下：</p>
+<p><img src="https://i.imgur.com/1IxL6X4.jpg" /></p>
+<p>但是在它的克隆对象clone1 和clone2中，foo只是一个普通的数据属性（它的属性描述符有value和writable两个属性）。 如下：</p>
+<p><img src="https://i.imgur.com/CGwWSaG.jpg" /></p>
+<h4>4.3 展开运算符定义属性，Object.assign()设置属性</h4>
+<p>展开运算符在新对象上定义属性，而Object.assign()采用普通的set操作去创建它们。这将导致两个后果：</p>
+<p><strong>对于有setter的对象：</strong>
+首先，Object.assign()将触发setters，而展开运算符不会：</p>
+<pre><code>Object.defineProperty(Object.prototype, 'foo', {
+    set(value) {
+        console.log('SET', value);
+    },
+});
+const obj = {foo: 123};
+</code></pre>
+
+<p>在上面的代码片段中，我们先在Object的原型上定义了一个带有setter的foo属性，这样所有的对象字面量都会继承这个属性。</p>
+<p>如果我们使用 Object.assign()来克隆这个对象， 那么继承来的这个getter将会触发：</p>
+<p><img src="https://i.imgur.com/kbfdoTf.jpg" /></p>
+<p>但是如果使用展开运算符的话，setter并不会触发：</p>
+<p><img src="https://i.imgur.com/E09dBl6.jpg" /></p>
+<p>如果obj对象有自己的setter的话，Object.assign()也会触发obj自己的setter，而不会覆盖他们。</p>
+<p><strong>对于有只读属性的对象：</strong></p>
+<p>其次，你可以通过继承只读属性来阻止Object.assign()创建自有属性，但是阻止不了展开运算符。</p>
+<pre><code>Object.defineProperty(Object.prototype, 'bar', {
+    writable: false,
+    value: 'abc',
+});
+</code></pre>
+
+<p>上面的代码在Object.prototype定义了一个不可改写的bar属性，所有对象字面量都会继承该属性。</p>
+<p>这样的记过就是，你再也不能通过赋值语句创建自己的属性bar（严格模式下你会收到一个异常，松散模式下会静默失败）。</p>
+<p><img src="https://i.imgur.com/43lNVRX.jpg" /></p>
+<p>在下面的代码中，我们成功的通过对象字面量创建了bar属性：</p>
+<pre><code>const obj = {bar: 123};
+</code></pre>
+
+<p>这能行是因为，对象字面量从来不设置属性，它做的是定义属性。</p>
+<p>然后，Object.assign()使用的是赋值语法(assignment)去创建属性，这就是为什么我们没法克隆对象：</p>
+<p><img src="https://i.imgur.com/64W8317.jpg" /></p>
+<p>但是我们却可以使用展开运算符做到：</p>
+<p><img src="https://i.imgur.com/XXpvN0a.jpg" /></p>
+<h4>4.4 展开运算符和Object.assign()都只考虑可枚举自有属性</h4>
+<p>展开运算符和Object.assign()这两种操作都会忽略继承属性以及不可枚举的自有属性。</p>
+<p>下面的obj对象，从proto中继承了一个可枚举属性，并且它也有两个自己的属性，其中一个可枚举，另一个不可枚举。</p>
+<pre><code>const proto = {
+    inheritedEnumerable: 1,
+};
+const obj = Object.create(proto, {
+    ownEnumerable: {
+        value: 2,
+        enumerable: true,
+    },
+    ownNonEnumerable: {
+        value: 3,
+        enumerable: false,
+    },
+});
+</code></pre>
+
+<p>如果你克隆obj的话，你只能得到ownEnumerable属性，其它属性都会被忽略：</p>
+<p><img src="https://i.imgur.com/C4fLfQu.jpg" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
