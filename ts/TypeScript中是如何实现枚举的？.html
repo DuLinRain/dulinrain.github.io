@@ -39,7 +39,13 @@ body>*:first-child {
 body>*:last-child {
   margin-bottom: 0 !important;
 }
-
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
 /* BLOCKS
 =============================================================================*/
 
@@ -307,6 +313,9 @@ img {
   -webkit-border-radius: 3px;
   background-color: #666;
 }
+h1 {
+	text-align: center;
+}
 </style>
 </head>
 <body>
@@ -326,7 +335,7 @@ img {
 <pre><code>let Color = {}
 Color[0] = 'Red'
 Color[1] = 'Green'
-Color[1] = 'Blue'
+Color[2] = 'Blue'
 Color['Red'] = 0
 Color['Green'] = 1
 Color['Blue'] = 2
