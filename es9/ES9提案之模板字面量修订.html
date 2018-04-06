@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ES9提案之模板字面量修订</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>ES9提案之模板字面量修订</h1>
+<p>由<code>Tim Disney</code>提交的<a href="https://tc39.github.io/proposal-template-literal-revision/">模板字面量修订</a>ECMAScript提案给予了标记模板字面量（tagged template literals）内部更加自由的语法.</p>
+<h3>一、标记函数和转义序列</h3>
+<p>有了标记模板字面量，你可以通过在一个模板字面量前面声明一个函数来实现函数调用：</p>
+<pre><code>String.raw`\u{4B}`
+&quot;\u{4B}&quot;
+</code></pre>
+
+<p>这里，<code>String.raw</code>就是所谓的标记函数，标记函数接收模板字面量中固定字符串片段的两个版本：</p>
+<ul>
+<li>Cooked： 转义序列被解释。<code>\u{4B}</code> 变成 'K'.</li>
+<li>Raw： 转义序列就是普通文本。<code>\u{4B}</code> 变成 <code>\\u{4B}</code> .</li>
+</ul>
+<p>下面的标记函数解释了这是如何做到的：</p>
+<pre><code>function tagFunc(tmplObj, substs) {
+    return {
+        Cooked: tmplObj,
+        Raw: tmplObj.raw,
+    };
+}
+</code></pre>
+
+<p>使用这个标记函数：</p>
+<p><img src="https://i.imgur.com/fobmVPq.jpg" /></p>
+<h3>二、问题：一些文本在反斜线后面会视为不合法</h3>
+<p>问题是，即使使用raw版本，ES2016中的模板字面量也没有完全的自由度。加上反斜线之后，很多字符序列都变得不再合法：</p>
+<ul>
+<li><code>\u</code>表示一个Unicode转义，它必须看起来像\u{1F4A4} 或 \u004B这样.</li>
+<li><code>\x</code> 表示16进制转义, 他必须看起来像 \x4B这样.</li>
+<li><code>\</code> 跟上数字表示八进制序列 (比如 \141). 八进制转义在模板字面量以及严格模式下的字符字面量中是禁止的。</li>
+</ul>
+<p>这些都会阻止像下面这样的标记模板字面量：</p>
+<pre><code>latex`\unicode`
+windowsPath`C:\uuu\xxx\111`
+</code></pre>
+
+<h3>三、 解决方案</h3>
+<p>解决方案是放弃与转义序列相关的所有语法限制。然后，非法转义序列只是在原始表示中逐字显示。 但是Cooked表示什么呢？ 具有非法转义序列的每个模板字符串在Cooked数组中都是undefined：</p>
+<p><img src="https://i.imgur.com/ld4e500.jpg" /></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

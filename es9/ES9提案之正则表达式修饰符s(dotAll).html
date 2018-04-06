@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ES9提案之正则表达式修饰符s(dotAll)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>ES9提案之正则表达式修饰符s(dotAll)</h1>
+<p>这篇文章讲述由Mathias Bynens提出的<a href="https://github.com/tc39/proposal-regexp-dotall-flag">正则表达式修饰符 s (dotAll)</a>提案。</p>
+<h3>一、概述</h3>
+<p>我们都知道，JS正则表达式中点号(<code>.</code>)的意思是：</p>
+<blockquote>
+<p>匹配除换行符 \n 之外的任何单字符。要匹配 <code>.</code> ，请使用 <code>\.</code> 。</p>
+</blockquote>
+<p>也就是很明确的说了，它不能匹配一行的结束符：</p>
+<pre><code>/^.$/.test('\n')
+false
+</code></pre>
+
+<p>这个提案指出，用一个新的修饰符 s (dotAll)来解决这个问题：</p>
+<p><img src="https://i.imgur.com/jtcqkNL.jpg" /></p>
+<h3>二、传统正则表达式中点号(<code>.</code>)的限制</h3>
+<p>正则表达式中点号(<code>.</code>)有两大限制：</p>
+<p><strong>首先</strong>，它无法匹配星际象限(non-BMP, 即非BMP象限，关于JS字符集可参考<a href="https://dulinrain.github.io/basic-javascript/JavaScript字符集之一坨翔引发的血案.html">JavaScript之一坨翔引发的血案</a>)的字符，比如说emoji:</p>
+<pre><code>/^.$/.test('😀')
+false
+</code></pre>
+
+<p>但是呢，这个可以用ES6新增的语法解决：</p>
+<pre><code>/^.$/u.test('😀')
+true
+</code></pre>
+
+<p><strong>其次</strong>就是它无法匹配行结束符：</p>
+<pre><code>/^.$/.test('\n')
+false
+</code></pre>
+
+<p>目前有一些折中的方法可以绕过这个限制，达到预期的效果，比如[^] (“匹配除非字符外的所有字符”) 或 [\s\S] (“匹配空白符或非空白符”)：</p>
+<p><img src="https://i.imgur.com/htLdkqt.jpg" /></p>
+<h4>2.1 ECMAScript的行结束符</h4>
+<p>ECMAScript中的行结束符会影响：</p>
+<ul>
+<li>所有正则表达式中不带s修饰符的点(<code>.</code>)符号</li>
+<li>使用了m修饰符的正则表达式中的开始（<code>^</code>）、结束（<code>$</code>）锚点符</li>
+</ul>
+<p>下面这四种字符都<strong>被</strong>ECMAScript认为是行结束符：</p>
+<ul>
+<li>U+000A LINE FEED (LF) (<code>\n</code>)</li>
+<li>U+000D CARRIAGE RETURN (CR) (<code>\r</code>)</li>
+<li>U+2028 LINE SEPARATOR</li>
+<li>U+2029 PARAGRAPH SEPARATOR</li>
+</ul>
+<p>也有一些新行字符<strong>不被</strong>ECMAScript认为是行结束符：</p>
+<ul>
+<li>U+000B VERTICAL TAB (\v)</li>
+<li>U+000C FORM FEED (\f)</li>
+<li>U+0085 NEXT LINE</li>
+</ul>
+<p>这三种符号可以被不带修饰符的点号匹配：</p>
+<pre><code>/^...$/.test('\v\f\u{0085}')
+true
+</code></pre>
+
+<h3>三、提案</h3>
+<p>该提案引入了一个新的修饰符s(singleline的简写)，使得点号(.)可以匹配到行结束符：</p>
+<pre><code>/^.$/s.test('\n')
+true
+</code></pre>
+
+<p>它的完整名字是dotAll：</p>
+<p><img src="https://i.imgur.com/OeKwBl8.jpg" /></p>
+<h4>3.1 dotAll vs multiline</h4>
+<ul>
+<li>dotAll只影响点号(.)</li>
+<li>multiline只影响开始（<code>^</code>）、结束（<code>$</code>）锚点符</li>
+</ul>
+<h3>四、常见问题</h3>
+<h4>4.1 为什么修饰符的名字是/s？</h4>
+<p>dotAll很好地描述了这个修饰符所做的事情，所以，可以说，起个/a 或 /d可能会是个更好的名字，但是，/s已经是其它语言（Perl, Python, Java, C#, …）中存在的一个名字。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
