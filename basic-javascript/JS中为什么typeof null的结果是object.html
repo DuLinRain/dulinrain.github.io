@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JS中为什么typeof null的结果是object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>JS中为什么typeof null的结果是object?</h1>
+<p>写JS的人都知道，JS中<code>typeof null=== 'object'</code>，这是JS的基本知识，也是一些考试/面试中经常会被问到的问题。几乎很少有人去追寻为什么是这个结果。因为按照我们的知识，null不是一个object，它属于JS中的基本数据类型。</p>
+<p>其实，<code>typeof null=== 'object'</code>是JS中的一个bug!!，并且非常不幸，这个bug可能永远也不会被修复了。因为修复这个bug可能会导致很多现有的代码无法正常工作。下面我们来看看这个bug产生的历史。</p>
+<h3>一、typeof null的前世今生</h3>
+<p>“<code>typeof null</code>” bug是JS第一个版本的历史遗留问题。在这个版本中，JS中的值存储在32bit中，其中低1~3bit用来表示数据类型，剩余的bit用来表示真实的值。3bit可以用来表示8中类型，但是呢，实际上这个版本只定义了5种类型：</p>
+<ul>
+<li>000: object. 表示引用类型Objetc.</li>
+<li>1: int. 表示31位有符号整数。</li>
+<li>010: double. 浮点数.</li>
+<li>100: string. 字符串.</li>
+<li>110: boolean. 布尔型。</li>
+</ul>
+<p>也就是说，最低为要么是0要么是1。最低位是1的话就意味着，类型只占1比特，也就是int型。最低位是0的话，意味着类型占3bit，除去最低位，用另外2位表示四种类型，也就是object，double，string，boolean。</p>
+<p>有两个值是特殊值：</p>
+<ul>
+<li>undefined (JSVAL_VOID) 表示整数-2<sup>30</sup>。这个数超过了当时整数的表示范围。</li>
+<li>null (JSVAL_NULL) 表示机器码NULL指针，或者说是一个指向0的对象引用。</li>
+</ul>
+<p>这就很明显，为什么typeof null会得到object的结果了： 它检查null的类型，结果类型标识告诉它说结果是object。</p>
+<p>下面就是typeof的机器代码实现：</p>
+<pre><code>JS_PUBLIC_API(JSType)
+JS_TypeOfValue(JSContext *cx, jsval v)
+{
+    JSType type = JSTYPE_VOID;
+    JSObject *obj;
+    JSObjectOps *ops;
+    JSClass *clasp;
+
+    CHECK_REQUEST(cx);
+    if (JSVAL_IS_VOID(v)) {  // (1)
+        type = JSTYPE_VOID;
+    } else if (JSVAL_IS_OBJECT(v)) {  // (2)
+        obj = JSVAL_TO_OBJECT(v);
+        if (obj &amp;&amp;
+            (ops = obj-&gt;map-&gt;ops,
+             ops == &amp;js_ObjectOps
+             ? (clasp = OBJ_GET_CLASS(cx, obj),
+                clasp-&gt;call || clasp == &amp;js_FunctionClass) // (3,4)
+             : ops-&gt;call != 0)) {  // (3)
+            type = JSTYPE_FUNCTION;
+        } else {
+            type = JSTYPE_OBJECT;
+        }
+    } else if (JSVAL_IS_NUMBER(v)) {
+        type = JSTYPE_NUMBER;
+    } else if (JSVAL_IS_STRING(v)) {
+        type = JSTYPE_STRING;
+    } else if (JSVAL_IS_BOOLEAN(v)) {
+        type = JSTYPE_BOOLEAN;
+    }
+    return type;
+}
+</code></pre>
+
+<p>上面代码的运行步鄹如下：</p>
+<ul>
+<li>在（1）处，代码首先检查v是不是undefined, 这个检查是通过==判断的：</li>
+</ul>
+<h1></h1>
+<pre><code>#define JSVAL_IS_VOID(v)  ((v) == JSVAL_VOID)
+</code></pre>
+
+<h1></h1>
+<ul>
+<li>然后（2）处用来检查v是不是object类型。如果它是可调用的(3)或者内部有 [[Class]]属性，那么它认为v是函数，否则的话类型就是object。这就是<code>typeof null == 'object'</code>的由来</li>
+<li>接下来就是对 number, string 和 boolean 类型的检查，整个代码没有一处明确的用来检查null的代码。其实要实现的话可以这么实现：</li>
+</ul>
+<h1></h1>
+<pre><code>#define JSVAL_IS_NULL(v)  ((v) == JSVAL_NULL)
+</code></pre>
+
+<h1></h1>
+<p>这个bug现在看起来是一个非常明显的bug，但是考虑到第一版JS只花了很短很短的时间就完成了，所以长得那么帅，我们能怎么滴，还不是选择原谅它啦。</p>
+<p>奉上<a href="https://dxr.mozilla.org/classic/source/js/src/jsapi.h">JS经典代码</a>的源码地址</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
