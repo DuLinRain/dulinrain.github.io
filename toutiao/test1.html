@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>标注工具</title>
+    <style type="text/css">
+        #canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script>
+        let context
+        let windowX = 0
+        let windowY = 0
+        let windowWidth = 500
+        let windowHeight = 500
+        let currentScale = 1
+        let scaleIncrement = 0.1
+        let photo
+        let isMoving = false
+        let theCanvas
+        let currentAngle = 0
+        let isSelected1 = false
+        let isSelected3 = false
+        let clickedPos = []
+        let tuokuangPos = []
+        let initMousePos = {
+            x: 0,
+            y: 0
+        }
+        let curentMousePos = {
+            x: 0,
+            y: 0
+        }
+        let lastPos = {
+            x: 0,
+            y: 0
+        }
+        const Angle = Math.PI / 2
+        let angleStep = 0
+        var w = document.documentElement.clientWidth || document.body.clientWidth;
+        var h = document.documentElement.clientHeight || document.body.clientHeight;
+        window.addEventListener('load', eventWindowLoaded, false)
+        function eventWindowLoaded () {
+            canvasApp()
+        }
+        function canvasSupport () {
+            if (document.getElementById('canvas').getContext("2d")) {
+                return true
+            } else {
+                return false
+            }
+        }
+        function canvasApp () {
+            if (!canvasSupport()) {
+                return
+            } else {
+                theCanvas = document.getElementById('canvas')
+                theCanvas.focus()
+                theCanvas.width = w
+                theCanvas.height = h
+                theCanvas.addEventListener('mousedown', (e) => {
+                    var destX = lastPos.x
+                    var destY = lastPos.y
+                    console.log(e)
+                    if (e.pageX > destX && e.pageX < (destX + photo.width * currentScale) && e.pageY > destY &&  e.pageY < (destY + photo.height * currentScale)) {
+                        isMoving = true
+                        initMousePos.x = e.pageX
+                        initMousePos.y = e.pageY
+                        if (isSelected3) {
+                            tuokuangPos.push({
+                                x: e.pageX,
+                                y: e.pageY
+                            })
+                        }
+                        if (isSelected1) {
+                            let str = ''
+                            context.save()
+                            clickedPos.push({
+                                x: e.pageX,
+                                y: e.pageY
+                            })
+                            context.lineWidth = 2
+                            context.strokeStyle = "red"
+                            for (let [index, {x, y}] of clickedPos.entries()) {
+                                if (index === 0) {
+                                    context.moveTo(x, y)
+                                }
+                                str += 'x: ' + (x - lastPos.x) + ', y: ' + (y - lastPos.y) + ';'
+                                context.lineTo(x, y)
+                                context.stroke()
+                            }
+                            console.log(str)
+                            context.restore()
+                        }
+                        console.log(isMoving)
+                    } else {
+                        isMoving = false
+                    }
+
+                }, false)
+                theCanvas.addEventListener('mousemove', (e) => {
+                    if (isMoving) {
+                        if (isSelected3) {
+                            console.log(tuokuangPos)
+                            if (tuokuangPos.length === 0) {
+                                return
+                            }
+                            let str = ''
+                            str += '对角点1 - x: ' + (tuokuangPos[0].x - lastPos.x) + ', y: ' + (tuokuangPos[0].y - lastPos.y) + ';'
+                            str += '对角点2 - x: ' + (e.pageX - lastPos.x) + ', y: ' + (e.pageY - lastPos.y) + ';'
+                            console.log(str)
+                            context.save()
+                            var destX = lastPos.x
+                            var destY = lastPos.y
+                            let dX = 0
+                            let dY = 0
+                            context.clearRect(0, 0, theCanvas.width, theCanvas.height)
+                            context.drawImage(photo, destX + dX, destY + dY, photo.width * currentScale, photo.height * currentScale)
+                            context.beginPath()
+                            context.rect(tuokuangPos[0].x, tuokuangPos[0].y, e.pageX - tuokuangPos[0].x, e.pageY - tuokuangPos[0].y)
+                            context.lineWidth = 2
+                            context.strokeStyle = "red"
+                            context.stroke()
+                            context.restore()
+                        } else {
+                            curentMousePos.x = e.pageX
+                            curentMousePos.y = e.pageY
+                            var destX = lastPos.x
+                            var destY = lastPos.y
+                            let dX = curentMousePos.x - initMousePos.x
+                            let dY = curentMousePos.y - initMousePos.y
+                            context.save()
+                            context.clearRect(0, 0, theCanvas.width, theCanvas.height)
+                            context.drawImage(photo, destX + dX, destY + dY, photo.width * currentScale, photo.height * currentScale)
+                            context.restore()
+                        }
+                    }
+                }, false)
+                theCanvas.addEventListener('mouseup', (e) => {
+                    console.log('mouseup')
+                    if (isMoving) {
+                        if (isSelected3) {
+
+                        } else {
+                            curentMousePos.x = e.pageX
+                            curentMousePos.y = e.pageY
+                            let dX = curentMousePos.x - initMousePos.x
+                            let dY = curentMousePos.y - initMousePos.y
+                            lastPos.x += dX
+                            lastPos.y += dY
+                        }
+                    }
+                    isMoving = false
+                }, false)
+                theCanvas.addEventListener('mouseover', (e) => {
+                    console.log('mouseover')
+                }, false)
+                theCanvas.addEventListener('mouseout', (e) => {
+                    console.log('mouseout')
+                }, false)
+                context = theCanvas.getContext("2d")
+            }
+            // drawScreen()
+            photo = new Image()
+            photo.addEventListener('load', eventPhotoLoaded, false)
+            photo.src = './test.jpg'
+        }
+
+
+        function eventPhotoLoaded () {
+            console.log(photo.width)
+            console.log(photo.height)
+            var destX = theCanvas.width / 2 - photo.width * currentScale / 2
+            var destY = theCanvas.height / 2 - photo.height * currentScale / 2
+            lastPos.x = destX
+            lastPos.y = destY
+            if (destX >= 0 && destY >= 0) {
+                context.drawImage(photo, destX, destY)
+            } else if (destX >= 0 && destY < 0) {
+                let ratio = photo.height / theCanvas.height
+                destX = theCanvas.width / 2 - photo.width / ratio / 2
+                destY = theCanvas.height / 2 - photo.height / ratio / 2
+                context.drawImage(photo, destX, destY, photo.width / ratio, photo.height / ratio)
+            } else if (destX < 0 && destY >= 0) {
+                let ratio = photo.width / theCanvas.width
+                destX = theCanvas.width / 2 - photo.width / ratio / 2
+                destY = theCanvas.height / 2 - photo.height / ratio / 2
+                context.drawImage(photo, destX, destY, photo.width / ratio, photo.height / ratio)
+            } else if (destX < 0 && destY < 0) {
+                let ratio
+                if (photo.width / theCanvas.width >= photo.height / theCanvas.height) {
+                    ratio = photo.width / theCanvas.width
+                } else {
+                    ratio = photo.height / theCanvas.height
+                }
+                destX = theCanvas.width / 2 - photo.width / ratio / 2
+                destY = theCanvas.height / 2 - photo.height / ratio / 2
+                context.drawImage(photo, destX, destY, photo.width / ratio, photo.height / ratio)
+            }
+
+            // startUp()
+        }
+        function startUp() {
+            drawScreen()
+        }
+        function drawScreen () {
+            context.fillStyle = '#ffffff'
+            context.fillRect(0, 0, 500, 500)
+            context.drawImage(photo, windowX, windowX, windowWidth, windowHeight, 0, 0, windowWidth * currentScale, windowHeight * currentScale)
+        }
+        if(document.addEventListener){//W3C
+            document.addEventListener('DOMMouseScroll',scrollFunc,false);
+        }
+        window.onmousewheel=document.onmousewheel=scrollFunc;//IE/Opera/Chrome/Safari
+        function scrollFunc (e) {
+            console.log(e)
+            if(e.wheelDelta){//IE/Opera/Chrome
+                if (e.wheelDelta > 0) {
+                    console.log('放大')
+                    if (currentScale < 10) {
+                        currentScale += scaleIncrement
+                    }
+                } else {
+                    console.log('缩小')
+                    if (currentScale > 0.3) {
+                        currentScale -= scaleIncrement
+                    }
+                }
+            }else if(e.detail){//Firefox
+                console.log(e.detail)
+            }
+            zoomInOut()
+        }
+        function zoomInOut () {
+            context.save()
+            context.clearRect(0, 0, theCanvas.width, theCanvas.height)
+            var destX = theCanvas.width / 2 - photo.width * currentScale / 2
+            var destY = theCanvas.height / 2 - photo.height * currentScale / 2
+            context.drawImage(photo, destX, destY, photo.width * currentScale, photo.height * currentScale)
+            lastPos.x = destX
+            lastPos.y = destY
+            context.restore()
+            // startUp()
+        }
+        document.onkeyup = function (e) {
+            e = e ? e : window.event
+            let formatKeyCode = e.keyCode - 48
+            switch (formatKeyCode) {
+                case 1:
+                    if (isSelected1 && clickedPos.length >= 2) {
+                        context.save()
+                        clickedPos.push(clickedPos[0])
+                        context.lineWidth = 2
+                        context.strokeStyle = "red"
+                        for (let [index, {x, y}] of clickedPos.entries()) {
+                            if (index === 0) {
+                                context.moveTo(x, y)
+                            }
+                            context.lineTo(x, y)
+                            context.stroke()
+                        }
+                        context.restore()
+                    }
+                    isSelected1 = false
+                    console.log(isSelected1)
+                break
+                case 3:
+                    if (isSelected3 && tuokuangPos.length) {
+                        // context.save()
+                        // tuokuangPos = []
+                    }
+                    isSelected3 = false
+                    console.log(isSelected1)
+                break
+            }
+        }
+        document.onkeydown = function (e) {
+            e = e ? e : window.event
+            let formatKeyCode = e.keyCode - 48
+            switch (formatKeyCode) {
+                case 1:
+                    if (!isSelected1) {
+                        isSelected1 = true
+                        clickedPos = []
+                    }
+                break
+                case 2:
+                    console.log(2)
+                    if (clickedPos.length || tuokuangPos.length) {
+                        context.restore()
+                        var destX = lastPos.x
+                        var destY = lastPos.y
+                        let dX = 0
+                        let dY = 0
+                        context.clearRect(0, 0, theCanvas.width, theCanvas.height)
+                        context.drawImage(photo, destX + dX, destY + dY, photo.width * currentScale, photo.height * currentScale)
+                        // isSelected1 = true
+                        clickedPos = []
+                        tuokuangPos = []
+                    }
+                break
+                case 3:
+                    if (!isSelected3) {
+                        isSelected3 = true
+                    }
+                break
+                case 4:
+                    console.log('顺时针旋转')
+                    angleStep = (angleStep + 1) % 4
+                    context.save()
+                    context.setTransform(1, 0, 0, 1, 0, 0)
+                    context.translate(theCanvas.width / 2, theCanvas.height / 2)
+                    context.clearRect(-theCanvas.width / 2, -theCanvas.height / 2, theCanvas.width, theCanvas.height)
+                    context.rotate(angleStep * Angle)
+                    var destX = theCanvas.width / 2 - photo.width * currentScale / 2
+                    var destY = theCanvas.height / 2 - photo.height * currentScale / 2
+                    context.drawImage(photo, - photo.width * currentScale / 2, - photo.height * currentScale / 2, photo.width * currentScale, photo.height * currentScale)
+                    context.restore()
+                break
+                case 5:
+                    console.log('顺时针旋转')
+                    angleStep = (angleStep - 1) % 4
+                    context.save()
+                    context.setTransform(1, 0, 0, 1, 0, 0)
+                    context.translate(theCanvas.width / 2, theCanvas.height / 2)
+                    context.clearRect(-theCanvas.width / 2, -theCanvas.height / 2, theCanvas.width, theCanvas.height)
+                    context.rotate(angleStep * Angle)
+                    var destX = theCanvas.width / 2 - photo.width * currentScale / 2
+                    var destY = theCanvas.height / 2 - photo.height * currentScale / 2
+                    context.drawImage(photo, - photo.width * currentScale / 2, - photo.height * currentScale / 2, photo.width * currentScale, photo.height * currentScale)
+                    context.restore()
+                break
+                case 6:
+                    context.restore()
+                    currentScale = 1
+                    context.clearRect(0, 0, theCanvas.width, theCanvas.height)
+                    var destX = theCanvas.width / 2 - photo.width * currentScale / 2
+                    var destY = theCanvas.height / 2 - photo.height * currentScale / 2
+                    context.drawImage(photo, destX, destY, photo.width * currentScale, photo.height * currentScale)
+                    break
+            }
+        }
+    </script>
+</head>
+<body>
+    <canvas id="canvas">
+        浏览器暂不支持canvas
+    </canvas>
+</body>
+</html>

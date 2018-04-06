@@ -1,0 +1,27 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>代码对比工具</title>
+</head>
+<body>
+    <h2 class="title">文件比对分析工具</h2>
+    <h4 class="subtitle">————支持单文件-单文件、多文件-多文件比对</h4>
+    <div class='btns'>
+        <a href="javascript:;" class="file">选择旧文件
+            <input type="file" id="Files1" name="files[]" multiple>
+        </a>
+        <a href="javascript:;" class="file">选择新文件
+            <input type="file" id="Files2" name="files[]" multiple>
+        </a>
+        <a href="javascript:;" id="btn" class="file">开始比对</a>
+    </div>
+    <div class='group'>
+        <div id="Lists1"></div>
+        <div id="Lists2"></div>
+    </div>
+    <div id='results'></div>
+<script type="text/javascript" src="app.bundle.js"></script></body>
+</html>
