@@ -320,7 +320,7 @@ h1 {
 </head>
 <body>
 <h1>纯CSS实现多行文本溢出时显示省略号</h1>
-<p>我们在<a href="https://dulinrain.github.io/css/CSS%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%8C%E6%96%87%E6%9C%AC%E6%BA%A2%E5%87%BA%E6%97%B6%E6%98%BE%E7%A4%BA%E7%9C%81%E7%95%A5%E5%8F%B7.html">多行文本溢出的几种处理方式</a>这篇文章中总结了实现多行文本溢出时的多种处理方法，其中提到了<code>WebKit Flexbox</code>方式和<code>fadeOut</code>两种CSS方式以及几种JS方式。其中，这里提到的2中CSS处理方式都有自己的缺点，JS方式更是不推荐的。今天我们来学习一种新的纯CSS的实现方式，这种实现方式需要较大的想象力才能做到。我们将一步一步地教你实现。</p>
+<p>我们在<a href="https://dulinrain.github.io/css/%E5%A4%9A%E8%A1%8C%E6%96%87%E6%9C%AC%E6%BA%A2%E5%87%BA%E7%9A%84%E5%87%A0%E7%A7%8D%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F.html">多行文本溢出的几种处理方式</a>这篇文章中总结了实现多行文本溢出时的多种处理方法，其中提到了<code>WebKit Flexbox</code>方式和<code>fadeOut</code>两种CSS方式以及几种JS方式。其中，这里提到的2中CSS处理方式都有自己的缺点，JS方式更是不推荐的。今天我们来学习一种新的纯CSS的实现方式，这种实现方式需要较大的想象力才能做到。我们将一步一步地教你实现。</p>
 <h3>一、step1: 想法</h3>
 <p><strong>实现多行文本溢出显示省略号</strong>的难处在于怎么判断多行文本是否溢出了。显然，在没有JS介入的情况下，我们很难做到。但是我们可以从CSS的float特性入手来实现。我们知道，当元素设置了float属性之后，它们会脱离文档流。float元素不会互相覆盖，会根据它之前的元素来调整自己的位置。比如下面这段代码：</p>
 <pre><code>.wrap {
