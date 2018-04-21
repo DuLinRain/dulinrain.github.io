@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>纯CSS实现多行文本溢出时显示省略号</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>纯CSS实现多行文本溢出时显示省略号</h1>
+<p>我们在<a href="https://dulinrain.github.io/css/CSS%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%A1%8C%E6%96%87%E6%9C%AC%E6%BA%A2%E5%87%BA%E6%97%B6%E6%98%BE%E7%A4%BA%E7%9C%81%E7%95%A5%E5%8F%B7.html">多行文本溢出的几种处理方式</a>这篇文章中总结了实现多行文本溢出时的多种处理方法，其中提到了<code>WebKit Flexbox</code>方式和<code>fadeOut</code>两种CSS方式以及几种JS方式。其中，这里提到的2中CSS处理方式都有自己的缺点，JS方式更是不推荐的。今天我们来学习一种新的纯CSS的实现方式，这种实现方式需要较大的想象力才能做到。我们将一步一步地教你实现。</p>
+<h3>一、step1: 想法</h3>
+<p><strong>实现多行文本溢出显示省略号</strong>的难处在于怎么判断多行文本是否溢出了。显然，在没有JS介入的情况下，我们很难做到。但是我们可以从CSS的float特性入手来实现。我们知道，当元素设置了float属性之后，它们会脱离文档流。float元素不会互相覆盖，会根据它之前的元素来调整自己的位置。比如下面这段代码：</p>
+<pre><code>.wrap {
+    width: 400px; height: 200px;
+    margin: 20px 20px 50px;
+    border: 5px solid #AAA;
+    line-height: 25px;
+}
+.prop, .main, .end {
+    opacity: 0.7;
+}
+.prop {
+    float: left;
+    width: 100px; height: 200px;
+    background: #FAF; 
+}
+.main {
+    float: right;
+    width: 300px;
+    background: #AFF; 
+}
+.end {
+    float: right;
+    width: 100px;
+    background: #FFA; 
+}
+&lt;div class=&quot;wrap&quot;&gt;
+  &lt;div class=&quot;prop&quot;&gt;1.prop&lt;br&gt;float:left&lt;/div&gt;
+  &lt;div class=&quot;main&quot;&gt;2.main&lt;br&gt;float:right&lt;br&gt;Fairly short text&lt;/div&gt;
+  &lt;div class=&quot;end&quot;&gt;3.end&lt;br&gt;float:right&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>我们定义了一个<code>wrap</code>元素和它的三个子元素<code>prop、main、end</code>。其中<code>prop</code>元素左浮动，<code>main、end</code>元素右浮动。它们的宽度和高度也做了一定的设计。它们的效果如下：</p>
+<p><img src="https://i.imgur.com/wBqdtca.jpg" /></p>
+<p>想象一下，当main元素中的内容过多溢出时，这几个元素的布局会是怎样的呢？由于wrap未设置overflow: hidden属性，当main元素中的内容过多溢出时，end元素会被挤出wrap，而由于我们设置的end的宽度为100px, end元素会浮动到prop元素的下面，这个时候的效果如下：</p>
+<pre><code>&lt;div class=&quot;wrap&quot;&gt;
+  &lt;div class=&quot;prop&quot;&gt;1.prop&lt;br&gt;float:left&lt;/div&gt;
+    &lt;div class=&quot;main&quot;&gt;2.main&lt;br&gt;float:right&lt;br&gt;Call me Ishmael.  Some years ago &amp;ndash; never mind how long precisely &amp;ndash; having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.  It is a way I have of driving off the spleen, and regulating the circulation.&lt;/div&gt;
+    &lt;div class=&quot;end&quot;&gt;3.end&lt;br&gt;float:right&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p><img src="https://i.imgur.com/pHtAk1l.jpg" /></p>
+<p>那么你可能会说，这跟<strong>多行文本溢出显示省略号</strong>有半毛钱关系吗？</p>
+<p>显然，直接看是没什么关系的。但是如果你仔细想想，我们现在其实已经达到了某种类似的效果：<strong>当文本未溢出时显示出了end, 当文本溢出时end跑别处去了</strong>。</p>
+<p>只是可惜了，和我们想要的效果正好相反，但恰恰说明了我们是有办法改进的。</p>
+<h3>二、 step2: 回归正题</h3>
+<p>从第一部我们看到了我们达到了和目标类似但相反的效果，但是我们仔细看看上面的代码我们可以发现，我们是能够做到预期效果的。</p>
+<p>假设我们把main当做我们的文本区域，那么在文本内容未溢出的情况下，我们如果不想显示end元素，而当文本溢出的情况下，我们想显示我们的end元素该如何做呢？ 显然，我们只需要把end元素向右边挪300px就可以做到了。这样当文本未溢出时，end会跑到wrap的右侧，当文本溢出时，end会跑到main元素的右侧。</p>
+<p>为了更好的显示这个效果，我们在end元素内部包裹一个新的元素叫realend，这个元素会相对于end进行绝对定位，它的left会被设置成300px。为了当main中文本溢出时使realend出现wrap内，我们这里暂时加了一个-50px的top定位。在我们改造后的代码如下：
+	.prop, .main, .end {
+	  opacity: 0.7;
+	}
+	.prop {
+	    float: left;
+	    width: 100px; height: 200px;
+	    background: #FAF;
+	}
+	.main {
+	    float: right;
+	    width: 300px;
+	    background: #AFF;
+	}
+	.end {
+	    float: right;
+	    width: 100px;
+	    background: #FFA;
+	    position: relative; // 使realend相对于end定位
+	}
+	.realend {
+	    position: absolute;
+	    width: 100%;
+	    top: -50px;
+	    left: 300px;
+	    background: #FAA; font-size: 13px;
+	}</p>
+<pre><code>&lt;div class=&quot;wrap&quot;&gt;
+  &lt;div class=&quot;prop&quot;&gt;1.prop&lt;br&gt;float:left&lt;/div&gt;
+  &lt;div class=&quot;main&quot;&gt;2.main&lt;br&gt;float:right&lt;br&gt;Fairly short text&lt;/div&gt;
+  &lt;div class=&quot;end&quot;&gt;
+    &lt;div class=&quot;realend&quot;&gt;4.realend&lt;br&gt;position:absolute&lt;/div&gt;
+    3.end&lt;br&gt;float:right
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p><img src="https://i.imgur.com/flOZK35.jpg" /></p>
+<p>当main中文本溢出时：</p>
+<p><img src="https://i.imgur.com/DkEPijj.jpg" /></p>
+<p>想象一下，如果吧realend元素当做我们的省略号，我们是不是已经非常非常接近达到我们的效果了？</p>
+<p>但是先别着急，我们还有其它问题：这个end元素怎么处理呢？事实上，我们发现把它留在这里不是很友好，想把它藏起来。有很多方法可以做到这一点，我们简单列举几个：</p>
+<p><strong>(1) 设置end元素设置visibility：hidden, realend元素设置visibility：visible;</strong></p>
+<pre><code>.end {
+    float: right;
+    width: 100px;
+    background: #FFA;
+    position: relative;
+    visibility: hidden;
+}
+.realend {
+    position: absolute;
+    width: 100%;
+    top: -50px;
+    left: 300px;
+    background: #FAA; font-size: 13px;
+    visibility: visible;
+}
+</code></pre>
+
+<p>效果如下：</p>
+<p><img src="https://i.imgur.com/PtK4hYN.jpg" /></p>
+<p><strong>(2) 设置end元素全透明，子元素不透明。但要注意，父元素只能用rgba设置透明，不能使用opacity。</strong></p>
+<pre><code>.end {
+    float: right;
+    width: 100px;
+    background-color: rgba(255,255,170, 0);
+    color: rgba(255,255,170, 0);
+    position: relative;
+}
+.realend {
+    position: absolute;
+    width: 100%;
+    top: -50px;
+    left: 300px;
+    color: black;
+    background: #FAA; font-size: 13px;
+    opacity: 1;
+}
+</code></pre>
+
+<p>效果：</p>
+<p><img src="https://i.imgur.com/q73xMNc.jpg" /></p>
+<p><strong>(3) 设置end元素高度为0</strong></p>
+<pre><code>.end {
+    float: right;
+    width: 100px;
+    background: #FFA;
+    position: relative;
+    height: 0;
+    color: rgba(0, 0, 0, 0.0);
+}
+.realend {
+    position: absolute;
+    width: 100%;
+    top: -50px;
+    left: 300px;
+    background: #FAA; font-size: 13px;
+    color: black;
+}
+</code></pre>
+
+<p>效果同上。</p>
+<p>实际上，我们把end中的内容去掉CSS中也不会有那么多color之类的设置了。</p>
+<h3>三、 step3: 使用relative定位</h3>
+<p>实际上我们第二步已经使用决定定位的<code>left: 300px</code>基本上达到了效果，而第二步的末期我们还打算把end元素给隐藏起来。仔细想想，我们所做的这么多基本上行都是多余的，因为relative定位就可以做到上面两个需求（<code>left: 300px</code> 和 <code>把end元素给干掉</code>）了啊！</p>
+<p>回顾一下，相对定位是相对于它的正常位置进行定位的。所以我们这里可以把end元素给去掉了，给realend元素一个float: right属性。这时如果不施加position，那它就和step1中的end没什么区别。我们这里给它一个position: relative定位,这样在减少一个不必要的元素的同时，还能达到step2中的效果。代码如下：</p>
+<pre><code>.wrap {
+    width: 400px; height: 200px;
+    margin: 20px 20px 50px;
+    border: 5px solid #AAA;
+    line-height: 25px;
+}
+.prop, .main, .realend {
+  opacity: 0.7;
+}
+.prop {
+    float: left;
+    width: 100px; height: 200px;
+    background: #FAF;
+}
+.main {
+    float: right;
+    width: 300px;
+    background: #AFF;
+}
+.realend {
+    position: relative;
+    float: right;
+    width: 100px;
+    top: -50px;
+    left: 300px;
+    background: #FAA; font-size: 13px;
+}
+
+&lt;div class=&quot;wrap&quot;&gt;
+  &lt;div class=&quot;prop&quot;&gt;1.prop&lt;br&gt;float:left&lt;/div&gt;
+  &lt;div class=&quot;main&quot;&gt;2.main&lt;br&gt;float:right&lt;br&gt;Fairly short text&lt;/div&gt;
+  &lt;div class=&quot;realend&quot;&gt;3.realend&lt;br&gt;position:relative&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;wrap&quot;&gt;
+  &lt;div class=&quot;prop&quot;&gt;1.prop&lt;br&gt;float:left&lt;/div&gt;
+    &lt;div class=&quot;main&quot;&gt;2.main&lt;br&gt;float:right&lt;br&gt;Call me Ishmael.  Some years ago &amp;ndash; never mind how long precisely &amp;ndash; having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.  It is a way I have of driving off the spleen, and regulating the circulation.&lt;/div&gt;
+    &lt;div class=&quot;realend&quot;&gt;3.realend&lt;br&gt;position:relative&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>效果如下：</p>
+<p><img src="https://i.imgur.com/zrHoxzQ.jpg" /></p>
+<p>可以看到，我们在减少了一个元素的同时，达到了step2中想要的效果。</p>
+<h3>四、 step4: 将prop元素变窄</h3>
+<p>通过前面几步，我们发现我们几乎达到预期效果了，但是我们发现prop元素放在这里太占地儿了。所以我们考虑把它变窄。这里我们给它5px。并且我们想要main元素和容器宽度一致，我们设置wrap元素宽度为300px。要想使main元素铺满整个容器，我们需要给它设置margin-left: -5px; 我们的realend元素需要加上margin-left: -100px，同时为了弥补main元素的margin-left: -5px;, realend元素需要设置一个margin-right: 5px;或padding-right: 5px;或</p>
+<p>代码如下：</p>
+<pre><code>.wrap {
+    width: 300px; height: 200px;
+    margin: 20px 20px 50px;
+    border: 5px solid #AAA;
+    line-height: 25px;
+}
+.prop, .main, .realend {
+  opacity: 0.7;
+}
+.prop {
+    float: left;
+    width: 5px; height: 200px;
+    background: #FAF;
+}
+.main {
+    float: right;
+    width: 300px;
+    margin-left: -5px;
+    background: #AFF;
+}
+.realend {
+    position: relative;
+    float: right;
+    width: 100px;
+    top: -50px;
+    left: 300px;
+    margin-right: 5px;
+    margin-left: -100px;
+    background: #FAA; font-size: 13px;
+}
+</code></pre>
+
+<p>效果如下：</p>
+<p><img src="https://i.imgur.com/HUt8pDF.jpg" /></p>
+<h3>五、自适应</h3>
+<p>在前面几步中wrap和main和realend的宽度都是定死的，这很不具有自适应性，现在我们把它们改成百分比的形式，wrap我们暂定为50%，这是为了演示。main理应定义成100%，realend任然是100px，但它的left变为100%。</p>
+<p>代码如下：</p>
+<pre><code>.wrap {
+    width: 50%; height: 200px;
+    margin: 20px 20px 50px;
+    border: 5px solid #AAA;
+    line-height: 25px;
+}
+.prop, .main, .realend {
+  opacity: 0.7;
+}
+.prop {
+    float: left;
+    width: 5px; height: 200px;
+    background: #FAF;
+}
+.main {
+    float: right;
+    width: 100%;
+    margin-left: -5px;
+    background: #AFF;
+}
+.realend {
+    position: relative;
+    float: right;
+    width: 100px;
+    top: -50px;
+    left: 100%;
+    margin-right: 5px;
+    margin-left: -100px;
+    background: #FAA; font-size: 13px;
+}
+</code></pre>
+
+<p>效果如下：</p>
+<p><img src="https://i.imgur.com/pij5lxB.jpg" /></p>
+<h3>六、使用伪元素进行优化</h3>
+<p>我们将使用after和before伪元素对我们的结构进行优化，这样我们的代码看起来会更加的简练，这里我们还将吧wrap改个名字叫做ellipsis。我们把realend的top调整为line-height。</p>
+<p>代码如下：</p>
+<pre><code>.ellipsis {
+    width: 50%; height: 200px;
+    margin: 20px 20px 50px;
+    border: 5px solid #AAA;
+    line-height: 25px;
+}
+.ellipsis::before, .ellipsis::after, .ellipsis &gt; *:first-child {
+  opacity: 0.7;
+}
+.ellipsis::before {
+    content: '';
+    float: left;
+    width: 5px; height: 200px;
+    background: #FAF;
+}
+.ellipsis &gt; *:first-child {
+    float: right;
+    width: 100%;
+    margin-left: -5px;
+    background: #AFF;
+}
+.ellipsis::after {
+    content: 'realend';
+    position: relative;
+    float: right;
+    width: 100px;
+    top: -25px;
+    left: 100%;
+    margin-right: 5px;
+    margin-left: -100px;
+    background: #FAA; font-size: 13px;
+}
+
+&lt;div class=&quot;ellipsis&quot;&gt;
+  &lt;div class=&quot;main&quot;&gt;2.main&lt;br&gt;float:right&lt;br&gt;Fairly short text&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;ellipsis&quot;&gt;
+    &lt;div class=&quot;main&quot;&gt;2.main&lt;br&gt;float:right&lt;br&gt;Call me Ishmael.  Some years ago &amp;ndash; never mind how long precisely &amp;ndash; having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.  It is a way I have of driving off the spleen, and regulating the circulation.Ishmael. &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>效果如下：</p>
+<p><img src="https://i.imgur.com/KnW8K86.jpg" /></p>
+<h3>七、加上overflow: hidden</h3>
+<p>我们在前面为了展示，溢出的文本都没有隐藏，现在我们加上overflow: hidden属性。同时，我们前面为了演示realend的位置特意把ellipsis宽度设置为了50%，这里我们也去掉，这样ellipsis宽度就是100%了，改造后的代码如下：</p>
+<pre><code>.ellipsis {
+    height: 200px;
+    margin: 20px 20px 50px;
+    border: 5px solid #AAA;
+    line-height: 25px;
+    overflow: hidden;
+}
+</code></pre>
+
+<p>效果如下：</p>
+<p><img src="https://i.imgur.com/NrrMQGd.jpg" /></p>
+<h3>八、 加上梯度渐变和背景图</h3>
+<p>由上面的例子可以看到，我们最后的文本是'realend',我们将它改成省略号。另外，因为省略号和main中的文字会有重叠，我们一方面要设置渐变，另一方面考虑对IE的兼容还要设置背景。我们也去掉了先前为了演示的背景色和文字。改造后的代码如下：</p>
+<pre><code>.ellipsis {
+    height: 200px;
+    margin: 20px 20px 50px;
+    border: 5px solid #AAA;
+    line-height: 25px;
+    overflow: hidden;
+}
+.ellipsis::before, .ellipsis::after, .ellipsis &gt; *:first-child {
+  opacity: 0.7;
+}
+.ellipsis::before {
+    content: '';
+    float: left;
+    width: 5px; height: 200px;
+}
+.ellipsis &gt; *:first-child {
+    float: right;
+    width: 100%;
+    margin-left: -5px;
+}
+.ellipsis::after {
+    content: '...';
+    position: relative;
+    float: right;
+    width: 100px;
+    top: -25px;
+    left: 100%;
+    margin-right: 5px;
+    margin-left: -100px;
+    text-align: right;
+
+
+      background-size: 100% 100%;
+      /* 512x1 image, gradient for IE9. Transparent at 0% -&gt; white at 50% -&gt; white at 100%.*/
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAABCAMAAACfZeZEAAAABGdBTUEAALGPC/xhBQAAAwBQTFRF////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////AAAA////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////wDWRdwAAAP90Uk5TgsRjMZXhS30YrvDUP3Emow1YibnM9+ggOZxrBtpRRo94gxItwLOoX/vsHdA2yGgL8+TdKUK8VFufmHSGgAQWJNc9tk+rb5KMCA8aM0iwpWV6dwP9+fXuFerm3yMs0jDOysY8wr5FTldeoWKabgEJ8RATG+IeIdsn2NUqLjQ3OgBDumC3SbRMsVKsValZplydZpZpbJOQco2KdYeEe36BDAL8/vgHBfr2CvTyDu8R7esU6RcZ5ecc4+Af3iLcJSjZ1ivT0S/PMs3LNck4x8U7wz7Bv0G9RLtHuEq1TbJQr1OtVqqnWqRdoqBhnmSbZ5mXapRtcJGOc4t2eYiFfH9AS7qYlgAAARlJREFUKM9jqK9fEGS7VNrDI2+F/nyB1Z4Fa5UKN4TbbeLY7FW0Tatkp3jp7mj7vXzl+4yrDsYoVx+JYz7mXXNSp/a0RN25JMcLPP8umzRcTZW77tNyk63tdprzXdmO+2ZdD9MFe56Y9z3LUG96mcX02n/CW71JH6Qmf8px/cw77ZvVzB+BCj8D5vxhn/vXZh6D4uzf1rN+Cc347j79q/zUL25TPrJMfG/5LvuNZP8rixeZz/mf+vU+Vut+5NL5gPOeb/sd1dZbTs03hBuvmV5JuaRyMfk849nEM7qnEk6IHI8/qn049hB35QGHiv0yZXuMdkXtYC3ebrglcqvYxoj1muvC1nDlrzJYGbpcdHHIMo2FwYv+j3QAAOBSfkZYITwUAAAAAElFTkSuQmCC);
+
+        background: -webkit-gradient(linear, left top, right top,
+            from(rgba(255, 255, 255, 0)), to(white), color-stop(50%, white));
+        background: -moz-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+        background: -o-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+        background: -ms-linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), white 50%, white);
+}
+
+
+&lt;div class=&quot;ellipsis&quot;&gt;
+  &lt;div class=&quot;main&quot;&gt;Fairly short text&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;ellipsis&quot;&gt;
+    &lt;div class=&quot;main&quot;&gt;Call me Ishmael.  Some years ago &amp;ndash; never mind how long precisely &amp;ndash; having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.  It is a way I have of driving off the spleen, and regulating the circulation.Ishmael.me Ishmael. Some years ago – never mind how long precisely – having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen, me Ishmael. Some years ago – never mind how long precisely – having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen,  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>效果：</p>
+<p><img src="https://i.imgur.com/wCXpfB1.jpg" /></p>
+<h3>九、总结</h3>
+<p>这种纯CSS方法具有很好的兼容性，包括在低版本的IE下，需要注意的是低版本IE下，背景可能需要做一下调整。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
