@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HTTP状态码中303与302、307有什么区别？</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>HTTP状态码中303与302、307有什么区别？</h1>
+<h3>一、概述</h3>
+<p>我们在<a href="https://dulinrain.github.io/http1.1/HTTP%E7%8A%B6%E6%80%81%E7%A0%81%E4%B8%AD302%E5%92%8C307%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F.html">HTTP状态码中302和307有什么区别？</a>中详细讨论了302和307的区别，实际上他们除了对Location指定资源的请求方式有区别外，没有其它的区别。今天呢我们再看看303的含义以及它和302/307的区别在哪里。</p>
+<h3>二、303</h3>
+<p>翻看HTTP协议（RFC2616），我们看到它对HTTP 303状态码描述如下：</p>
+<p><img src="https://i.imgur.com/vnoaQiw.jpg" /></p>
+<p>这里面可以发现，大体上和302/307行为一样，都是在Location中指定资源地址，浏览器需要重新请求Location中指定资源的地址。但是归纳起来主要有3点需要注意：</p>
+<ol>
+<li>redirect的那个请求一定是GET，不管original请求类型是什么。</li>
+<li>老的客户端可能不识别303，所以遇到这种情况可能会用302代替303。</li>
+<li>original请求一定不允许被缓存，但是redirect请求可以被缓存。</li>
+</ol>
+<p>也就是说，最主要的区别体现在<strong>redirect请求类型</strong>以及<strong>缓存策略</strong>。</p>
+<h3>三、与302/307的区别</h3>
+<p>所以就第1点而言，302和303几乎是一样的，没什么区别，这也就是第2点可以用302代替303的原因。
+也因此在这一点上，307和303/302的区别就体现出来了。</p>
+<p>第二点涉及到缓存，我们之前讨论302和307区别的时候没有讨论这一点，这是因为他们2者在这一点上没有任何区别，我们把HTTP协议对他们的描述粘贴出来：</p>
+<p><img src="https://i.imgur.com/SUGluAL.jpg" /></p>
+<p><img src="https://i.imgur.com/HwscZpo.jpg" /></p>
+<p>也就是说，它俩本身不可缓存，<strong>除非</strong>我们设置了Cache-Control或Expires头域让它缓存。</p>
+<p>我们再看看303的缓存策略：</p>
+<blockquote>
+<p>The 303 response MUST NOT be cached, but the response to the second (redirected) request might be cacheable.</p>
+</blockquote>
+<p>也就是上面提到的第3点：<strong>original请求一定不允许被缓存，但是redirect请求可以被缓存。</strong></p>
+<p>我们下面不妨用几个例子来验证一下。</p>
+<h3>四、实例</h3>
+<h4>4.1 302/307的缓存策略实例</h4>
+<p>我们先测试302/307在设置Cache-Control和不设置Cache-Control情况下的表现，server端代码如下：</p>
+<pre><code>var express = require('express');
+var cors = require('cors')
+var app = express();
+app.use(cors())
+
+app.all('/test', function (req, res) {
+  console.log('original请求方式: ' + req.method)
+  res.set({
+    // 'Cache-Control': 'max-age=3600', //不缓存
+    'Location': 'http://127.0.0.1:3000/test1'
+  }).status(302).end('hehe1')
+});
+app.all('/test1', function (req, res) {
+  console.log('redirect请求方式: ' + req.method)
+  res.set({
+    // 'Cache-Control': 'max-age=3600' //不缓存
+  }).end('redirect请求')
+});
+
+var server = app.listen(3000, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
+</code></pre>
+
+<p>客户端代码如下：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;httptest client&lt;/title&gt;
+    &lt;script src=&quot;https://unpkg.com/axios/dist/axios.min.js&quot;&gt;&lt;/script&gt;
+    &lt;!-- &lt;script src=&quot;./qs.js&quot;&gt;&lt;/script&gt; --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;button id=&quot;test&quot;&gt;测试按钮&lt;/button&gt;
+    &lt;script&gt;
+        document.querySelector('#test').addEventListener('click', function () {
+          axios.get('http://127.0.0.1:3000/test')
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        })
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>连续点击<strong>测试按钮</strong>3次，我们在Firefox控制台看到的结果如下：</p>
+<p><img src="https://i.imgur.com/FIFZXqN.jpg" /></p>
+<p>我们看到orignal和redirect请求都没有被缓存。</p>
+<p>现在，我们客户端代码不变，把服务器代码加上Cache-Control缓存策略，改变成如下：</p>
+<pre><code>var express = require('express');
+var cors = require('cors')
+var app = express();
+app.use(cors())
+
+app.all('/test', function (req, res) {
+  console.log('original请求方式: ' + req.method)
+  res.set({
+    'Cache-Control': 'max-age=3600', //缓存
+    'Location': 'http://127.0.0.1:3000/test1'
+  }).status(302).end('hehe1')
+});
+app.all('/test1', function (req, res) {
+  console.log('redirect请求方式: ' + req.method)
+  res.set({
+    'Cache-Control': 'max-age=3600' //不缓存
+  }).end('redirect请求')
+});
+
+var server = app.listen(3000, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
+</code></pre>
+
+<p>连续点击<strong>测试按钮</strong>3次，我们在Firefox控制台看到的结果如下：</p>
+<p><img src="https://i.imgur.com/egLjh9d.jpg" /></p>
+<p>可以看到，当请求一次后，不论我们original还是redirect请求都被缓存起来了，这点我们也可以在服务端日志看到，服务端只处理了一次点击请求：</p>
+<p><img src="https://i.imgur.com/mV2O4QJ.jpg" /></p>
+<h4>4.2 303的缓存策略实例</h4>
+<p>我们不改变客户端代码，将服务端代码状态码改为303，</p>
+<pre><code>var express = require('express');
+var cors = require('cors')
+var app = express();
+app.use(cors())
+
+app.all('/test', function (req, res) {
+  console.log('original请求方式: ' + req.method)
+  res.set({
+    'Cache-Control': 'max-age=3600',
+    'Location': 'http://127.0.0.1:3000/test1'
+  }).status(303).end('hehe1')
+});
+app.all('/test1', function (req, res) {
+  console.log('redirect请求方式: ' + req.method)
+  res.set({
+    'Cache-Control': 'max-age=3600'
+  }).end('redirect请求')
+});
+
+var server = app.listen(3000, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
+</code></pre>
+
+<p>连续点击<strong>测试按钮</strong>3次看看结果：</p>
+<p><img src="https://i.imgur.com/DvHeCe6.jpg" /></p>
+<p>可以看到，尽管我们在服务端代码给original请求设置了Cache-Control头域，但是客户端任然不会缓存original请求，但是客户端是可以缓存redirect请求的。</p>
+<p>我们也能通过服务端日志看出来：</p>
+<p><img src="https://i.imgur.com/eoiEEB1.jpg" /></p>
+<h4>4.3 注意事项</h4>
+<p>可能你已经注意到，我们客户端的代码发出的是GET请求。当我们把客户端的代码改为POST请求的时候，我们可以发现，302、307、303下，当我们设置好Cache-Control头域后，不论是original还是redirect，都不会被缓存。 我们来验证一下：</p>
+<p>客户端代码改为：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;httptest client&lt;/title&gt;
+    &lt;script src=&quot;https://unpkg.com/axios/dist/axios.min.js&quot;&gt;&lt;/script&gt;
+    &lt;!-- &lt;script src=&quot;./qs.js&quot;&gt;&lt;/script&gt; --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;button id=&quot;test&quot;&gt;测试按钮&lt;/button&gt;
+    &lt;script&gt;
+        document.querySelector('#test').addEventListener('click', function () {
+          axios.post('http://127.0.0.1:3000/test', JSON.stringify({}))
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        })
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>303情况下：</p>
+<p><img src="https://i.imgur.com/lxJFPve.jpg" /></p>
+<p><img src="https://i.imgur.com/RTkok3F.jpg" /></p>
+<p>302/307情况下：</p>
+<p><img src="https://i.imgur.com/3V8lFw2.jpg" /></p>
+<p><img src="https://i.imgur.com/RTkok3F.jpg" /></p>
+<h3>五、总结</h3>
+<p>303、302、307的区别可总结如下：</p>
+<ul>
+<li>303和302在处理redirect请求类型时行为一致，即都会使用GET，307会使用与orginal相同的类型。</li>
+<li>302和307缓存策略一致，即不论是original还是redirect请求都可以被缓存，302 orginal请求不能缓存，redirect可以缓存。</li>
+</ul>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
