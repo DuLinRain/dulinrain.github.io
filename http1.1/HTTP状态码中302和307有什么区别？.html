@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HTTP状态码中302和307有什么区别？</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style>
+::-webkit-scrollbar{
+  width: 3px;
+  height: 10px;
+}
+::-webkit-scrollbar-track-piece{
+  -webkit-border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:vertical{
+  height: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+::-webkit-scrollbar-thumb:horizontal{
+  width: 5px;
+  -webkit-border-radius: 3px;
+  background-color: #666;
+}
+h1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>HTTP状态码中302和307有什么区别？</h1>
+<h3>一、 概述</h3>
+<p>在HTTP状态码中，3XX表示浏览器需要采取进一步的行动以便完成这次请求。而这其中我们最为常见的是重定向。说到重定向就不得不说一说302。一般我们都把302称为“<strong>临时重定向</strong>”。但其实302并不是<strong>临时重定向<strong>。302真实的名字叫</strong>Found</strong>。HTTP确实有一个叫做“<strong>临时重定向</strong>”的状态码，这个状态码是307。表示那么302和307各表示什么呢？为什么我们常常会把302认为是临时重定向呢？他们有什么相同点和不同点呢？</p>
+<h3>二、302与307</h3>
+<p>实际上，翻看HTTP协议（RFC2616），我们会惊奇的发现，302和307几乎可以说是完全一样的啊，可以说一字不差啊。我们把协议贴出来对比一下：</p>
+<p><strong>302描述：</strong></p>
+<p><img src="https://i.imgur.com/K4jjuPa.jpg" /></p>
+<p><strong>307描述：</strong></p>
+<p><img src="https://i.imgur.com/TaHWtVf.jpg" /></p>
+<p>从上面这两段文本可以看得到他们两个可以说是没啥区别的。</p>
+<p><strong>但是</strong>呢，其实RFC2616在描述302的时候还有一小段注解如下：</p>
+<p><img src="https://i.imgur.com/SymeoV5.jpg" /></p>
+<p>这段话什么意思呢？其实说的就是RFC1945(Hypertext Transfer Protocol -- HTTP/1.0, 也就是HTTP/1.0提案(PROPOSED STANDARD))和RFC2068（Hypertext Transfer Protocol -- HTTP/1.1，也就是HTTP/1.1的提案(PROPOSED STANDARD)）中有明确规定，客户端不允许改变原始的请求类型，但是很多客户端的实现都没按照这个规定来。</p>
+<p>简单来说就是，假如客户端发出请求A后收到302了，按规定来说，客户端需要以与A相同的请求类型去请求302响应头中Location指定的资源，不允许改变类型。然而很多客户端的实现都不按照这个走，都是无论A的请求类型是什么，客户端收到302后都会以GET方式去请求Location中指定的资源。</p>
+<p>而这种&quot;不论初始请求类型，都按GET请求Location资源&quot;的方式恰好与协议对303的规定行为相同。</p>
+<p>307则不会出现这种不按协议走的情况。</p>
+<p>这样就可以明确区分出302和307了。</p>
+<h3>三、实例验证</h3>
+<p>为了验证前面的说法，我们用两个实际的例子来对比一下。首先我们有一个node的server端代码如下：</p>
+<pre><code>app.all('/test', function (req, res) {
+  console.log('original请求方式: ' + req.method)
+  res.set({
+    'Location': 'http://127.0.0.1:3000/test1'
+  }).status(302).end('original请求')
+});
+app.all('/test1', function (req, res) {
+  console.log('redirect请求方式: ' + req.method)
+  res.end('redirect请求')
+});
+
+var server = app.listen(3000, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
+</code></pre>
+
+<p>我们的客户端代码如下：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;httptest client&lt;/title&gt;
+    &lt;script src=&quot;https://unpkg.com/axios/dist/axios.min.js&quot;&gt;&lt;/script&gt;
+    &lt;!-- &lt;script src=&quot;./qs.js&quot;&gt;&lt;/script&gt; --&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;script&gt;
+        // var qs = require('qs');
+        axios.post('http://127.0.0.1:3000/test', JSON.stringify({}))
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>当我们加载客户端代码的时候，会向server发送一个POST请求，server返回302，按照HTTP协议，我们预期客户端的redirect请求会变成GET。</p>
+<p>结果如下：</p>
+<p><img src="https://i.imgur.com/ASoI8H5.jpg" /></p>
+<p>现在我们将sever端状态码改为307, 客户端不变，</p>
+<pre><code>var express = require('express');
+var cors = require('cors')
+var app = express();
+app.use(cors())
+
+app.all('/test', function (req, res) {
+  console.log('original请求方式: ' + req.method)
+  res.set({
+    'Location': 'http://127.0.0.1:3000/test1'
+  }).status(307).end('original请求')
+});
+app.all('/test1', function (req, res) {
+  console.log('redirect请求方式: ' + req.method)
+  res.end('redirect请求')
+});
+
+var server = app.listen(3000, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log('Example app listening at http://%s:%s', host, port);
+});
+</code></pre>
+
+<p>我们再看看结果：</p>
+<p><img src="https://i.imgur.com/wnwnsO9.jpg" /></p>
+<p>可见，307情况下，浏览器会以original的请求方式继续请求Location中指定的URL。</p>
+<p>这些情况也可以通过Fiddler以及浏览器的NetWork看到，但是需要注意的是，在302的情况下，Chrome、Opera调试工具中的NetWork把original的请求方式也识别成了GET，但实际上我们后台检测到的是POST。Fifddler和FireFox中是正常的。307情况下不会出现这种前后台看到的不一致的情况。</p>
+<p>如下：</p>
+<p><strong>Fifddler:</strong></p>
+<p><img src="https://i.imgur.com/pOg8RPU.jpg" /></p>
+<p><strong>Chrome:</strong></p>
+<p><img src="https://i.imgur.com/HnZTxyQ.jpg" /></p>
+<p><strong>Opera:</strong></p>
+<p><img src="https://i.imgur.com/aOtpbBl.jpg" /></p>
+<p><strong>FireFox:</strong></p>
+<p><img src="https://i.imgur.com/22BpiUF.jpg" /></p>
+<h3>四、总结</h3>
+<p>总结一下就是这几点：</p>
+<ul>
+<li>302和307实质内容是一样的，只是客户端对他们的处理方式不一样。</li>
+<li>客户端收到302后会以GET方式请求Location中的资源</li>
+<li>客户端收到307后会以前面发出去的那个请求方式去请求Location中的资源，如果是发的GET得到的307,则客户端以GET继续请求Location中的资源，如果是发的POST得到的307,则客户端以POST继续请求Location中的资源，以此类推。</li>
+</ul>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
