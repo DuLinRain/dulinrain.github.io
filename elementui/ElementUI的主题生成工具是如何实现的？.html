@@ -288,10 +288,272 @@ table tr:nth-child(2n) {
 img {
   max-width: 100%
 }
+
+h1 {
+    text-align: center;
+}
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
 </style>
 </head>
 <body>
 <h1>ElementUI的主题生成工具是如何实现的？</h1>
+<h3>一、概述</h3>
+<p>想必使用过Vue的人基本上都是用过ElementUI组件库，ElementUI有自己的默认样式，当然官网也提供了一个命令行的主题生成工具进行自定义主题生成。 <a href="http://element-cn.eleme.io/#/zh-CN/component/custom-theme">官网</a>以及<a href="https://github.com/ElementUI/element-theme">仓库</a>对它都有详细的描述。我们这里就不再赘述，这里专门讲述一下它的实现原理以及主题生成工具是如何编写的。</p>
+<h3>二、自定义主题的原理</h3>
+<p>ElementUI的样式是使用的SASS语法编写的，这其中定义了很多变量，我们自定义主题实际上就是改变这些默认的变量来实现的。</p>
+<p>ElementUI的默认主题是白垩纪主题<a href="https://github.com/ElementUI/theme-chalk">element-theme-chalk</a>，我们可以看看它的源码结构：</p>
+<p><img src="https://i.imgur.com/oxVfM94.png" /></p>
+<p>其中lib目录中有生成的CSS以及字体：</p>
+<p><img src="https://i.imgur.com/dyVRYcI.png" /></p>
+<p>而src目录中存放的是原始的SCSS文件：</p>
+<p><img src="https://i.imgur.com/imkRXj1.png" /></p>
+<p>其中里面的common目录下有一个var.scss存放的是所有的样式变量，我们截一段出来看看：</p>
+<p><img src="https://i.imgur.com/RFgH8C3.png" /></p>
+<p>所以我们其实自定义主题实现思路是需要基于element-theme-chalk主题，然后改变它目录下的var.scss中的变量，然后重新打包生成css。</p>
+<p>官方提供的element-theme就是按照这个思路走的。 现在我们来看看它的实现源码，理解他是如何具体实现的，以及命令行工具的编写。</p>
+<h3>三、element-theme自定义主题命令行工具的实现源码分析。</h3>
+<p>前面说了自定义主题需要依赖于一个已有的主题--element-theme-chalk主题，所以我们需要npm安装这个主题。 我们来看一下命令行工具的源码结构：</p>
+<p>这其中的分工非常明确：</p>
+<ol>
+<li>lib/config.js主要进行一些基本的配置，包括原始主题名，支持的浏览器，scss变量文件，是否压缩，以及输出目录等等。</li>
+<li>lib/gen-vars.js则根据配置文件以及用户提供的参数生成scss变量文件</li>
+<li>lib/task.js则完成将我们自定义的变量文件和默认主题合并进行打包输出为css文件</li>
+<li>bin/element-theme则是bash脚本，主要定义了我们的命令行操作的各种指令。</li>
+</ol>
+<p>下面我们一一详细解答。</p>
+<h4>3.1、lib/config.js源码分析</h4>
+<p>lib/config.js的源码如下：</p>
+<pre><code>var path = require('path')
+
+var pkg = {}
+
+try {
+  pkg = require(path.resolve(process.cwd(), 'package.json'))//读取package.json
+} catch (err) {}
+
+var config = Object.assign({
+  browsers: ['ie &gt; 9', 'last 2 versions'],
+  out: './theme',
+  config: './element-variables.scss',//如果用户没提供文件地址，则在当前目录生成一个element-variables.scss
+  theme: 'element-theme-chalk',
+  minimize: false
+}, pkg['element-theme'])//默认配置，可以在package.json中定义element-theme字段覆盖默认配置
+
+exports.themePath = path.resolve(process.cwd(), './node_modules/' + config.theme)//默认主题的路径
+exports.out = config.out//生成的主题的输出目录
+exports.config = config.config//自定义scss变量的文件
+exports.minimize = config.minimize//是否启用minimize，也就是说压缩css
+exports.browsers = config.browsers//设置对浏览器的支持，vue本身对IE8就不支持，所以样式也可以相应设置高点
+exports.components = config.components//配置组件？
+exports.themeName = config.theme//主题名字
+</code></pre>
+
+<p>由于我们已经在源码中做了注解，这里不再赘述。</p>
+<h4>3.2、lib/gen-vars.js源码分析</h4>
+<p>lib/gen-vars.js的源码如下：</p>
+<pre><code>var path = require('path')
+var fs = require('fs')
+var ora = require('ora')
+var config = require('./config')
+//读取默认主题中的scss变量文件地址
+var varsPath = path.resolve(config.themePath, './src/common/var.scss')
+//自定义scss变量文件地址，如果用户没有提供文件，则会使用默认生成的element-variables.scss
+var filePath = path.resolve(process.cwd(), config.config)
+//检查是否存在默认主题的变量文件，没有则提示用户安装默认主题
+exports.check = function () {
+  if (!fs.existsSync(varsPath)) {
+    ora('please install `' + config.themeName + '`').fail()
+    process.exit(1)
+  }
+}
+//初始化，初始化会生成一个变量文件
+exports.init = function (_file) {
+  var spinner = ora('Generator variables file').start()
+  //如果用户提供了变量文件名参数，则使用用户提供的，如果没有则使用配置中的./element-variables.scss
+  filePath = path.resolve(process.cwd(), _file ? _file : config.config)
+  if (fs.existsSync(filePath)) {//已经存在则提示
+    spinner.text = 'Variables file already exists.'
+    spinner.fail()
+  } else {
+    //将默认主题中的vars.scss的所有变量写入到我们指定的变量文件中(没有指定则为./element-variables.scss)
+    fs.writeFileSync(filePath, fs.readFileSync(varsPath), 'utf-8')
+    spinner.succeed()
+  }
+}
+</code></pre>
+
+<p>由于我们已经在源码中做了注解，这里不再赘述。</p>
+<h4>3.3、lib/task.js源码分析</h4>
+<p>lib/task.js的源码如下：</p>
+<pre><code>var path = require('path')
+var fs = require('fs')
+var gulp = require('gulp')
+var ora = require('ora')
+var nop = require('gulp-nop')
+var sass = require('gulp-sass')
+var autoprefixer = require('gulp-autoprefixer')
+var cssmin = require('gulp-cssmin')
+var config = require('./config')
+//处理字体的gulp任务
+exports.fonts = function (opts) {
+  var spin = ora(opts.message).start()
+  //读取默认主题中的字体
+  var stream = gulp.src(path.resolve(config.themePath, './src/fonts/**'))
+    //使用gulp-cssmin打包处理
+    .pipe((opts.minimize || config.minimize) ? cssmin({showLog: false}) : nop())
+    //输出到目录
+    .pipe(gulp.dest(path.resolve(opts.out || config.out, './fonts')))
+    .on('end', function () {
+      spin.succeed()
+    })
+
+  return stream
+}
+//生成主题的gulp任务
+exports.build = function (opts) {
+  var spin = ora(opts.message).start()//为让命令行看起来更友好，命令运行时会有一个“\”符号在旋转
+  var stream
+  var components
+  var cssFiles = '*'
+  //指定特定某些组件
+  if (config.components) {
+    components = config.components.concat(['base'])
+    cssFiles = '{' + components.join(',') + '}'
+  }
+  // 默认主题的scss变量文件路径
+  var varsPath = path.resolve(config.themePath, './src/common/var.scss')
+  //将自定义scss变量文件的变量写入到默认主题的变量文件var.scss中去
+  fs.writeFileSync(varsPath, fs.readFileSync(path.resolve(process.cwd(), opts.config || config.config)), 'utf-8')
+  //构建流，读取所有需要构建的scss文件
+  stream = gulp.src([opts.config || config.config, path.resolve(config.themePath, './src/' + cssFiles + '.scss')])
+    .pipe(sass.sync())
+    //自动加上前缀
+    .pipe(autoprefixer({
+      browsers: config.browsers,
+      cascade: false
+    }))
+    //编译得到css
+    .pipe((opts.minimize || config.minimize) ? cssmin({showLog: false}) : nop())
+    //输入到对应的目录
+    .pipe(gulp.dest(opts.out || config.out))
+    //结束
+    .on('end', function () {
+      spin.succeed()
+    })
+
+  return stream
+}
+</code></pre>
+
+<p>由于我们已经在源码中做了注解，这里不再赘述。</p>
+<h4>3.4、bin/element-theme源码分析</h4>
+<p>bin/element-theme的源码如下：</p>
+<pre><code>#!/usr/bin/env node
+
+//这里是命令行工具的实现源码
+var program = require('commander')//实现自定义指令
+var main = require('../index.js')//启动脚本
+var check = require('../lib/gen-vars').check
+var config = {}
+
+console.log()
+process.on('exit', function () {
+  console.log()
+})
+
+program
+  //版本为package.json中指定的版本
+  .version(require('../package.json').version)
+  //-i指令初始化自定义scss变量文件
+  .option('-i --init [filePath]', 'init variables file')
+  //-w件事文件变化，实现自动编译
+  .option('-w --watch', 'watch variable changes then build')
+  //指定输出目录
+  .option('-o --out [outPath]', 'output path', function (out) {config.out = out})
+  //是否压缩
+  .option('-m --minimize', 'compressed file', function (minimize) {config.minimize = minimize !== false})
+  //修改scss变量文件
+  .option('-c --config [filePath]', 'variables file', function (c) {config.config = c})
+  //build主题，可以带参数指定支持的浏览器
+  .option('-b --browsers &lt;items&gt;', 'set browsers', function (browsers) {config.browsers = browsers.split(',')})
+  .parse(process.argv)
+
+check()
+
+if (program.init) {
+  console.log('hehe')
+  return main.init(program.init)
+}
+program.watch ? main.watch(config) : main.run(config)
+</code></pre>
+
+<p>由于我们已经在源码中做了注解，这里不再赘述。</p>
+<h4>3.5 node脚本index.js</h4>
+<p>node脚本index.js源码如下：</p>
+<pre><code>var gulp = require('gulp')
+var series = require('run-sequence').use(gulp)
+var task = require('./lib/task')
+var vars = require('./lib/gen-vars')
+var config = require('./lib/config')
+//生成主题
+var build = function (opts) {
+  return function () {
+    return task.build(Object.assign(opts, {message: 'build element theme'}))
+  }
+}
+//生成字体
+var fonts = function (opts) {
+  return function () {
+    return task.fonts(Object.assign(opts, {message: 'build theme font'}))
+  }
+}
+//初始化
+exports.init = function (filePath) {
+  filePath = {}.toString.call(filePath) === '[object String]' ? filePath : ''
+  vars.init(filePath)
+}
+//监听文件变化，自动编译
+exports.watch = function (opts) {
+  gulp.task('build', build(opts))
+  exports.run(opts)
+  gulp.watch(opts.config || config.config, ['build'])
+}
+//运行，会同时build scss和font
+exports.run = function (opts, cb) {
+  gulp.task('build', build(opts))
+  gulp.task('fonts', fonts(opts))
+  if (typeof cb === 'function') {
+    return series('build', 'fonts', cb);
+  }
+  return series('build', 'fonts');
+}
+</code></pre>
+
+<h4>3.6 package.json中配置bin</h4>
+<pre><code>&quot;bin&quot;: {
+    &quot;element-theme&quot;: &quot;./bin/element-theme&quot;,
+    &quot;et&quot;: &quot;./bin/element-theme&quot;
+ },
+</code></pre>
+
+<p>我们在package.json的bin字段中配置这个自定义工具的指令和对应的脚本。这样我们安装这个工具后，使用element-theme或者et都是可以的。</p>
+<p>下面是官方的一个例子：</p>
+<p><img src="https://i.imgur.com/nRIZSLD.gif" /></p>
+<h3>四、结语</h3>
+<p>想必看了上面的实现你也能很快实现一个antd-theme了吧？</p>
 
 </body>
 </html>
