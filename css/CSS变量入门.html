@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CSS变量入门</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+h1 {
+    text-align: center;
+}
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1 {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+}
+</style>
+</head>
+<body>
+<h1>CSS变量入门</h1>
+<h3>一、概述</h3>
+<p>CSS变量和任何其他编程语言中的变量一样，使得我们可以在CSS中的其它地方对他们进行引用。</p>
+<p>这听起来很不可思议，你也许会觉得，这不是需要借助于SASS、LESS之类的预处理语言才能实现的吗？</p>
+<p>幸运的是，从2017年4月开始，所有的<a href="https://caniuse.com/#feat=css-variables">现代浏览器</a>都开始支持CSS变量了。使用CSS变量可以使我们的CSS代码变得更加干净和紧凑。</p>
+<p>你可能已经比较想要知道我们怎么样才能使用CSS变量了，下面就跟随本文一起来了解一下吧！</p>
+<h3>二、如何使用CSS变量</h3>
+<h4>2.1、 定义CSS变量</h4>
+<p>任何CSS属性-color、size、position等等-都可以用CSS变量来保存。他们的属性名字前面有一个“--”前缀，其他和普通属性没什么区别。 比如：</p>
+<pre>
+<code>
+body {
+  --primary: #7F583F;
+  --secondary: #F7EFD2;
+}
+</code>
+</pre>
+<p>上面的代码，我们定义了两个变量：--primary，--secondary。</p>
+<h4>2.2、 使用CSS变量</h4>
+<p>那么我们如何在CSS中的其它的地方引用它们呢？我们需要像下面这样用var()包裹它即可：</p>
+<pre>
+<code>
+a {
+  color: var(--primary);
+  text-decoration-color: var(--secondary);
+}
+</code>
+</pre>
+<p>如果你在你的浏览器的调试窗口中查看这个CSS，你会发现浏览器没有对这些变量做任何的转换。因为浏览器自己能够识别CSS变量。</p>
+<h4>2.3、 给CSS变量提供默认值</h4>
+<p>我们在使用CSS变量的时候，也可以给CSS变量提供默认值，只需要在var()的第二个参数中传入即可：</p>
+<pre>
+<code>
+color: var(--primary, #7F583F);
+</code>
+</pre>
+<p>那么默认值会在什么情况下被采纳呢？有两种情况：</p>
+<ol>
+<li>变量未定义</li>
+<li>变量在当前作用域中不存在</li>
+</ol>
+<p>这里提到了作用域的概念，我们接下来就来看看什么是作用域吧。</p>
+<h3>三、作用域和层叠</h3>
+<p>CSS变量的作用域和普通属性的作用域一样，都是在当前层及其所有孩子层有效。比如说我们定义在body元素下的这个变量，我们在整个页面都能访问到：</p>
+<pre>
+<code>
+body {
+  --primary: #7F583F;
+  --secondary: #F7EFD2;
+}
+</code>
+</pre>
+<p>并且如果变量定义在class里面的话，这些变量只能在拥有这个class的元素上使用：</p>
+<pre>
+<code>
+.content {
+  --primary: #7F583F;
+  --secondary: #F7EFD2;
+}
+</code>
+</pre>
+<p>如果我们像上面这么在class里定义CSS变量的话，那么我们只能在拥有该class的元素上使用，否则相应的样式不会被渲染。</p>
+<h3>四、术语：自定义CSS属性</h3>
+<p>到目前为止，你已经看到了一种场景——CSS变量和CSS属性表现的几乎一样。我们就是在设置属性的地方声明的变量，它们也有着一样的层叠规则。</p>
+<p>这是因为CSS变量实际上就是CSS自定义属性。它和普通属性的唯一区别就在于普通属性的值总是固定的，而CSS自定义属性的值是在使用时才确定的。</p>
+<p>浏览器支持CSS变量意味着我们可以设置任意的、带命名空间的属性。这是非常有意思的，就好比我们可以使用media query绕开使用js监听resize事件，CSS给我们打开了一扇脱离less等预处理语言的大门。</p>
+<h3>五、比SASS更好 ——【在线主题切换】</h3>
+<p>CSS变量和SASS变量不完全同，而且在某些方面，前者比后者更好。其中一个场景是【在线主题切换】。</p>
+<p>在线主题切换使用SASS非常容易实现：把你的颜色组合存储在SASS maps中，然后遍历，选择你想要的主题应用到页面中：</p>
+<pre>
+<code>
+.theme-1 {
+  a {
+    color: #7F583F;
+    text-decoration-color: #F7EFD2;
+  }
+}
+
+.theme-2 {
+  a {
+    color: #D51522;
+    text-decoration-color: #F4F6D8;
+  }
+}
+
+/* etc */
+</code>
+</pre>
+<p>但是，这会导致我们使用其中一个主题的时候，剩余的主题的代码实际上都是无用的。</p>
+<p>CSS变量可以实现同样的效果，并且保证没有额外的代码。 我们不用通过js给页面添加主题class，而是通过JS直接改变变量的值：</p>
+<pre>
+<code>
+document.body.style.setProperty('--primary', '#7F583F');
+document.body.style.setProperty('--secondary', '#F7EFD2');
+</code>
+</pre>
+<p>这些改变会应用到所有使用了这些变量的元素。你的CSS代码保持的很干净，而且我们是直接改变的CSS，没有中间商赚差价😁。</p>
+<h3>六、比SASS更好 ——【meida query】</h3>
+<p>在SASS中，在media query中重新定义变量是不允许的。 比如你想在某种条件下重新定义link的颜色，在SASS中你可能会这么写代码：</p>
+<pre>
+<code>
+$primary: #7F583F;
+$secondary: #F7EFD2;
+
+a {
+  color: $primary;
+  text-decoration-color: $secondary;
+
+  @media screen and (min-width: 768px) {
+    $primary: #F7EFD2;
+    $secondary: #7F583F;
+  }
+}
+</code>
+</pre>
+<p>然后你会尴尬的发现，这个在SASS中不会生效，这是因为SASS是预处理语言，也就是预先处理，它没法知道未来会发生什么情况。</p>
+<p>但是， 我们可以使用CSS变量实现这种效果：</p>
+<pre>
+<code>
+body {
+  --primary: #7F583F;
+  --secondary: #F7EFD2;
+}
+
+a {
+  color: var(--primary);
+  text-decoration-color: var(--secondary);
+}
+
+@media screen and (min-width: 768px) {
+  body {
+    --primary:  #F7EFD2;
+    --secondary: #7F583F;
+  }
+}
+</code>
+</pre>
+<p>这可以生效的原因是，所有的工作都是浏览器帮我们做的，因而这些变量也知道他们在何种条件下在使用。</p>
+<h3>七、浏览器支持</h3>
+<p>CSS变量最初在2014年Firefox浏览器中得到支持，2016年在Chrome和Safari中得到支持。所以好消息是他们的支持很广泛，坏消息仍然是：IE还是个令人头疼的孩子，几乎是所有的IE。</p>
+<h3>八、提供fallback</h3>
+<p>幸运的是，给他们提供fallback的方式和我们在远古时代使用的方式一样：</p>
+<pre>
+<code>
+a {
+  color: #7F583F;
+  color: var(--primary);
+}
+</code>
+</pre>
+<p>先声明你的fallback，然后声明自定义变量。</p>
+<h3>九、使用SASS更容易实现fallback</h3>
+<p>如果你使用SASS，你可以通过mixin自动实现fallback。创建你的自定义变量名和值的映射，然后你就可以动态的去查找它们并且输出最终的样式了：</p>
+<pre>
+<code>
+$vars: (
+  primary: #7F583F,
+);
+
+body {
+  --primary: #{map-get($vars, primary)};
+}
+
+@mixin var($property, $varName) {
+  #{$property}: map-get($vars, $varName);
+  #{$property}: var(--#{$varName}, map-get($vars, $varName));
+}
+
+</code>
+</pre>
+<p>上面的mixin可以像下面这么使用：</p>
+<pre>
+<code>
+a {
+  @include var(color, primary);
+}
+</code>
+</pre>
+<p>并且输出如下CSS：</p>
+<pre>
+<code>
+a {
+  color: #7F583F;
+  color: var(--primary, #7F583F);
+}
+</code>
+</pre>
+<p>如果你想改变--primary或者是它的fallback,你只需要改变$vars即可。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
