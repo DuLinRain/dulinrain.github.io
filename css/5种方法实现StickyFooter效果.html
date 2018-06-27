@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>5种方法实现StickyFooter效果</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+h1 {
+    text-align: center;
+}
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1 {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+}
+</style>
+</head>
+<body>
+<h1>5种方法实现“Sticky Footer”效果</h1>
+<h3>一、什么是“Sticky Footer”效果？</h3>
+<p>所谓的“Sticky Footer”效果是指，无论页面内容多少，页脚元素都停留在页面的底部的这种效果。</p>
+<p>假设我们的html的结构如下：</p>
+<pre><code>&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;content&quot;&gt;
+       content
+    &lt;/div&gt;
+    &lt;div class=&quot;footer&quot;&gt;
+        footer
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>我们需要实现类似于下面这种效果：</p>
+<p><strong>内容不足时：</strong></p>
+<p><img src="https://i.imgur.com/QWCcw5n.png" /></p>
+<p><strong>内容足够时：</strong></p>
+<p><img src="https://i.imgur.com/u702TTK.gif" /></p>
+<p>那么如何实现这种效果呢？我们下面讲述5种实现这种效果的方法。</p>
+<h3>二、方法1： 在content上使用负下边距</h3>
+<p>这种方法适用于footer是固定高度的情形，并且需要一个额外的元素。 我们先看一下html结构：</p>
+<pre><code>&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;content&quot;&gt;
+        content
+        &lt;div class=&quot;push&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;footer&quot;&gt;
+        footer
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>我们的CSS如下：</p>
+<pre><code>html, body {
+    width: 100%;
+    height: 100%;
+
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 100%;
+    height: 100%;
+}
+.content {
+    min-height: 100%;//注意不能设置height: 100%;
+    margin-bottom: -60px;
+}
+.push {
+    height: 60px;
+}
+.footer {
+
+    text-align: center;
+    background-color:aliceblue;
+    height: 60px;
+}
+</code></pre>
+
+<p>实现的效果和示例是一样的。</p>
+<h3>三、方法2： 在footer上使用负上边距</h3>
+<p>这种方法同样适用于footer是固定高度的，这种方法不需要方法1中的push元素，但是这种方法也需要一个额外的元素将content包裹起来。 而content元素需要设置padding-bottom，值为footer的高度。同时，需要设置footer适用负上边距，值为footer的高度。 其html结构如下：</p>
+<pre><code>&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;content-wrapper&quot;&gt;
+        &lt;div class=&quot;content&quot;&gt;
+                content    
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;footer&quot;&gt;
+        footer
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>css如下：</p>
+<pre><code>html, body {
+    width: 100%;
+    height: 100%;
+
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 100%;
+    height: 100%;
+}
+.content-wrapper {
+    min-height: 100%;
+}
+.content {    
+    padding-bottom: 60px;
+}
+.footer {    
+    text-align: center;
+    background-color:aliceblue;
+    height: 60px;
+    margin-top: -60px;
+}
+</code></pre>
+
+<p>最终效果一致。</p>
+<h3>四、方法3： 使用calc()</h3>
+<p>这种方法不需要任何额外的元素，也是大家最容易想到的。但他同样需要footer的宽度是固定的。 html的结构就是最原始的结构：</p>
+<pre><code>&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;content&quot;&gt;
+            content 
+    &lt;/div&gt;
+    &lt;div class=&quot;footer&quot;&gt;
+        footer
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>css的实现如下：</p>
+<pre><code>html, body {
+    width: 100%;
+    height: 100%;
+
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 100%;
+    height: 100%;
+}
+.content {   
+    min-height: calc(100% - 60px);
+}
+.footer {    
+    text-align: center;
+    background-color:aliceblue;
+    height: 60px;
+}
+</code></pre>
+
+<p>最终效果一致。</p>
+<h3>五、方法4： 使用flexbox</h3>
+<p>flex布局，非常容易实现这种效果，并且footer的高度不需要固定。 也无需额外的元素。</p>
+<p>html结构如下：</p>
+<pre><code>&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;content&quot;&gt;
+            content 
+    &lt;/div&gt;
+    &lt;div class=&quot;footer&quot;&gt;
+        footer
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>css如下：</p>
+<pre><code>html, body {
+    width: 100%;
+    height: 100%;
+
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.content {   
+    flex: 1 0 auto;
+}
+.footer {    
+    flex-shrink: 0;
+    text-align: center;
+    background-color: aliceblue;
+}
+</code></pre>
+
+<p>最终效果一致。</p>
+<h3>六、方法5： 使用grid布局</h3>
+<p>grid layout是一种新的布局，非常容易实现这种效果，并且footer的高度不需要固定。 也无需额外的元素。只是浏览器支持的不是很好。</p>
+<p>html结构如下：</p>
+<pre><code>&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;content&quot;&gt;
+            content 
+    &lt;/div&gt;
+    &lt;div class=&quot;footer&quot;&gt;
+        footer
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>css如下：</p>
+<pre><code>html, body {
+    width: 100%;
+    height: 100%;
+
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+.content {   
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+.footer {    
+    text-align: center;
+    background-color:aliceblue;
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+</code></pre>
+
+<p>最终效果一致。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
