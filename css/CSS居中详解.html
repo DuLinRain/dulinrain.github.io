@@ -289,9 +289,6 @@ img {
   max-width: 100%
 }
 
-h1 {
-    text-align: center;
-}
 body>*:first-child {
   margin-top: 0 !important;
 }
@@ -306,10 +303,833 @@ html::after {
     margin-top: 100px;
     content: url(http://www.dulinrain.top/zhifu.png);
 }
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
 </style>
 </head>
 <body>
-<h1>CSS居中详解</h1>
+<h1 id="css-">CSS居中详解</h1>
+<h3 id="-">一、概述</h3>
+<p>CSS居中是一个老生常谈的问题，不管是面试中还是实际应用中，遇到的都很多，对于不同类型的元素，其水平、垂直、水平垂直居中的方法也不尽相同，直接泛泛而论总是容易忘记，我们今天进行系统的总结一下。</p>
+<h3 id="-">二、水平居中</h3>
+<p>当谈到水平居中的时候，我们首先要从一下几个方面问自己：</p>
+<ol>
+<li>它是inline元素(比如文本或链接)或者有<code>dispaly: inline/inline-*</code>属性吗？</li><li>它是块级元素吗？</li><li>是需要居中单个块级元素还是多个？</li></ol>
+<p>当我们从这三个方面问我们自己的时候，答案也就一一浮现出来了。下面我们分别讨论。</p>
+<h4 id="2-1-inline-dispaly-inline-inline-">2.1、对inline元素或具有<code>dispaly: inline/inline-*</code>属性的元素</h4>
+<p>只需要在父块级元素中设置<strong>text-align: center;</strong>即可。这适用于inline, inline-block, inline-table, inline-flex, 等元素。</p>
+<p>举例：</p>
+<pre><code>&lt;header&gt;
+  This text is centered.
+&lt;/header&gt;
+
+&lt;nav role=&#39;navigation&#39;&gt;
+  &lt;a href=&quot;#0&quot;&gt;One&lt;/a&gt;
+  &lt;a href=&quot;#0&quot;&gt;Two&lt;/a&gt;
+  &lt;a href=&quot;#0&quot;&gt;Three&lt;/a&gt;
+  &lt;a href=&quot;#0&quot;&gt;Four&lt;/a&gt;
+&lt;/nav&gt;  
+
+body {
+  background: #f06d06;
+}
+
+header, nav {
+  text-align: center;
+  background: white;
+  margin: 20px 0;
+  padding: 10px;
+}
+
+nav a {
+  text-decoration: none;
+  background: #333;
+  border-radius: 5px;
+  color: white;
+  padding: 3px 8px;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/mJzhY4O.png" alt=""></p>
+<h4 id="2-2-">2.2、对块级元素</h4>
+<p>对于有<strong>固定宽度</strong>的块级元素，只需要设置<code>margin: 0 auto；</code>即可，对于无固定宽度的元素，它本身会铺满整个宽度，所以就没有居中不居中的问题了。</p>
+<p>举例：</p>
+<pre><code>&lt;main&gt;
+  &lt;div class=&quot;center&quot;&gt;
+    I&#39;m a block level element and am centered.
+  &lt;/div&gt;
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+}
+
+main {
+  background: white;
+  margin: 20px 0;
+  padding: 10px;
+}
+
+.center {
+  margin: 0 auto;
+  width: 200px;
+  background: black;
+  padding: 20px;
+  color: white;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/VvkNYjg.png" alt=""></p>
+<h4 id="2-3-">2.3、是居中一个还是多个块级元素？</h4>
+<p>对于单纯的在一行居中一个块级元素，按2.2方式来处理就OK了，但是如果想在一行水平居中多个块级元素呢？</p>
+<p>有两种方法可以做到：</p>
+<ol>
+<li>将它们设置成inline-block元素，然后使用text-align: center;</li><li>使用flex布局。</li></ol>
+<p>例子：</p>
+<pre><code>&lt;main class=&quot;inline-block-center&quot;&gt;
+  &lt;div&gt;
+    I&#39;m an element that is block-like with my siblings and we&#39;re centered in a row.
+  &lt;/div&gt;
+  &lt;div&gt;
+    I&#39;m an element that is block-like with my siblings and we&#39;re centered in a row. I have more content in me than my siblings do.
+  &lt;/div&gt;
+  &lt;div&gt;
+    I&#39;m an element that is block-like with my siblings and we&#39;re centered in a row.
+  &lt;/div&gt;
+&lt;/main&gt;
+
+&lt;main class=&quot;flex-center&quot;&gt;
+  &lt;div&gt;
+    I&#39;m an element that is block-like with my siblings and we&#39;re centered in a row.
+  &lt;/div&gt;
+  &lt;div&gt;
+    I&#39;m an element that is block-like with my siblings and we&#39;re centered in a row. I have more content in me than my siblings do.
+  &lt;/div&gt;
+  &lt;div&gt;
+    I&#39;m an element that is block-like with my siblings and we&#39;re centered in a row.
+  &lt;/div&gt;
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+main {
+  background: white;
+  margin: 20px 0;
+  padding: 10px;
+}
+
+main div {
+  background: black;
+  color: white;
+  padding: 15px;
+  max-width: 125px;
+  margin: 5px;
+}
+
+.inline-block-center {
+  text-align: center;
+}
+.inline-block-center div {
+  display: inline-block;
+  text-align: left;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/NLKwCMx.png" alt=""></p>
+<p>如果对于多个块级元素你想要的是下面这种羊肉串效果，你直接用2.2中的margin: 0 auto；即可：</p>
+<p><img src="https://i.imgur.com/tfCjGKa.png" alt=""></p>
+<pre><code>&lt;main&gt;
+  &lt;div&gt;
+    I&#39;m an element that is block-like with my siblings and we&#39;re centered in a row.
+  &lt;/div&gt;
+  &lt;div&gt;
+    I&#39;m an element that is block-like with my siblings and we&#39;re centered in a row. I have more content in me than my siblings do.
+  &lt;/div&gt;
+  &lt;div&gt;
+    I&#39;m an element that is block-like with my siblings and we&#39;re centered in a row.
+  &lt;/div&gt;
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+main {
+  background: white;
+  margin: 20px 0;
+  padding: 10px;
+}
+
+main div {
+  background: black;
+  margin: 0 auto;
+  color: white;
+  padding: 15px;
+  margin: 5px auto;
+}
+
+main div:nth-child(1) {
+  width: 200px;
+}
+main div:nth-child(2) {
+  width: 400px;
+}
+main div:nth-child(3) {
+  width: 125px;
+}
+</code></pre><h3 id="-">三、垂直居中</h3>
+<p>垂直居中时也需要考虑两种情况：</p>
+<ol>
+<li>它是inline元素(比如文本或链接)或者有<code>dispaly: inline/inline-*</code>属性吗？</li><li>它是块级元素吗？</li></ol>
+<p>下面我们来分别看看。</p>
+<h4 id="3-1-inline-dispaly-inline-inline-">3.1、对inline元素(比如文本或链接)或者有<code>dispaly: inline/inline-*</code>属性</h4>
+<p>这种情况其实又可以分为三种情况分别对待：</p>
+<ol>
+<li>它是单行吗？</li><li>它是多行吗？</li></ol>
+<h4 id="3-1-1-">3.1.1 对单行元素</h4>
+<p>单行元素的话，实际上我们常常可以设置相同的上、下padding。</p>
+<p>例子：</p>
+<pre><code>&lt;main&gt;
+  &lt;a href=&quot;#0&quot;&gt;We&#39;re&lt;/a&gt;
+  &lt;a href=&quot;#0&quot;&gt;Centered&lt;/a&gt;
+  &lt;a href=&quot;#0&quot;&gt;Bits of&lt;/a&gt;
+  &lt;a href=&quot;#0&quot;&gt;Text&lt;/a&gt;
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+main {
+  background: white;
+  margin: 20px 0;
+  padding: 50px;
+}
+
+main a {
+  background: black;
+  color: white;
+  padding: 40px 30px;
+  text-decoration: none;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/fXM5z9F.png" alt=""></p>
+<p>如果这样不起作用的话，我们还可以考虑设置line-height和height相等。</p>
+<p>例子：</p>
+<pre><code>&lt;main&gt;
+  &lt;div&gt;
+    I&#39;m a centered line.
+  &lt;/div&gt;
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+main {
+  background: white;
+  margin: 20px 0;
+  padding: 40px;
+}
+
+main div {
+  background: black;
+  color: white;
+  height: 100px;
+  line-height: 100px;
+  padding: 20px;
+  width: 50%;
+  white-space: nowrap;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/0HlqRVZ.png" alt=""></p>
+<h4 id="3-1-2-">3.1.2 对多行元素</h4>
+<p>对多行元素，又可以分成5种方法：</p>
+<ol>
+<li>首先我们仍然可以采用相同的上下padding实现居中效果</li><li>如果这种方法不起作用的话，我们可以考虑直接将元素放在table的一个单元格中</li><li>或者设置元素父元素的display: table-cell；以及vertical-align: middle;属性。</li><li>如果还是不行，可以考虑使用flexbox。</li><li>使用伪元素</li></ol>
+<p>例子：</p>
+<p><strong>直接放在table单元格中</strong>：</p>
+<pre><code>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+      I&#39;m vertically centered multiple lines of text in a real table cell.
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+table {
+  background: white;
+  width: 240px;
+  border-collapse: separate;
+  margin: 20px;
+  height: 250px;
+}
+
+table td {
+  background: black;
+  color: white;
+  padding: 20px;
+  border: 10px solid white;
+  /* default is vertical-align: middle; */
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/2XCMSIk.png" alt=""></p>
+<p><strong>设置父元素的display: table-cell；以及vertical-align: middle;属性</strong>：</p>
+<pre><code>&lt;div class=&quot;center-table&quot;&gt;
+  &lt;p&gt;I&#39;m vertically centered multiple lines of text in a CSS-created table layout.&lt;/p&gt;
+&lt;/div&gt;
+
+.center-table {
+  display: table;
+  height: 250px;
+  background: white;
+  width: 240px;
+  margin: 20px;
+}
+.center-table p {
+  display: table-cell;
+  margin: 0;
+  background: black;
+  color: white;
+  padding: 20px;
+  border: 10px solid white;
+  vertical-align: middle;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/PbR0wlD.png" alt=""></p>
+<p><strong>使用flex布局</strong>例子：</p>
+<pre><code>&lt;div class=&quot;flex-center&quot;&gt;
+  &lt;p&gt;I&#39;m vertically centered multiple lines of text in a flexbox container.&lt;/p&gt;
+&lt;/div&gt;
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+div {
+  background: white;
+  width: 240px;
+  margin: 20px;
+}
+
+.flex-center {
+  background: black;
+  color: white;
+  border: 10px solid white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 200px;
+  resize: vertical;
+  overflow: auto;
+}
+.flex-center p {
+  margin: 0;
+  padding: 20px;
+}
+</code></pre><p><img src="https://i.imgur.com/Bp4133o.png" alt=""></p>
+<p><strong>注意：</strong>上面那种方法需要父元素有自己的固定高度，否则可能不会起作用。</p>
+<p>如果以上方法都失效的话，可以采用最后一种伪元素的方法：</p>
+<pre><code>&lt;div class=&quot;ghost-center&quot;&gt;
+  &lt;p&gt;I&#39;m vertically centered multiple lines of text in a container. Centered with a ghost pseudo element&lt;/p&gt;
+&lt;/div&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+div {
+  background: white;
+  width: 240px;
+  height: 200px;
+  margin: 20px;
+  color: white;
+  resize: vertical;
+  overflow: auto;
+  padding: 20px;
+}
+
+.ghost-center {
+  position: relative;
+}
+.ghost-center::before {
+  content: &quot; &quot;;
+  display: inline-block;
+  height: 100%;
+  width: 1%;
+  vertical-align: middle;
+}
+.ghost-center p {
+  display: inline-block;
+  vertical-align: middle;
+  width: 190px;
+  margin: 0;
+  padding: 20px;
+  background: black;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/8wvzia3.png" alt=""></p>
+<h4 id="3-2-">3.2、对块级元素</h4>
+<p>这种情况也可以分成三种小情况区别对待：</p>
+<ol>
+<li>元素高度已知</li><li>元素高度未知</li><li>可否用flexbox</li></ol>
+<p>我们分别来探讨。</p>
+<h5 id="3-2-1-">3.2.1 元素高度已知</h5>
+<p>这种情况下使用绝对定位+ 负margin即可。</p>
+<p>举例：</p>
+<pre><code>&lt;main&gt;
+
+  &lt;div&gt;
+     I&#39;m a block-level element with a fixed height, centered vertically within my parent.
+  &lt;/div&gt;
+
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+main {
+  background: white;
+  height: 300px;
+  margin: 20px;
+  width: 300px;
+  position: relative;
+  resize: vertical;
+  overflow: auto;
+}
+
+main div {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  height: 100px;
+  margin-top: -70px;
+  background: black;
+  color: white;
+  padding: 20px;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/0TkVsap.png" alt=""></p>
+<h5 id="3-2-2-">3.2.2 元素高度未知</h5>
+<p>这种情况下使用<strong>transform: translateY(-50%)</strong>即可。</p>
+<pre><code>&lt;main&gt;
+
+  &lt;div&gt;
+     I&#39;m a block-level element with an unknown height, centered vertically within my parent.
+  &lt;/div&gt;
+
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+main {
+  background: white;
+  height: 300px;
+  margin: 20px;
+  width: 300px;
+  position: relative;
+  resize: vertical;
+  overflow: auto;
+}
+
+main div {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  background: black;
+  color: white;
+  padding: 20px;
+  transform: translateY(-50%);
+  resize: vertical;
+  overflow: auto;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/goIj7l8.png" alt=""></p>
+<h5 id="3-2-3-flexbox">3.2.3 可否使用flexbox</h5>
+<p>如果浏览器支持flexbox的话那就更简单了，使用flexbox居中即可。</p>
+<p>例子：</p>
+<pre><code>&lt;main&gt;
+
+  &lt;div&gt;
+     I&#39;m a block-level element with an unknown height, centered vertically within my parent.
+  &lt;/div&gt;
+
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+}
+
+main {
+  background: white;
+  height: 300px;
+  width: 200px;
+  padding: 20px;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  resize: vertical;
+  overflow: auto;
+}
+
+main div {
+  background: black;
+  color: white;
+  padding: 20px;
+  resize: vertical;
+  overflow: auto;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/SdL9WdH.png" alt=""></p>
+<h3 id="-">四、水平垂直居中</h3>
+<p>水平垂直居中实际上也分几种情况：</p>
+<ol>
+<li>元素宽度和高度已知</li><li>元素宽度和高度未知</li><li>可以使用flexbox吗</li><li>可以使用grid吗</li></ol>
+<p>我们分开讨论。</p>
+<h4 id="4-1-">4.1、元素宽度和高度已知</h4>
+<p>这种情况也是使用position: absolute; + 负margin实现。</p>
+<p>例子：</p>
+<pre><code>&lt;main&gt;
+
+  &lt;div&gt;
+     I&#39;m a block-level element a fixed height and width, centered vertically within my parent.
+  &lt;/div&gt;
+
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+  padding: 20px;
+}
+
+main {
+  position: relative;
+  background: white;
+  height: 200px;
+  width: 60%;
+  margin: 0 auto;
+  padding: 20px;
+  resize: both;
+  overflow: auto;
+}
+</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/KJ1xTBY.png" alt=""></p>
+<h4 id="4-2-">4.2、元素宽度和高度未知</h4>
+<p>这种情况下使用transform: translate(-50%, -50%)实现。</p>
+<p>例子：</p>
+<pre><code>&lt;main&gt;
+
+  &lt;div&gt;
+     I&#39;m a block-level element of an unknown height and width, centered vertically within my parent.
+  &lt;/div&gt;
+
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+  padding: 20px;
+}
+
+main {
+  position: relative;
+  background: white;
+  height: 200px;
+  width: 60%;
+  margin: 0 auto;
+  padding: 20px;
+  resize: both;
+  overflow: auto;
+}
+
+main div {
+  background: black;
+  color: white;
+  width: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 20px;
+  resize: both;
+  overflow: auto;
+}
+</code></pre><p>结果同上。</p>
+<h4 id="4-3-flexbox">4.3、可以使用flexbox</h4>
+<p>这种情况使用flex布局即可：</p>
+<p>例子：</p>
+<pre><code>&lt;main&gt;
+
+  &lt;div&gt;
+     I&#39;m a block-level-ish element of an unknown width and height, centered vertically within my parent.
+  &lt;/div&gt;
+
+&lt;/main&gt;
+
+body {
+  background: #f06d06;
+  font-size: 80%;
+  padding: 20px;
+}
+
+main {
+  background: white;
+  height: 200px;
+  width: 60%;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  resize: both;
+  overflow: auto;
+}
+
+main div {
+  background: black;
+  color: white;
+  width: 50%;
+  padding: 20px;
+  resize: both;
+  overflow: auto;
+}
+</code></pre><p>结果同上。</p>
+<h4 id="4-4-grid-">4.4、可以使用grid布局</h4>
+<p>如果可以使用grid布局的话，也相当简单：</p>
+<pre><code>&lt;span&gt;
+  I&#39;m centered!
+&lt;/span&gt;
+
+body, html {
+  height: 100%;
+  display: grid;
+}
+span {
+  margin: auto;
+}
+</code></pre><p>结果如下：</p>
+<p><img src="https://i.imgur.com/vPFEikk.png" alt=""></p>
 
 </body>
 </html>
