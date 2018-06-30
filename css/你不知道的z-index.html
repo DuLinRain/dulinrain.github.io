@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>你所不知道的z-index</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+</head>
+<body>
+<h1 id="-z-index">你所不知道的z-index</h1>
+<h3 id="-">一、概述</h3>
+<p>z-index是CSS里面经常会用到的一个属性，看到这个标题时，可能你会觉得z-index那么简单有什么好说的，但可能你过于乐观了，z-index其实相当复杂，你所了解的也许只是冰山一角而已。</p>
+<p>举个例子，对于下面的HTML和CSS，你觉得红、绿、蓝三个颜色块的堆叠效果如何呢？</p>
+<pre><code>&lt;div&gt;
+  &lt;span class=&quot;red&quot;&gt;Red&lt;/span&gt;
+&lt;/div&gt;
+&lt;div&gt;
+  &lt;span class=&quot;green&quot;&gt;Green&lt;/span&gt;
+&lt;/div&gt;
+&lt;div&gt;
+  &lt;span class=&quot;blue&quot;&gt;Blue&lt;/span&gt;
+&lt;/div&gt;
+
+.red, .green, .blue {
+  position: absolute;
+  width: 100px;
+  color: white;
+  line-height: 100px;
+  text-align: center;
+}
+
+.red {
+  z-index: 1;
+  top: 20px;
+  left: 20px;
+  background: red;
+}
+
+.green {
+  top: 60px;
+  left: 60px;
+  background: green;
+}
+
+.blue {
+  top: 100px;
+  left: 100px;
+  background: blue;
+}
+</code></pre><p>想必大家都知道，它的结果会如下，因为都是绝对定位，然后只有red设置了正的z-index，而green和blue的显示则与他们在文档中的顺序有关：</p>
+<p><img src="https://i.imgur.com/LMupPcl.png" alt=""></p>
+<p>那么，如果现在让你想办法将red方块放到最下面，并且保证：</p>
+<ol>
+<li>不要动HTML结构及位置</li><li>不要改变任何元素的z-index</li><li>不要改变任何元素的position属性</li></ol>
+<p>元素的其它css属性可以任意改动，那么你可以实现吗？</p>
+<p>想必大家此时便会犯难了。其实解决方法很简单，就是给第一个div元素加一个非1的opacity属性：</p>
+<pre><code>div:first-child {
+  opacity: .99;
+}
+</code></pre><p><img src="https://i.imgur.com/dp2URs8.png" alt=""></p>
+<p>那么还有没有其它的方法呢？有，比如下面2种：</p>
+<pre><code>div:first-child {
+    transform: translateZ(0)
+}
+
+div:first-child {
+    filter:blur(0)
+}
+</code></pre><p>那么这样做为什么可行呢？这只是一个csshack还是有原理的呢？实际上它与我们接下来要讲的 “stacking order” 有关。</p>
+<h3 id="-stacking-order-">二、Stacking Order 栈顺序</h3>
+<p>所谓Stacking Order，就是指HTML文档中的元素，要么出现在别的元素的前面，要么出现在别的元素的后面。 这个在没有z-index和position属性的时候是相当简单的。因为此时，元素的Stacking Order就是他们在文档中出现的顺序来。</p>
+<p>但是，当你使用了position属性后，任何定位元素以及它的子元素都会出现在非定位元素的前面。</p>
+<blockquote>
+<p>注意，这里的非定位元素是指没有position属性或position属性为static的元素，而定位元素是指position属性为非static的元素。</p>
+</blockquote>
+<p>当使用了z-index属性之后，情况变得又复杂了一点。 我们很自然的会认为，具有较大z-index值的元素位于具有较小z-index值的元素前面，并且具有z-index的任何元素都位于没有z-index的任何元素之前，但现实情况并不是这么简单。 因为有以下2点需要关注：</p>
+<ol>
+<li><strong>z-index只有用在定位元素(position属性非static)上才有效</strong>。</li><li><strong>z-index可以创造stack context</strong>。</li></ol>
+<p>现在情况变得更复杂了，而且还多了另一个概念Stack Context。 下面我们先来看看Stack Context。</p>
+<h3 id="-stack-context-">三、Stack Context 栈上下文</h3>
+<p>具有共同父级的元素组在堆叠顺序中一起向前或向后移动构成了所谓的堆叠上下文。 充分理解堆栈上下文是真正掌握z-index和堆栈顺序如何工作的关键。</p>
+<p>每一个Stack Context都有一个单一的HTML元素作为这个Stack Context的根元素。 当一个新的Stack Context被创造时，那么该Stack Context根元素的所有孩子元素都将处于该Stack Context中，这意味着，如果有A、B 两个Stack Context，A在B前面，那么不管你如何操作A的孩子元素的Stacking Order，这个孩子元素都不可能跑到B后面去。 因为无论你如何操作A的孩子的Stacking Order，他们都在A的Stack Context中移动。</p>
+<p>那么新的Stack Context是如何产生的呢？它们有如下3种方式：</p>
+<ol>
+<li>该元素是整个文档的根元素。也就是说该元素是html元素。</li><li>该元素有一个非static的position属性以及一个z-index不为auto的属性。</li><li><strong>该元素有一个小于1 的opacity属性</strong>。</li></ol>
+<p>想必前2条大家可能或多或少都知道，但是对于最后一条的存在可能根本不知道。这也就是我们在开篇使用的技巧。</p>
+<blockquote>
+<p>注意：除了opacity属性，一些较新的css属性，如 transforms, filters, css-regions, paged media等属性也会产生Stack Context。 我们比较常见和常用的主要是opacity, transforms, filters这几个。</p>
+</blockquote>
+<p>现在了解了Stack Context和Stacking Order，那么我们如何决定一个元素在堆栈中的位置呢？我们继续分析。</p>
+<h3 id="-stacking-order-">四、 如何决定元素在Stacking Order的位置？</h3>
+<p>要确定一个元素在整个文档堆栈中的位置稍显复杂，我们先看看在相同Stack Context中元素的Stacking Order。</p>
+<h4 id="4-1-stack-context-stacking-order">4.1、 相同Stack Context中元素的Stacking Order</h4>
+<p>假设有很多个元素都在同一个Stack Context中，那么他们的Stacking Order是如何确定的呢？下面是基本的规则（从后往前）：</p>
+<ol>
+<li>Stack Context的根元素。</li><li>具有<strong>负z-index</strong>值的定位元素（及其子元素）（较大的z-index值堆叠在较小值之前;具有相同值的元素根据HTML中的顺序堆叠）</li><li>非定位元素（按HTML中的呈现顺序）</li><li>定位元素（及其子元素）的z-index值为auto（通过HTML中的呈现顺序）</li><li>具有<strong>正z-index</strong>值的定位元素（及其子元素）（较大的z-index值堆叠在较小值的前面;具有相同值的元素根据HTML中的呈现顺序堆叠）</li></ol>
+<p><strong>注意：</strong>具有负z-index值的定位元素首先在堆叠上下文中排序，这意味着它们出现在所有其他元素的后面。 因此，一个元素可能出现在它自己的父亲后面，这通常是不可能的。 这仅在元素的父元素位于相同的堆叠上下文中且不是该堆叠上下文的根元素时才有效。</p>
+<h4 id="4-2-stacking-order">4.2、全局Stacking Order</h4>
+<p>在了解了新的Stack Context如何/何时产生以及在Stack Context中掌握Stacking Order的情况下，确定特定元素在全局Stacking Order中出现的位置并不是那么难了。</p>
+<p>避免判断错误的关键是能够发现何时形成新的Stack Context。 如果你为一个元素设置了一个很大的z-index，然而它没有按照Stacking Order向前移动，那么查看它的祖先树并查看它的父节点是否有任何形式的堆栈上下文。 如果他们产生了Stack Context，那么你很大的z-index的值对你没有任何帮助。</p>
+<p>现在，回过头来看看开篇的例子，显然那并不是css hack，而是确实有依据的。</p>
+<p>当我们没有给第一个div设置opacity的时候，它的Stacking Order如下：</p>
+<pre><code>&lt;div&gt;&lt;!-- 1 --&gt;
+  &lt;span class=&quot;red&quot;&gt;&lt;!-- 6 --&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;div&gt;&lt;!-- 2 --&gt;
+  &lt;span class=&quot;green&quot;&gt;&lt;!-- 4 --&gt;&lt;span&gt;
+&lt;/div&gt;
+&lt;div&gt;&lt;!-- 3 --&gt;
+  &lt;span class=&quot;blue&quot;&gt;&lt;!-- 5 --&gt;&lt;/span&gt;
+&lt;/div&gt;
+</code></pre><p>此时此刻，文档中有2个Stack Context，根元素生成的和.red元素生成的。</p>
+<p>对于非定位元素，按他们在文档中出现的顺序（规则3），对于定位元素但z-index=auto的元素，也是按在文档中的顺序（规则4），对于定位元素且z-index为正，按z-index值得大小（规则5）。</p>
+<p>但是当，我们给第一个div设置了小于1的opacity，那么这个div会形成一个Stack Context。它的子元素都会在该Stack Context中排序。这时的情况如下：</p>
+<pre><code>&lt;div&gt;&lt;!-- 1 --&gt;
+  &lt;span class=&quot;red&quot;&gt;&lt;!-- 1.1 --&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;div&gt;&lt;!-- 2 --&gt;
+  &lt;span class=&quot;green&quot;&gt;&lt;!-- 4 --&gt;&lt;span&gt;
+&lt;/div&gt;
+&lt;div&gt;&lt;!-- 3 --&gt;
+  &lt;span class=&quot;blue&quot;&gt;&lt;!-- 5 --&gt;&lt;/span&gt;
+&lt;/div&gt;
+</code></pre><p>这下就很容易理解了，对于非定位元素（三个div），按他们在文档中出现的顺序（规则3），对于定位元素但z-index=auto的元素，也是按在文档中的顺序（规则4），对于定位元素且z-index为正，按z-index值得大小（规则5），但是由于它的父亲生成了一个新的Stack Context，所以它的z-index只是相对于这个新Stack Context，所以，不管z-index设置多大，red块都会出现在其它两个块的下面。</p>
+<h3 id="-">五、结论</h3>
+<p>z-index看似简单，其实结合position和opacity等属性一起就很复杂了，我们在使用的时候一定要把各种情况考虑周全。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
