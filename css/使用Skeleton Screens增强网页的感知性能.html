@@ -289,9 +289,6 @@ img {
   max-width: 100%
 }
 
-h1 {
-    text-align: center;
-}
 body>*:first-child {
   margin-top: 0 !important;
 }
@@ -311,12 +308,12 @@ html, body {
     -webkit-font-smoothing: antialiased;
     font-smoothing: antialiased;
 }
-h1 {
+h1:first-child {
  	border-bottom: 1px solid gray;
     padding: 20px;
     position: relative;
 }
-h1:after {
+h1:first-child:after {
 	content: 'by DuLinRain';
     display: block;
     position: absolute;
@@ -326,6 +323,7 @@ h1:after {
     font-weight: normal;
     font-family: sans-serif;
 }
+
 </style>
 </head>
 <body>
@@ -361,7 +359,9 @@ h1:after {
 <p>另一种较好的方式是，使用纯CSS构建整个骨架，没有额外的网络请求，而且扩展性好，这样我们就可以很好的维护Skeleton Screens了。</p>
 <p>从前面的案例我们也可以看到，Skeleton Screens基本上都是一些灰白的元素堆叠起来的，这个很适合用CSS的background属性来实现，因为我们可以设置多个background值。</p>
 <p>举个例子，假设我们想实现一个下面这个UI的Skeleton Screens：</p>
+<p><img src="https://i.imgur.com/Zga1j8k.png" /></p>
 <p>它的Skeleton Screens大体上会长这样：</p>
+<p><img src="https://i.imgur.com/8iieTdU.png" /></p>
 <p>它的实现只需要一个元素就可以了：</p>
 <pre><code>
 &lt;div class="card"&gt;&lt;/div&gt;
@@ -426,6 +426,7 @@ h1:after {
 
 <p>注意，为了使我们的骨架看起来更灵动，我们还加了动画，这样可以更好的改善用户体验。</p>
 <p>最终的效果如下：</p>
+<p><img src="https://i.imgur.com/V3aNQhf.gif" /></p>
 <h3>四、使用CSS自定义变量实现Skeleton Screens</h3>
 <p>上面的代码看起来非常的混乱，维护起来不是特别容易，所以我们可以考虑使用CSS自定义变量将它们进行改进，CSS自定义变量支持大部分的现代浏览器。如果你对它还不了解，你可以参考一下。</p>
 <p>我们首先定义CSS变量：</p>
