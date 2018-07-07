@@ -502,7 +502,6 @@ margin-right:3px;
 vertical-align:1px;
 }
 </style>
-<script src="//mat1.gtimg.com/om/om_mobile/om/libs/xqq.v3.4.min.js"></script>
 </head>
 <body>
 <h1 id="antd-theme-online-">antd-theme-online在线主题生成工具</h1>
@@ -527,9 +526,10 @@ vertical-align:1px;
 <p><img src="https://i.imgur.com/kBLPhaO.png" alt=""></p>
 <h4 id="-">下载主题包</h4>
 <p><img src="https://i.imgur.com/xy7FApx.png" alt=""></p>
+<script src="//mat1.gtimg.com/om/om_mobile/om/libs/xqq.v3.4.min.js"></script>
 <script>
-  var _mtac = {};
-  (function() {
+    var _mtac = {};
+    (function() {
         var mta = document.createElement("script");
         mta.src = "http://pingjs.qq.com/h5/stats.js?v2.0.4";
         mta.setAttribute("name", "MTAH5");
@@ -537,16 +537,14 @@ vertical-align:1px;
 
         var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(mta, s);
-  })();
-  var title = document.title
-  console.log(XQQ)
-  console.log(title)
-  XQQ.setShare({
-    title: title,
-    desc: title,
-    imgUrl: location.protocol + '//i.imgur.com/XpzQVxN.png',
-    link: window.location.href
-  });
+})();
+var title = document.getElementById('MediaName').innerText + '已成为企鹅号版权保护合伙人，邀请你加入！'
+XQQ.setShare({
+  title: title,
+  desc: '企鹅号版权保护升级，授权、监测、维权一站式服务。',
+  imgUrl: location.protocol + '//mat1.gtimg.com/om/om_2.0/h5_new/images/om-logo-share.png',
+  link: window.location.href
+});
 </script>
 </body>
 </html>
