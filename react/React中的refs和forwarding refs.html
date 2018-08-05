@@ -502,6 +502,7 @@ margin-right:3px;
 vertical-align:1px;
 }
 </style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 </head>
 <body>
 <h1 id="react-refs-forwarding-refs">React中的refs和forwarding refs</h1>
@@ -786,7 +787,7 @@ const ref = React.createRef();
   handleClick={handleClick}
   ref={ref}
 /&gt;;
-</code></pre><p>尽管高阶组件已经使用<code>{...this.props}</code>把所有的属性都应用在原始组件上了，这个ref指向的高阶组件（也就是LogProps组件），这是因为ref并不是React的prop，和key类似，它只是被React特殊处理的一个东西，并不是prop。</p>
+</code></pre><p>尽管高阶组件已经使用<code>{...this.props}</code>把所有的属性都应用在原始组件上了，这个ref指向的仍然是高阶组件（也就是LogProps组件），这是因为ref并不是React的prop，和key类似，它只是被React特殊处理的一个东西，并不是prop。</p>
 <p>如果我们想解决高阶组件中传递ref的这个问题，我们可以改造高阶组件，像下面这么处理：</p>
 <pre><code>function logProps(Component) {
   class LogProps extends React.Component {

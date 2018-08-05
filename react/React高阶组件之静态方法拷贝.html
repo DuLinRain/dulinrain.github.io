@@ -502,11 +502,12 @@ margin-right:3px;
 vertical-align:1px;
 }
 </style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
 </head>
 <body>
 <h1 id="react-">React高阶组件之静态方法拷贝</h1>
 <h3 id="-">概述</h3>
-<p>想必大家已经对高阶组件做过一定的了解了，高阶组件在组件复用方面非常方便，但是可能没有注意的是高阶组件在复用原组件的时候不会自动的静态属性和方法。 比如：</p>
+<p>想必大家已经对高阶组件做过一定的了解了，高阶组件在组件复用方面非常方便，但是你可能没有注意的是高阶组件在复用原组件的时候不会自动的拷贝静态属性和方法。 比如：</p>
 <pre><code>// Define a static method
 WrappedComponent.staticMethod = function() {/*...*/}
 // Now apply a HOC
@@ -516,7 +517,7 @@ const EnhancedComponent = enhance(WrappedComponent);
 typeof EnhancedComponent.staticMethod === &#39;undefined&#39; // true
 </code></pre><p>WrappedComponent是我们原始的组件，我们在它上面定义了一个静态方法，如果按照我们正常的套路写enhance（HOC）的话，EnhancedComponent是不会拥有staticMethod这个静态方法的。这是由HOC的原理决定的。因为HOC是装饰器模式，它不改变原组件，不继承，而是产生一个全新的组件。</p>
 <p>为了让EnhancedComponent拥有原始WrappedComponent的静态属性和方法，我们需要对enhance（HOC）进行改造，在它里面对原始WrappedComponent组件的静态属性和方法进行手动拷贝。 </p>
-<p>下面总结一下几种拷贝方法。</p>
+<p>下面总结以下几种拷贝方法。</p>
 <h3 id="-">一、指定拷贝</h3>
 <p>指定拷贝的前提是我们已知原组件有哪些静态属性和方法，然后我们手动的拷贝我们需要的部分或全部静态属性和方法。 比如：</p>
 <pre><code>function enhance(WrappedComponent) {
@@ -554,6 +555,91 @@ function enhance(WrappedComponent) {
 }
 </code></pre><h3 id="-hoist-non-react-statics-">三、 hoist-non-react-statics的源码实现</h3>
 <p>既然说到了hoist-non-react-statics，那我们不妨看一看它是如何实现的，这样我们在其他场景也可以借鉴。</p>
+<pre><code>/**
+ * Copyright 2015, Yahoo! Inc.
+ * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
+ */
+const ReactIs = require(&#39;react-is&#39;);
+const React = require(&#39;react&#39;);
+//REACT组件原生的静态属性和方法不拷贝
+const REACT_STATICS = {
+    childContextTypes: true,
+    contextTypes: true,
+    defaultProps: true,
+    displayName: true,
+    getDefaultProps: true,
+    getDerivedStateFromProps: true,
+    mixins: true,
+    propTypes: true,
+    type: true
+};
+//任何类/函数自生都具有的静态属性/方法不拷贝
+const KNOWN_STATICS = {
+    name: true,
+    length: true,
+    prototype: true,
+    caller: true,
+    callee: true,
+    arguments: true,
+    arity: true
+};
+//支持ForwardRef
+const TYPE_STATICS = {
+    [ReactIs.ForwardRef]: {
+        [&#39;$$typeof&#39;]: true,
+        render: true
+    }
+};
+//定义辅助方法
+const defineProperty = Object.defineProperty;//定义属性
+const getOwnPropertyNames = Object.getOwnPropertyNames;//拿到key是字符的可枚举自有属性
+const getOwnPropertySymbols = Object.getOwnPropertySymbols;//拿到key是Symbol的可枚举自有属性，兼容ES6
+const getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;//属性描述符函数
+const getPrototypeOf = Object.getPrototypeOf;//拿到__proto__
+const objectPrototype = Object.prototype;
+//接收三个参数，目标组件，源组件，黑名单(指定哪些属性不拷贝)
+export default function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
+    //不处理字符组件
+    if (typeof sourceComponent !== &#39;string&#39;) { // don&#39;t hoist over string (html) components
+        //实际拷贝的是每一个父组件/父类的静态方法和属性
+        if (objectPrototype) {
+            const inheritedComponent = getPrototypeOf(sourceComponent);
+            if (inheritedComponent &amp;&amp; inheritedComponent !== objectPrototype) {
+                //递归调用，拷贝每一个父组件/父类的静态属性和方法
+                hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
+            }
+        }
+        //获得key是string的属性
+        let keys = getOwnPropertyNames(sourceComponent);
+        //获得key是Symbol类型的属性
+        if (getOwnPropertySymbols) {
+            keys = keys.concat(getOwnPropertySymbols(sourceComponent));
+        }
+        //不进行拷贝的属性
+        const targetStatics = TYPE_STATICS[targetComponent[&#39;$$typeof&#39;]] || REACT_STATICS;
+        const sourceStatics = TYPE_STATICS[sourceComponent[&#39;$$typeof&#39;]] || REACT_STATICS;
+
+        for (let i = 0; i &lt; keys.length; ++i) {
+            const key = keys[i];
+            if (!KNOWN_STATICS[key] &amp;&amp;
+                !(blacklist &amp;&amp; blacklist[key]) &amp;&amp;
+                !(sourceStatics &amp;&amp; sourceStatics[key]) &amp;&amp;
+                !(targetStatics &amp;&amp; targetStatics[key])
+            ) {
+                const descriptor = getOwnPropertyDescriptor(sourceComponent, key);
+                try { // Avoid failures from read-only properties
+                    //通过defineProperty实现拷贝
+                    defineProperty(targetComponent, key, descriptor);
+                } catch (e) {}
+            }
+        }
+
+        return targetComponent;
+    }
+
+    return targetComponent;
+};    
+</code></pre><p>源码的实现在代码中已经注释的很清晰了，我们这里就不再赘述。</p>
 
 </body>
 </html>
