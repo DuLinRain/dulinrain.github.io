@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vue源码分析之深入响应式原理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+</head>
+<body>
+<h2 id="vue-">Vue源码分析之深入响应式原理</h2>
+<h3 id="-">二、源码分析</h3>
+<p>Vue.js的响应式</p>
+<p>我们知道，创建vue实例的时候有一个初始化的过程，会给所有的data挂载到vm实例上，并且给他们增加getter和setter，我们看看官网怎么说的：</p>
+<p>&gt;<br>当你把一个普通的 JavaScript 对象传给 Vue 实例的 data 选项，Vue 将<strong>遍历此对象所有的属性</strong>，并使用 <strong>Object.defineProperty</strong> 把这些属性全部转为<strong>getter/setter</strong>。Object.defineProperty 是 ES5 中一个无法 shim 的特性，这也就是为什么 Vue 不支持 IE8 以及更低版本浏览器的原因。</p>
+<p>我们来看看源码是怎么实现的：</p>
+<p>首先看看Vue类,他在instance/index.js中：</p>
+<p><img src="https://i.imgur.com/cX1sdK6.png" alt=""></p>
+<p>这个类很简单，就是实例化的时候会先判断你是以函数形式还是以类形式调用的Vue，如果是以函数形式调用，那么他会提示你需要以new Vue的形式调用。然后它的进行初始化，参数是我们调用new Vue的options。</p>
+<p>这个_init()函数在哪里定义的呢？它是通过initMixin混入到Vue.prototype上的，我们开看看它的实现，它的实现在instance/init.js文件中：</p>
+<pre><code>export function initMixin (Vue: Class&lt;Component&gt;) {
+  Vue.prototype._init = function (options?: Object) {
+    const vm: Component = this
+    // a uid
+    vm._uid = uid++
+
+    let startTag, endTag
+    /* istanbul ignore if */
+    if (process.env.NODE_ENV !== &#39;production&#39; &amp;&amp; config.performance &amp;&amp; mark) {
+      startTag = `vue-perf-init:${vm._uid}`
+      endTag = `vue-perf-end:${vm._uid}`
+      mark(startTag)
+    }
+
+    // a flag to avoid this being observed
+    vm._isVue = true
+    // merge options
+    if (options &amp;&amp; options._isComponent) {
+      // optimize internal component instantiation
+      // since dynamic options merging is pretty slow, and none of the
+      // internal component options needs special treatment.
+      initInternalComponent(vm, options)
+    } else {
+      vm.$options = mergeOptions(
+        resolveConstructorOptions(vm.constructor),
+        options || {},
+        vm
+      )
+    }
+    /* istanbul ignore else */
+    if (process.env.NODE_ENV !== &#39;production&#39;) {
+      initProxy(vm)
+    } else {
+      vm._renderProxy = vm
+    }
+    // expose real self
+    vm._self = vm
+    initLifecycle(vm)
+    initEvents(vm)
+    initRender(vm)
+    callHook(vm, &#39;beforeCreate&#39;)
+    initInjections(vm) // resolve injections before data/props
+    initState(vm)
+    initProvide(vm) // resolve provide after data/props
+    callHook(vm, &#39;created&#39;)
+
+    /* istanbul ignore if */
+    if (process.env.NODE_ENV !== &#39;production&#39; &amp;&amp; config.performance &amp;&amp; mark) {
+      vm._name = formatComponentName(vm, false)
+      mark(endTag)
+      measure(`${vm._name} init`, startTag, endTag)
+    }
+
+    if (vm.$options.el) {
+      vm.$mount(vm.$options.el)
+    }
+  }
+}
+</code></pre><p>这段代码比较长，但是我们现在只关心数据的初始化过程。从这段代码我们可以看到，在调用beforeCreate钩子函数前初始化了生命周期、事件、render函数。在这之后调用了initState(vm)来初始化数据。我们看看它的实现，它在instance/state.js中：</p>
+<p><img src="https://i.imgur.com/xEnDnL6.png" alt=""></p>
+<p>我们看到这个函数初始化了各种东西，其中有一个就是initData,我们来看看它的实现：</p>
+<pre><code>//初始化数据
+function initData (vm: Component) {
+  //从vue的options上先拿数据
+  let data = vm.$options.data
+  //挂载在实例的_data属性上
+  data = vm._data = typeof data === &#39;function&#39;
+    //data必须是一个函数(回忆一下，它是一个返回一个对象字面量的函数data(){return {...}})
+    //如果是函数，调用getData拿数据,直接返回对象字面量
+    ? getData(data, vm)
+    : data || {}//如果不是函数，那么就设置为空对象
+  if (!isPlainObject(data)) {//如果不是合法的对象字面量，则设为{}
+    data = {}
+    process.env.NODE_ENV !== &#39;production&#39; &amp;&amp; warn(
+      &#39;data functions should return an object:\n&#39; +
+      &#39;https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function&#39;,
+      vm
+    )
+  }
+  // proxy data on instance
+  const keys = Object.keys(data)//获得data对象字面量的所有keys
+  const props = vm.$options.props//vm实例上的属性
+  const methods = vm.$options.methods//vm实例上的方法
+  let i = keys.length
+  while (i--) {
+    const key = keys[i]
+    if (process.env.NODE_ENV !== &#39;production&#39;) {
+      if (methods &amp;&amp; hasOwn(methods, key)) {//data属性名称不和和方法名称重复
+        warn(
+          `Method &quot;${key}&quot; has already been defined as a data property.`,
+          vm
+        )
+      }
+    }//data的属性名称不能喝prop名称重复
+    if (props &amp;&amp; hasOwn(props, key)) {
+      process.env.NODE_ENV !== &#39;production&#39; &amp;&amp; warn(
+        `The data property &quot;${key}&quot; is already declared as a prop. ` +
+        `Use prop default value instead.`,
+        vm
+      )
+    } else if (!isReserved(key)) {//如果key是合法的，不是保留的($或_)
+      proxy(vm, `_data`, key)//代理到vue实例上，也就是说，所有对data的访问都会映射为对vm._data的访问
+    }
+  }
+  // observe data//观察数据
+  observe(data, true /* asRootData */)
+}
+</code></pre><p>initData函数首先对data做一些检查，data必须是一个函数(实际是一个返回对象字面量的函数)。然后会检查它是一个合法的对象字面量。然后检查它的key是否和props/methods中的名称冲突，如果冲突则给出提示。当一切都合法后，会讲对data的key的访问代理到vue实例的<code>_data</code>上：proxy(vm, <code>_data</code>, key)。我们看看proxy的实现：</p>
+<p><img src="https://i.imgur.com/AFPDoqm.png" alt=""></p>
+<p>proxy方法把对data的getter和setter代理到vm._data的getter和setter，我们在程序中访问<code>data() {return {name: &#39;hehe&#39;}}</code>中的name实际上访问的是vm._data.name。</p>
+<p>当对data的每一个属性都代理完之后，我们队data作为根元素进行观测<code>observe(data, true /* asRootData */)</code>。现在回到了我们这篇文章的主要内容。我们先来看看observe的实现，在observe/index.js中：</p>
+<pre><code>/**
+ * Attempt to create an observer instance for a value,
+ * returns the new observer if successfully observed,
+ * or the existing observer if the value already has one.
+ */
+/*
+ * 尝试为某个值创造一个观察者实例，如果被成功观测了则返回新的观察者实例，或者如果该值已经存在观察者了就返回它的观察者
+ */
+export function observe (value: any, asRootData: ?boolean): Observer | void {
+  //如果value是不是一个对象，则返回
+  if (!isObject(value)) {
+    return
+  }
+  let ob: Observer | void
+  //如果value已经拥有__ob__属性，并且这个属性上对应的值就是一个观察者(也就是已经被观察了)
+  //那么把该观察者赋给临时变量ob,一会儿return
+  if (hasOwn(value, &#39;__ob__&#39;) &amp;&amp; value.__ob__ instanceof Observer) {
+    ob = value.__ob__
+  } else if (
+    //如果value还没有被观察
+    //如果需要被转换为响应式，并且不是服务端渲染
+    //并且这个vlaue是一个数组或对象
+    //并且它是可扩展的
+    //并且它本身不是vue实例
+    observerState.shouldConvert &amp;&amp;
+    !isServerRendering() &amp;&amp;
+    (Array.isArray(value) || isPlainObject(value)) &amp;&amp;
+    Object.isExtensible(value) &amp;&amp;
+    !value._isVue
+  ) {
+    //那么就创建一个观察者对象
+    ob = new Observer(value)
+  }
+  //如果是根数据，则vmCount需要+1
+  if (asRootData &amp;&amp; ob) {
+    ob.vmCount++
+  }
+  return ob//返回这个观察者
+}
+</code></pre><p>observe函数首先判断data有没有添加<code>__ob__</code>属性(Observer实例)，如果有则直接使用，如果没有，则进行一系列的合法性判断之后创建一个Observer实例。并且如果是根元素数据，需要给这个实例的vmCount计数器+1。</p>
+<p>这里面说到了observer实例ob。它是用new Observer(value)创建的。我们看看它的实现：</p>
+<pre><code>/**
+ * Observer class that are attached to each observed
+ * object. Once attached, the observer converts target
+ * object&#39;s property keys into getter/setters that
+ * collect dependencies and dispatches updates.
+ */
+/*
+ * 观察者类，应用在每个被观察者对象上。一旦被应用，观察者将会将目标对象的所有属性key
+ * 转换为getter和setter,这样就可以收集依赖以及分派更新
+ */
+export class Observer {
+  value: any;
+  dep: Dep;
+  vmCount: number; // number of vms that has this object as root $data
+  //将该对象作为根data的vue实例的数量
+  //观察者的构造函数
+  constructor (value: any) {
+    //每个观察者实例上
+    //属性value保存着被观察者
+    //dep上保存着依赖
+    //vmCount上保存着vue实例的数量
+    this.value = value
+    this.dep = new Dep()//新的依赖实例
+    this.vmCount = 0
+    //定义被观察对象的__ob__属性保存着它的观察者
+    def(value, &#39;__ob__&#39;, this)
+    //如果是个数组的话
+    if (Array.isArray(value)) {
+      const augment = hasProto//hasProto定义在env.js中，判断环境是否支持__proto__
+        ? protoAugment//如果支持，则使用protoAugment函数(在下面定义，用到了__proto__)
+        : copyAugment//否则，使用copyAugment函数(遍历数组，调用def复制)
+
+      //value：被观察者
+      //arrayMethods数组对象源
+      //arrayMethods的key，也就是各个方法
+      //相当于说给每个被观察者定义这些方法
+      augment(value, arrayMethods, arrayKeys)
+      //如果是数组，需要调用observeArray来处理
+      this.observeArray(value)
+    } else {
+      //如果不是数组，则直接调用walk(在下面定义)
+      this.walk(value)
+    }
+  }
+
+  /**
+   * Walk through each property and convert them into
+   * getter/setters. This method should only be called when
+   * value type is Object.
+   */
+  /*
+   * 遍历每个属性，将他们转换为getter和setter
+   * 该方法只有在当被观察者是一个对象时才会被调用
+   */
+  walk (obj: Object) {
+    const keys = Object.keys(obj)//拿到keys，注意这个任然是拿不到Symbol的
+    //遍历对象的key，调用defineReactive定义getters和setters
+    for (let i = 0; i &lt; keys.length; i++) {
+      defineReactive(obj, keys[i], obj[keys[i]])
+    }
+  }
+
+  /**
+   * Observe a list of Array items.
+   */
+  /*
+   *当被观察者是一个数组的时候调用
+   */
+  observeArray (items: Array&lt;any&gt;) {
+    for (let i = 0, l = items.length; i &lt; l; i++) {
+      observe(items[i])//遍历数组的每一个元素，调用observe来观测他
+    }
+  }
+}
+</code></pre><p>创建一个ob实例的时候，它会把待观察数据作为参数传进去，挂载在实例的value上，并且这个ob实例上会有一个Dep实例dep，表示有谁依赖于我这个value。还有一个vmCount属性用于记录将该dvalue作为根data的vue实例的数量。然后ob实例会给它观察的data对象挂载一个<code>__ob__</code>属性,这个属性值就是该ob。也就是说data拥有了ob实例。</p>
+<p>然后会判断被观测的是data对象组成的数组，还是单个data对象。如果是数组，则根据浏览器对<strong>proto</strong>支持的不同采用不同的方式来增强数组，给他添加数组的各种方法。并且调用observeArray来观察这个数组。如果是单个对象则调用walk()方法：</p>
+<p><img src="https://i.imgur.com/JNpioqu.png" alt=""></p>
+<p>我们先看看hasProto、protoAugment、copyAugment这几个辅助函数的实现：</p>
+<p><strong>hasProto定义在utils/env.js中，判断环境是否支持<strong>proto</strong></strong>：</p>
+<pre><code>// can we use __proto__?
+export const hasProto = &#39;__proto__&#39; in {}
+</code></pre><p>后两个就定义在当前index.js文件：</p>
+<p><img src="https://i.imgur.com/WJZn2u0.png" alt=""></p>
+<p>然后看看observeArray的实现，它是Observer类的成员函数，实际上上面Observer类定义中已经有了：</p>
+<p><img src="https://i.imgur.com/1fgU6DB.png" alt=""></p>
+<p>我们看到，他就是对data对象组成的数组的每一个data元素调用observe进行观测，那这样其实还是就调用的walk方法。</p>
+<p>在学习walk方法源码之前我们先看看对data对象组成的数组进行增强时所增强的东西：</p>
+<p><img src="https://i.imgur.com/FpVz9It.png" alt=""></p>
+<p>它相当于在数组上重新定义了arrayKeys对应的arrayMethos方法，它的实现在observer/array.js文件中:</p>
+<p>//拿到Array的原型<br>const arrayProto = Array.prototype<br>//达到的效果是arrayMethods.<strong>proto</strong> === Array.prototype,arrayMethods相当于是个数组实例，拥有数组的所有方法<br>export const arrayMethods = Object.create(arrayProto)</p>
+<pre><code>/**
+ * Intercept mutating methods and emit events拦截变异方法并发射事件
+ */
+;[
+  &#39;push&#39;,
+  &#39;pop&#39;,
+  &#39;shift&#39;,
+  &#39;unshift&#39;,
+  &#39;splice&#39;,
+  &#39;sort&#39;,
+  &#39;reverse&#39;
+]
+.forEach(function (method) {
+  // cache original method//缓存原始方法
+  const original = arrayProto[method]
+  //
+  def(arrayMethods, method, function mutator (...args) {
+    //调用原始方法拿到结果
+    const result = original.apply(this, args)
+    const ob = this.__ob__
+
+    //插入元素的三种方法需要特殊处理START
+    let inserted
+    switch (method) {//收尾插入
+      case &#39;push&#39;:
+      case &#39;unshift&#39;:
+        inserted = args//取出新加入(不论收尾)的元素
+        break
+      case &#39;splice&#39;:
+        inserted = args.slice(2)//arrayObject.splice(index,howmany,item1,.....,itemX)意思就是取出后面插入的项
+        break
+    }
+    //如果是上述几种方法，并且有参数(也就是说push/unshift提供了参数或者splice提供了至少三个参数)
+    //则将新加入的元素加入观测
+    if (inserted) ob.observeArray(inserted)
+    //插入元素的三种方法需要特殊处理END
+
+    //这些方法调用后，通知数组已经改变
+    // notify change
+    ob.dep.notify()
+    return result//返回结果
+  })
+})
+</code></pre><p>我们看到，它对data对象数组的push、unshift、splice方法做了定制，也就是说，当你向data对象组成的数组中再加入(push、unshift、splice)data对象的时候，它会对插入的内容进行继续观测，并且会向data对象的依赖项发出通知。</p>
+<p>notify()的实现我们先按下不表，我们回到walk看看它是如何来观察data的：</p>
+<pre><code>  /**
+   * Walk through each property and convert them into
+   * getter/setters. This method should only be called when
+   * value type is Object.
+   */
+  /*
+   * 遍历每个属性，将他们转换为getter和setter
+   * 该方法只有在当被观察者是一个对象时才会被调用
+   */
+  walk (obj: Object) {
+    const keys = Object.keys(obj)//拿到keys，注意这个任然是拿不到Symbol的
+    //遍历对象的key，调用defineReactive定义getters和setters
+    for (let i = 0; i &lt; keys.length; i++) {
+      defineReactive(obj, keys[i], obj[keys[i]])
+    }
+  }
+</code></pre><p>可以看到walk会遍历data(实际上指向的是vm._data)的属性，并通过defineReactive给vm._data定义getter和setter。前面我们已经说过了，对data() {return {name: &#39;test&#39;}}中name的操作全都代理到vm._data上了，所以给vm._data定义getter和setter对data() {return {name: &#39;test&#39;}}是起作用的。</p>
+<p>我们来看看defineReactive的具体实现：</p>
+<pre><code>export function defineReactive (
+  obj: Object,
+  key: string,
+  val: any,
+  customSetter?: ?Function,
+  shallow?: boolean
+) {
+  //一个新的依赖实例
+  const dep = new Dep()
+  //拿到对应key的属性描述符
+  const property = Object.getOwnPropertyDescriptor(obj, key)
+  //如果拿到了，但是该属性是不可配置属性，返回
+  if (property &amp;&amp; property.configurable === false) {
+    return
+  }
+
+  // cater for pre-defined getter/setters
+  // 用于预定义getter/setters
+  const getter = property &amp;&amp; property.get
+  const setter = property &amp;&amp; property.set
+  //观察val，拿到该对象的key对应属性的观察者(也就是子观察者)
+  let childOb = !shallow &amp;&amp; observe(val)
+  Object.defineProperty(obj, key, {
+    enumerable: true,
+    configurable: true,
+    get: function reactiveGetter () {
+      //定义getter
+      //拿value, 如果已经有getter，则直接调用getter拿value，
+      //否则用传的value
+      const value = getter ? getter.call(obj) : val
+      //如果有依赖？
+      if (Dep.target) {
+        dep.depend()
+        if (childOb) {
+          childOb.dep.depend()
+          if (Array.isArray(value)) {
+            dependArray(value)
+          }
+        }
+      }
+      return value//返回值
+    },
+    set: function reactiveSetter (newVal) {
+      //定义setter
+      //同样先拿值
+      const value = getter ? getter.call(obj) : val
+      //如果新旧值相等，或自己和自己不等(NaN !== NaN)，则返回
+      /* eslint-disable no-self-compare */
+      if (newVal === value || (newVal !== newVal &amp;&amp; value !== value)) {
+        return
+      }
+      //如果非生产环境，且有自定义setter，调用自定义setter
+      /* eslint-enable no-self-compare */
+      if (process.env.NODE_ENV !== &#39;production&#39; &amp;&amp; customSetter) {
+        customSetter()
+      }
+      //如果本身有setter，则调用
+      if (setter) {
+        setter.call(obj, newVal)
+      } else {
+        //没有则赋值
+        val = newVal
+      }
+      //观察新设置的值
+      childOb = !shallow &amp;&amp; observe(newVal)
+      //通知
+      dep.notify()
+    }
+  })
+}
+</code></pre><p>这里面定义getter的时候，会有一大段用于依赖收集，这其中既有自身的依赖收集，也有属性对应的值得依赖收集。而如果属性对应的值是数组的话还需要遍历数组元素进行依赖收集。也就是说，谁依赖于我，谁就订阅我。</p>
+<p>定义setter的时候，就是正常的赋新值，当然对于新值需要对其进行observer，然后通知所有依赖我的人告诉他我改了。实际上会调用各个订阅者的update方法。</p>
+<p>这里面涉及到Dep类，我们来看看它的实现。</p>
+<h3 id="-dep-">三、Dep类</h3>
+<p>Dep类实现了一个简单的观察者模式(发布订阅)。Dep作为一个发布者，当data的set被调用时，会通知订阅者(watcher)，也就是调用订阅者的update方法。</p>
+<p>Dep类的源码如下：</p>
+<pre><code>let uid = 0
+
+/**
+ * A dep is an observable that can have multiple
+ * directives subscribing to it.
+ */
+/*
+ *dep是一个可发布的？，很多指令都可以订阅它？？
+ */
+export default class Dep {
+  static target: ?Watcher;//静态属性
+  id: number;
+  subs: Array&lt;Watcher&gt;;
+
+  constructor () {
+    this.id = uid++
+    this.subs = []
+  }
+  //增加订阅者(订阅者是一个watcher)
+  addSub (sub: Watcher) {
+    this.subs.push(sub)
+  }
+  //移除订阅者
+  removeSub (sub: Watcher) {
+    remove(this.subs, sub)
+  }
+  //依赖
+  depend () {
+    //如果存在依赖？？，
+    if (Dep.target) {
+      //吧当前Dep实例加入
+      Dep.target.addDep(this)
+    }
+  }
+  //通知
+  notify () {
+    //先拿到订阅者列表的稳定版本
+    // stabilize the subscriber list first
+    const subs = this.subs.slice()
+    for (let i = 0, l = subs.length; i &lt; l; i++) {
+      //调用每个订阅者的update方法
+      subs[i].update()
+    }
+  }
+}
+</code></pre><p>这里面调用update的是subs数组的每个元素，而subs数组的每个元素都是一个watcher。所以我们看看watcher类的实现</p>
+<h3 id="-watcher-">四、watcher类</h3>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
