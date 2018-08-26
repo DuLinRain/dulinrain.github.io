@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Redux MiddleWare原理和源码分析</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+</head>
+<body>
+<h1 id="redux-middleware-">Redux Middleware原理和源码分析</h1>
+<p>我们在最初使用Redux的时候，我们创建以及dispatch的action基本上都是纯对象，这些action都是同步的。但是我们实际的场景经常遇到的是异步的，比如我们需要发起网络请求，并希望请求结果回来之后通知我们。这些都需要我们发起异步action。那我们该怎么做呢？Redux提供了middleware可以使我们达到想要的结果。</p>
+<h3 id="-redux-middleware-">一、 什么是Redux middleware？</h3>
+<p>对于<code>Redux middleware</code>在<code>dispatch action</code>和将<code>action</code>交给<code>reducer</code>之间提供了第三方扩展点：</p>
+<pre><code>[ Action ] &lt;-&gt; [ Middleware ] &lt;-&gt; [ Dispatcher ]
+</code></pre><p>中间件存在于action和reducer之间，他可以监听所有分发的action，并根据action的具体信息执行相应的后续行为。</p>
+<p>从形式上讲，中间件是一个函数，这个函数接收一个store参数并且返回一个新函数。返回的这个新函数接收一个next参数并且返回另一个新函数。第二次返回的这个新函数接收一个action参数。如下：</p>
+<pre><code>var someMid = function (store) {
+    return function (next) {//next实际上是改造过的dispatch
+        return function (action) {
+            //我们的逻辑一般就写在这里
+            //比如 next(action)
+        }
+    }
+}
+</code></pre><p>如果简写的话，一般写成这种形式：</p>
+<pre><code>var someMid = (store) =&gt; (next) =&gt; (action) =&gt; {
+
+}
+</code></pre><p>比如我们想记录action前后日志的话，可以这样写：</p>
+<pre><code>var someMid = (store) =&gt; (next) =&gt; (action) =&gt; {
+    console.log(&#39;before dispatch&#39; + action.type, store.getState());
+    next(action);
+    console.log(&#39;after dispatch&#39; + action.type, store.getState());
+}
+</code></pre><p>这样当我们在创建store时，apply该middleware后，每个dispatch的action都会有日志。</p>
+<p>那么问题来了，为什么middleware要写成这种格式呢？applyMiddleware又做了些什么呢？要了解这些可以从applyMiddleware的演进说起。</p>
+<h3 id="-redux-applymiddleware-">二、 Redux applyMiddleware演进</h3>
+<p>还是从记录日志说起，我们要想记录一个action，最先想到的肯定是在我们dispatch action的时候手动去一次次记录：</p>
+<pre><code>let store = createStore(xxx)
+let action = someActionCreator(&#39;xxx&#39;)
+console.log(&#39;before dispatch&#39; + action.type, store.getState());
+dispatch(action);
+console.log(&#39;after dispatch&#39; + action.type, store.getState());
+</code></pre><p>后来，你可能会觉得，一次次重复写代码麻烦，所以你对日志记录做了一定的封装：</p>
+<pre><code>function dispatchAndLog (store, action) {
+    console.log(&#39;before dispatch&#39; + action.type, store.getState());
+    dispatch(action);
+    console.log(&#39;after dispatch&#39; + action.type, store.getState());
+}
+dispatchAndLog(store, action)
+</code></pre><p>后来你可能会觉得，为啥我们不直接对store上挂载的dispatch动手脚呢？直接对它进行二次封装：</p>
+<pre><code>let next = store.dispatch;
+store.dispatch = function (action) {
+    console.log(&#39;before dispatch&#39; + action.type, store.getState());
+    next(action); //注意这里的差异
+    console.log(&#39;after dispatch&#39; + action.type, store.getState());
+}
+</code></pre><blockquote>
+<p>注：这里其实用到了另外一个知识点：代理模式。有兴趣的可以看看我写的这个<a href="https://dulinrain.github.io/javascript-design-pattern/JavaScript%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E7%BB%93%E6%9E%84%E5%9E%8B%EF%BC%89%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F.html">JavaScript设计模式（结构型）之代理模式</a></p>
+</blockquote>
+<p>做到这里其实我们已经可以为所有dispatch的action进行日志记录，但是如果我们还想，对所有的模块进行崩溃记录，你可能马上会想到这样的代码：</p>
+<pre><code>let next = store.dispatch;
+store.dispatch = function (action) {
+    console.log(&#39;before dispatch&#39; + action.type, store.getState());
+    try {
+        next(action); //注意这里的差异
+    } catch (e) {
+        console.log(&#39;error&#39;, action.type);
+    }
+    console.log(&#39;after dispatch&#39; + action.type, store.getState());
+}
+</code></pre><p>但这样做有个问题，只要store使用了我们的这种方式，它会同时具备日志和崩溃记录的能力。但是可能我们在有的store中只想要日志记录，而在另外的store中只想用崩溃记录呢？ 可能你会想把他们独立出来：</p>
+<p><strong>日志记录：</strong></p>
+<pre><code>function writeLog (store) {//包装函数
+    let next = store.dispatch;//始终指向之前的，这样可以链接起来
+    store.dispatch = function (action) {
+        console.log(&#39;before dispatch&#39; + action.type, store.getState());
+        next(action);
+        console.log(&#39;after dispatch&#39; + action.type, store.getState());
+    }
+}
+</code></pre><p><strong>崩溃记录：</strong></p>
+<pre><code>function errorLog (store) {//包装函数
+    let next = store.dispatch;//始终指向之前的，这样可以链接起来
+    store.dispatch = function (action) {
+        try {
+            next(action); //注意这里的差异
+        } catch (e) {
+            console.log(&#39;error&#39;, action.type);
+        }
+    }
+}
+</code></pre><p>这样我们就可以像下面这么调用他们：</p>
+<pre><code>var store = Redux.createStore(counter)
+
+
+  function writeLog (store) {
+    let next = store.dispatch;
+    store.dispatch = function (action) {
+        console.log(&#39;before dispatch&#39; + action.type, store.getState());
+        next(action); 
+        console.log(&#39;after dispatch&#39; + action.type, store.getState());
+    }
+  }
+  writeLog(store)
+
+  function errorLog (store) {
+    let next = store.dispatch;
+    store.dispatch = function (action) {
+        try {
+            next(action); 
+            throw new Error(&#39;测试error&#39;)
+        } catch (e) {
+            console.log(&#39;error&#39;, action.type);
+        }
+    }
+  }
+  errorLog(store)
+</code></pre><p>尽管如此，这个看起来还是不太友好，我们需要手动的在代码里面执行我们需要的包装函数，更好的方式是，我们定义一个函数，这个函数接收一个数组作为参数，数组里面就是我们想要的独立模块。</p>
+<pre><code>function myApplyMiddleware (store, middlewares) {
+    middlewares = middlewares.slice();
+    middlewares.reverse();
+    // 在每一个 middleware 中变换 dispatch 方法。
+    middlewares.forEach(middleware =&gt;
+        middleware(store)
+    )
+}
+</code></pre><p>另外一种等效的方式是，我们在包装函数内返回一个新的dispatch，然后这个新的dispatch会在myApplyMiddleware执行时赋给store:</p>
+<pre><code>function writeLog (store) {//新包装函数
+    let next = store.dispatch;
+    return function (action) {
+        console.log(&#39;before dispatch&#39; + action.type, store.getState());
+        next(action);
+        console.log(&#39;after dispatch&#39; + action.type, store.getState());
+    }
+}
+
+function myApplyMiddleware (store, middlewares) {//新的myApplyMiddlewares
+    middlewares = middlewares.slice();
+    middlewares.reverse();
+    // 在每一个 middleware 中变换 dispatch 方法。
+    middlewares.forEach(middleware =&gt;
+        store.dispatch = middleware(store)
+    )
+}
+</code></pre><p>这样我们就可以像下面这样在程序中调用了：</p>
+<pre><code>var store = Redux.createStore(counter)
+myApplyMiddleware(store, [writeLog, errorLog])
+</code></pre><p>至始至终，这里都有一个非常关键的步骤，就是在包装函数的第一句，我们都用用对dispatch做了代理，用next指向前一个store.dispatch，因为只有这样，我们定义的多个middleware才能都链式调用前一个middleware的dispatch：</p>
+<pre><code>let next = store.dispatch;
+</code></pre><p>有没有更好的办法实现这一点呢？当然，我们可以把next(也就是这里的store.dispatch)作为一个参数传递进去，这样我们的包装函数需要改造成这样：</p>
+<pre><code>function writeLog (store) {//新包装函数
+    return function (next) {
+        return function (action) {
+            console.log(&#39;before dispatch&#39; + action.type, store.getState());
+            next(action);
+            console.log(&#39;after dispatch&#39; + action.type, store.getState());
+        }
+    }
+}
+</code></pre><p>那这个next参数在哪里传递进去呢？显然我们需要在每次writeLog执行后给传递，也就是需要在myApplyMiddleware中传递，我们改造myApplyMiddleware如下：</p>
+<pre><code>function myApplyMiddleware (store, middlewares) {//新的myApplyMiddlewares
+    middlewares = middlewares.slice();
+    middlewares.reverse();
+    // 在每一个 middleware 中变换 dispatch 方法。
+    let dispatch = store.dispatch
+    middlewares.forEach(middleware =&gt;
+        dispatch = middleware(store)(dispatch) //每次将新的dispath穿进去作为next
+    )
+    return store;//返回新的store
+}
+</code></pre><p>这实际上就是Redux中applyMiddleware的核心逻辑，但是Redux官方的applyMiddleware显然是比这复杂一些的，我们接下来看看它的实现源码。</p>
+<h3 id="-redux-applymiddleware-">三、 Redux applyMiddleware源码解读</h3>
+<p>Redux 的applyMiddleware通常作为createStore的第2/3个参数调用，所以在看Redux applyMiddleware源码前我们先看看createStore的语法：</p>
+<pre><code>//这里的enhancer是applyMiddleware的执行结果
+export default function createStore(reducer, preloadedState, enhancer) {
+  if (typeof preloadedState === &#39;function&#39; &amp;&amp; typeof enhancer === &#39;undefined&#39;) {
+    enhancer = preloadedState
+    preloadedState = undefined
+  }
+
+  if (typeof enhancer !== &#39;undefined&#39;) {
+    if (typeof enhancer !== &#39;function&#39;) {
+      throw new Error(&#39;Expected the enhancer to be a function.&#39;)
+    }
+    //这里的enhancer是applyMiddleware的执行结果
+    return enhancer(createStore)(reducer, preloadedState)//如果提供了applyMiddleware，则调用
+  }
+}
+</code></pre><p>createStore会检查是否提供了applyMiddleware参数，如果提供了则执行:</p>
+<pre><code>enhancer(createStore)(reducer, preloadedState)
+</code></pre><p>来创建store，从上面的语法可以看出，applyMiddleware的返回结果需要是一个参数为createStore的函数，这个函数的返回结果也是一个函数，这个函数接收最初调用createStore时的除applyMiddleware以外的参数。 </p>
+<p>我们可以看看applyMiddleware的源码来验证一下：</p>
+<pre><code>export default function applyMiddleware(...middlewares) {
+  //applyMiddleware会返回一个接收createStore作为参数的函数，这个函数接收最初调用createStore时的除applyMiddleware以外的参数
+  return createStore =&gt; (...args) =&gt; {
+    //函数执行后会创建store
+    const store = createStore(...args)
+    let dispatch = () =&gt; {
+      throw new Error(
+        `Dispatching while constructing your middleware is not allowed. ` +
+          `Other middleware would not be applied to this dispatch.`
+      )
+    }
+    //每个中间件都接受dispatch和getState作为参数(我们前面自己推演的是直接传store，这里相当于只把中间件需要的两个属性传进去了，也就是阉割版的store)
+    //middlewareAPI相当于阉割版的store
+    const middlewareAPI = {
+      getState: store.getState,
+      dispatch: (...args) =&gt; dispatch(...args)
+    }
+    //传进来的中间件放在数组中，链起来。中间件的执行结果返回
+    const chain = middlewares.map(middleware =&gt; middleware(middlewareAPI))
+    //compose(f, g, h)等同于(...args) =&gt; f(g(h(...args)))，
+    //所以这就相当于把初始的store.dispatch传进去，把每一个chain（chain是中间件的执行结果）的执行结果
+    //作为下一个chain的参数，而中间件的签名是store =&gt; next =&gt; action =&gt;{...}，因此chain的签名是
+    //next =&gt; action =&gt;{...}，chain的返回结果是action =&gt;{...}，这不就是相当于一个dispatch么？。
+    //chain把上一个chain返回的dispatch作为参数传递给下一个chain。最终返回一个dispatch
+    dispatch = compose(...chain)(store.dispatch)//实际上回先执行最后一个middleware
+    //返回的store新的dispatch替换老的store中的dispatch
+    return {
+      ...store, 
+      dispatch
+    }
+  }
+}
+</code></pre><p>所以这核心的逻辑其实和我们前面的方法一样的，只不过他这里用了compose辅助函数，这里再贴出来比照一下：</p>
+<pre><code>function myApplyMiddleware (store, middlewares) {//新的myApplyMiddlewares
+    middlewares = middlewares.slice();
+    middlewares.reverse();
+    // 在每一个 middleware 中变换 dispatch 方法。
+    let dispatch = store.dispatch
+    middlewares.forEach(middleware =&gt;
+        dispatch = middleware(store)(dispatch) //每次将新的dispath穿进去作为next
+    )
+    return store;//返回新的store
+}
+</code></pre><p>两者对比一下可以总结出几点差异：</p>
+<ul>
+<li>官方的方法只暴露了store的一部分方法(也就是注释中的阉割版store)，我们这个暴露的是完整store。</li><li>官方的方法是作为createStore的参数传入，这样的好处是你只能调用一次这个方法。而我们的方法是在store本身调用。因此二者的语法签名也不一样。</li><li>它用了一个非常巧妙的方式，以确保如果你在 middleware 中调用的是 store.dispatch(action) 而不是 next(action)，那么这个操作会再次遍历包含当前 middleware 在内的整个 middleware 链。这对异步的 middleware 非常有用。</li></ul>
+<h3 id="-action">四、 发起异步action</h3>
+<p>Redux middleware也使得我们发起异步action变得非常容易，我们可以在middleware内发出异步请求等操作，然后将请求结果作为action的payload dispatch出去，比如你可以这样：</p>
+<pre><code>const someApiMiddleware = (store) =&gt; (next) =&gt; (action) =&gt; {
+    if (!action.meta &amp;&amp; action.meta.type!==&#39;api&#39;) { 
+        return next(action)
+    }
+    //只针对特殊的action使用
+    const {url, ...params} = action.meta
+    fetch(url, params)
+    .then(res =&gt; resp.json())
+    .then(json =&gt; {
+        let newAction = Object.assign({}, action, {payload: json})
+        delete action.meta//删除特殊标记
+        store.dispatch(newAction)
+    })
+}
+</code></pre>
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
