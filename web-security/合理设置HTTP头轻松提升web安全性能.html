@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>合理设置HTTP头轻松提升web安全性能</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+</head>
+<body>
+<h1 id="-http-web-">合理设置HTTP头轻松提升web安全性能</h1>
+<p>本文将讲述用于提升web安全的一些最重要的HTTP头。我们将理解这里面每种HTTP是用来干嘛的以及当这些头被错误配置的时候会受到哪些攻击。</p>
+<p>下面列出的是我们将要讲述的一系列的HTTP头，这其中又可大体上分为两大部分：</p>
+<h6 id="-headers">预防攻击的headers</h6>
+<ul>
+<li>HTTP Strict Transport Security</li><li>Content Security Policy</li><li>X-FrameOptions</li><li>X-XSS-Protection</li><li>X-Content-Type-Options</li><li>Access-Control-Allow-Origin</li><li>Set-Cookie</li></ul>
+<h6 id="-headers">泄漏信息的headers</h6>
+<ul>
+<li>Server</li><li>X-Powered-By</li><li>X-AspNet-Version</li></ul>
+<h3 id="-http-header-">一、 HTTP header的背景</h3>
+<p>HTTP头是客户端和服务端通过HTTP协议通信时传递的一些信息，当我们在浏览器输入一个地址或者点击一个链接的时候，web浏览器会发送包含HTTP客户端headers的HTTP请求，同样服务端的响应会包含服务端headers。</p>
+<p>HTTP有数十个headers，对他们一个个的介绍并不是本文的目的。 本文只讨论对web安全有影响的HTTP Server headers。</p>
+<h3 id="-headers">二、 预防攻击的headers</h3>
+<h4 id="2-1-http-strict-transport-security-hsts-">2.1 HTTP Strict Transport Security (HSTS)</h4>
+<p>HTTP Strict Transport Security指示浏览器只能通过https去访问web服务器。 一旦在服务端进行了设置，HTTP响应头中将包含Strict-Transport-Security头字段。 当浏览器收到这个头的时候会将所有的请求通过https发送。 HSTS可设置为3个值：</p>
+<ul>
+<li>Max-age： 该值定义了在多久的时间内，只能通过https访问，默认的取值是31536000秒，也就是1年(365天)，这也是该值的最大有效值。 服务端在每次响应的时候更新这个值这样该值就不会过期。</li><li>IncludeSubDomains： 表示将该设置同时应用于子域名。</li><li>Preload：Preload 列表是硬编码在Google Chrome浏览器里的，网站的拥有者可以将自己的URL提交给Chrome放进这个列表中。该列表由Google维护，但是也被其它浏览器使用，该列表可以在这里看到：<a href="https://chromium.googlesource.com/chromium/src/+/master/net/http/transport_security_state_static.json">https://chromium.googlesource.com/chromium/src/+/master/net/http/transport_security_state_static.json</a></li></ul>
+<p>下面是<a href="https://www.jianshu.com/">简书</a>网站的使用案例：</p>
+<p><img src="https://i.imgur.com/JGBeloR.png" alt=""></p>
+<h5 id="-">攻击场景</h5>
+<p>如果未启用HSTS，攻击者可以执行中间人攻击并从用户的Web会话中窃取敏感信息。 想象一下，受害者连接到开放式Wi-Fi的情况实际上是在攻击者的控制之下。 通过HTTP访问网站将允许攻击者拦截请求并读取敏感信息。因为HTTP传输的都是明文。 如果该站点使用HTTPS，但用户使用HTTP访问它，会将其重定向到HTTPS。 如果同一用户之前访问过该网站，则浏览器中记录的HSTS详细信息会导致通过HTTPS自动建立连接。</p>
+<h4 id="2-2-content-security-policy-csp-">2.2 Content Security Policy（CSP策略）</h4>
+<p>Content Security Policy指示浏览器只加载被策略定义所允许的内容，该策略使用的是白名单的方式来告诉浏览器只能从哪里加载图片、js脚本、CSS等资源，如果配置得当，该策略可以阻止网站遭受<strong>跨站脚本攻击(XSS)、点击劫持（ClickJacking）以及HTML注入( HTML injection )</strong>攻击。</p>
+<p>该HTTP头就叫做<code>Content-Security-Policy</code>，可以设置的指令包括<code>default-src</code>, <code>script-src</code>, <code>media-src</code>, <code>img-src</code>。 这些指令指示浏览器从哪里加载这些类型的资源。</p>
+<p>下面是<code>Content-Security-Policy</code>设置的一个例子：</p>
+<pre><code>Content-Security-Policy: default-src &#39;self&#39;; media-src media123.com media321.com; script-src script.com; img-src *;
+</code></pre><p>浏览器会做如下解释：</p>
+<ul>
+<li><code>default-src &#39;self&#39;</code>: 只能从当前域名下加载所有资源。</li><li><code>media-src media123.com media321.com</code>: 只能从media1.com 和 media2.com加载媒体资源。</li><li><code>script-src script.com</code>: 只能从 script.com 加载脚本资源</li><li><code>img-src *</code>: 可以从任意地方加载图片。</li></ul>
+<p>下面也是<a href="https://www.jianshu.com/">简书</a>网站的使用案例：</p>
+<p><img src="https://i.imgur.com/y5hLNGS.png" alt=""></p>
+<h4 id="2-3-x-frameoptions">2.3 X-FrameOptions</h4>
+<p>这个头也是用来阻止用户遭受点击劫持攻击，它是通过禁止浏览器通过iframe加载该页面实现的。 X-FrameOptions可以设置3个值：</p>
+<ul>
+<li><code>X-Frame-Options: DENY</code> 这会阻止该页面被任何网站的iframe加载，包括他自己所属的网站。</li><li><code>X-Frame-Options: sameorigin</code> 这只允许和该页面同域的网站通过iframe加载该页面。 也就是说www.site.com下的页面只允许在www.site.com域名下被iframe加载。</li><li><code>X-Frame-Options: allow-from uri</code> 只允许在指定的域名/uri下通过iframe加载该页面。</li></ul>
+<p>下面也是<a href="https://www.jianshu.com/">简书</a>网站的使用案例：</p>
+<p><img src="https://i.imgur.com/k02vYzM.png" alt=""></p>
+<h6 id="-">攻击场景</h6>
+<p>攻击者可以欺骗用户访问恶意网站，恶意网站会将目标应用程序加载到不可见的iframe中。 当用户点击恶意应用程序（例如基于网络的游戏）时，点击将被“窃取”并发送到目标应用程序（Clickjacking）。 因此，用户将在未经他同意的情况下点击应用程序，这可能导致执行一些未预期的操作（例如删除帐户等）。</p>
+<h4 id="2-4-x-xss-protection">2.4 X-XSS-Protection</h4>
+<p>这个头是用来阻止跨站脚本攻击（XSS）的，它在现代浏览器中与XSS Filters一起工作，并且可以设置三种模式：</p>
+<p>-<code>X-XSS-Protection: 0</code>; - 表示禁用 XSS filter</p>
+<ul>
+<li><code>X-XSS-Protection: 1</code>; -启用 XSS filter, 如果检测到XSS攻击，浏览器将清理页面内容以阻止脚本执行。</li><li><code>X-XSS-Protection: 1; mode=block</code> - 如果检测到XSS攻击将阻止页面渲染。</li></ul>
+<p>下面依旧是<a href="https://www.jianshu.com/">简书</a>网站的使用案例：</p>
+<p><img src="https://i.imgur.com/9TrYMDs.png" alt=""></p>
+<h4 id="2-5-x-content-type-options">2.5  X-Content-Type-Options</h4>
+<p>这个响应头是为了阻止MIME嗅探（ MIME sniffing）攻击。什么是MIME嗅探？ MIME嗅探是Web浏览器的一项功能，用于检查所服务文件的内容。 它的工作原理如下：</p>
+<ol>
+<li>Web浏览器请求文件。 服务器发送带有HTTP标头Content-Type集的文件。</li><li>Web浏览器“嗅探”此文件的内容以确定文件格式。</li><li>完成分析后，浏览器会将其结果与服务器发送的结果进行比较。 如果不匹配，浏览器将使用标识的格式。</li></ol>
+<p>这会导致一种安全攻击，如何做到？</p>
+<h6 id="-">攻击场景</h6>
+<ol>
+<li>应用程序允许用户上传图像文件并验证其扩展名</li><li>用户上传带有jpg或png扩展名的图像文件，但此文件也包含恶意HTML代码</li><li>浏览器使用包含代码的HTML呈现文件并在浏览器中执行</li></ol>
+<p>下面依旧是<a href="https://www.jianshu.com/">简书</a>网站的使用案例：</p>
+<p><img src="https://i.imgur.com/pYaqZxg.png" alt=""></p>
+<p>如果将<code>X-Content-Type-Options</code>头设置为<code>nosniff</code>，浏览器将不再“嗅探”所接收文件的内容，而是使用<code>Content-Type</code>头中标识的值。 此头专用于IE和Chrome浏览器。</p>
+<p>这个头可以与其他两个头结合使用从而进一步地增强安全性：</p>
+<ul>
+<li><code>Content-Disposition</code>: 在下载pentest.html文件的时候会强制浏览器出弹窗。</li></ul>
+<pre><code>Content-Disposition: attachment; filename=pentest.html
+</code></pre><ul>
+<li><code>X-Download-Options</code>: 当被设置为 <code>noopen</code> 时, 会强制用户在打开文件前先将其保存成本地文件, 而不是在浏览器中直接打开。</li></ul>
+<h4 id="2-6-access-control-allow-origin">2.6  Access-Control-Allow-Origin</h4>
+<p>Access-Control-Allow-Origin其实是CORS头，通常用于解决跨域问题。 这个头允许指定的非同域站点去访问给定的资源。 具体的使用方法很简单，这里就不再赘述，但是需要注意的是区分简单/非简单CORS请求的不同，也就是要不要对OPTIONS响应做设置。</p>
+<h6 id="-">攻击场景</h6>
+<p>如果<code>Access-Control-Allow-Origin</code>配置不当，攻击者可以使用其他第三方网站从目标网站读取数据。 许多开发人员使用通配符访问<code>Access-Control-Allow-Origin</code>头，这样设置会导致允许任何网站从他们的网站读取数据。</p>
+<h4 id="2-7-set-cookie">2.7 Set-Cookie</h4>
+<p>应用程序设置的cookie值由服务器在Set-Cookie头中发送。 收到此头后，浏览器将在Cookie头中发送每个HTTP请求的cookie。</p>
+<p>HTTP cookie通常包含敏感信息（尤其是session cookie），需要保护它们以防止未经授权的访问。</p>
+<p>可以通过设置以下属性来保护cookie：</p>
+<ul>
+<li>Secure：设置该属性后， cookie将仅通过HTTPS发送，而不是通过明文HTTP协议发送</li><li>HTTPOnly：设置该属性后，浏览器不允许通过JavaScript代码访问使用此属性设置的cookie的内容。 这有助于减少通过XSS攻击实现的会话劫持。</li></ul>
+<p>可以看看简书是没有设置这两个属性的：</p>
+<p><img src="https://i.imgur.com/oNUE9hS.png" alt=""></p>
+<h3 id="-http-">三、 泄漏信息的HTTP头</h3>
+<h4 id="3-1-server">3.1 Server</h4>
+<p>此标头包含有关后端服务器（类型和版本）的信息。 例如，下面的截图显示的是百度运行的服务器机器版本：</p>
+<p><img src="https://i.imgur.com/T3kUg9e.png" alt=""></p>
+<p>具有此知识的对手可能会查找特定于该版本的漏洞，然后针对性的进行攻击。 特别是对于一些使用开源软件的网站而言。 相关信息可在公共数据库中找到，例如：</p>
+<ul>
+<li><a href="https://nvd.nist.gov">https://nvd.nist.gov</a></li><li><a href="https://cve.circl.lu">https://cve.circl.lu</a></li><li><a href="https://www.securityfocus.com/bid">https://www.securityfocus.com/bid</a></li></ul>
+<p>服务器的信息可以进行重新配置从而达到避免泄漏信息的作用。</p>
+<h4 id="3-2-x-powered-by">3.2 X-Powered-By</h4>
+<p>X-Powered-By头会泄漏Web应用程序中使用的Web框架或编程语言的详细信息。 例如，某视频网站的X-Powered-By如下：</p>
+<p><img src="https://i.imgur.com/hDNAlO5.png" alt=""></p>
+<h3 id="-">四、 如何绕过这些头的阻碍？</h3>
+<p>直接在应用本身的代码绕过这些阻碍是很困难的，但是编写Chrome插件是可以实现绕过这些头限制的一种方案，具体案例可参考我写的<a href="https://dulinrain.github.io/web-security/%E7%BC%96%E5%86%99Chrome%E6%8F%92%E4%BB%B6%E7%BB%95%E8%BF%87CSP%E7%AD%96%E7%95%A5.html">编写Chrome插件绕过CSP策略</a></p>
+<h3 id="-">结论</h3>
+<p>可以在服务器上配置HTTP标头，以增强Web应用程序的整体安全性。 这些头不会使应用程序本身更安全，但它们会阻止利用应用程序的潜在漏洞。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
