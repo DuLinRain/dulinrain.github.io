@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>React-Redux 之connect源码详解</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+</head>
+<body>
+<h1 id="react-redux-connect-">React-Redux 之connect源码详解</h1>
+<p>如果你了解Redux的话，你一定知道，Redux维护这一个唯一的store，我们每次dispatch一个action，就会执行对应的reducer从而得到新的状态。</p>
+<p>但是，当我们把Redux与React结合后（即使用React-Redux），React是怎么知道store已经改变的呢？</p>
+<p>本篇文章带你了解如下关键知识点：</p>
+<ul>
+<li>connect的底层到底做了些什么？</li><li>React是如何知道store状态已经发生改变的？</li></ul>
+<h3 id="-connect-">一、 connect的底层到底做了些什么？</h3>
+<p>React-Redux没有触碰Redux中的任何东西，他做的只是把React和Redux结合起来(使用connect)，并且使store在复杂层级的组件中更好的获取(使用Provider)。</p>
+<p>React-Redux库导出了connect方法，同时导出的还有connectAdvanced，以便于我们更加定制化地创造自己的connect方法，事实上connect内部也是使用的connectAdvanced。</p>
+<p>所以在弄清这些之前，我们先通过我们的代码示例来尝试理解一下他们各自是什么。</p>
+<pre><code>import { connect } from &#39;react-redux&#39;
+
+const VisibleTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList)
+</code></pre><p>上面是我们常见的一种使用例子，从上面的代码我们可以看得出来，connect是一个方法，接收若干个参数，它的执行结果应该是一个高阶组件(HOC),这个高阶组件通过包裹我们的TodoList组件。</p>
+<p>所以在接下来看源码的时候，我们可以重点关注一下：</p>
+<ul>
+<li>connect做了什么？</li><li>connectAdvanced做了什么</li><li>高阶组件在里面做了什么？</li></ul>
+<h4 id="1-1-connect-">1.1 connect方法</h4>
+<pre><code>import connectAdvanced from &#39;../components/connectAdvanced&#39;
+import shallowEqual from &#39;../utils/shallowEqual&#39;
+import defaultMapDispatchToPropsFactories from &#39;./mapDispatchToProps&#39;
+import defaultMapStateToPropsFactories from &#39;./mapStateToProps&#39;
+import defaultMergePropsFactories from &#39;./mergeProps&#39;
+import defaultSelectorFactory from &#39;./selectorFactory&#39;
+
+/*
+  connect is a facade over connectAdvanced. It turns its args into a compatible
+  selectorFactory, which has the signature:
+
+    (dispatch, options) =&gt; (nextState, nextOwnProps) =&gt; nextFinalProps
+
+  connect passes its args to connectAdvanced as options, which will in turn pass them to
+  selectorFactory each time a Connect component instance is instantiated or hot reloaded.
+
+  selectorFactory returns a final props selector from its mapStateToProps,
+  mapStateToPropsFactories, mapDispatchToProps, mapDispatchToPropsFactories, mergeProps,
+  mergePropsFactories, and pure args.
+
+  The resulting final props selector is called by the Connect component instance whenever
+  it receives new props or store state.
+ */
+/**
+ * 
+ connect是connectAdvanced的门面，它将接收的参数转换成selectorFactory，有着下面的语法签名：
+
+  (dispatch, options) =&gt; (nextState, nextOwnProps) =&gt; nextFinalProps
+
+ connect将他的参数作为options传递给connectAdvanced，当每次Connect组件被实例化或热加载的时候，
+ connectAdvanced会接着将这些参数传递给selectorFactory
+
+ selectorFactory通过mapStateToProps, mapStateToPropsFactories, mapDispatchToProps, 
+ mapDispatchToPropsFactories, mergeProps,mergePropsFactories, 以及 pure 参数返回一个最终的属性选择器
+
+ 每当Connect组件实例收到新的props或者store中的状态的时候，最终的属性选择器都会被Connect组件实例调用
+ */
+//把我们定义的各种映射函数作为参数传递给工厂函数，将工厂函数的执行结果返回
+function match(arg, factories, name) {
+  for (let i = factories.length - 1; i &gt;= 0; i--) {
+    const result = factories[i](arg)
+    if (result) return result
+  }
+
+  return (dispatch, options) =&gt; {
+    throw new Error(`Invalid value of type ${typeof arg} for ${name} argument when connecting component ${options.wrappedComponentName}.`)
+  }
+}
+
+function strictEqual(a, b) { return a === b }
+
+// createConnect with default args builds the &#39;official&#39; connect behavior. Calling it with
+// different options opens up some testing and extensibility scenarios
+//createConnect以默认参数调用会创建“官方”的connect，你也可以给他们传递自定义的参数，这样可以开启一些测试或者扩展场景
+export function createConnect({
+  connectHOC = connectAdvanced,
+  mapStateToPropsFactories = defaultMapStateToPropsFactories,
+  mapDispatchToPropsFactories = defaultMapDispatchToPropsFactories,
+  mergePropsFactories = defaultMergePropsFactories,
+  selectorFactory = defaultSelectorFactory
+} = {}) {
+  return function connect(//connect函数接收的一些参数
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps,
+    {
+      pure = true,
+      areStatesEqual = strictEqual,
+      areOwnPropsEqual = shallowEqual,
+      areStatePropsEqual = shallowEqual,
+      areMergedPropsEqual = shallowEqual,
+      ...extraOptions
+    } = {}
+  ) {
+    //检查mapStateToProps，mapDispatchToProps，mergePropsFactories三个参数,返回的是initProxySelector
+    //有如下语法签名：
+    //initProxySelector (dispatch, { displayName })
+    const initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, &#39;mapStateToProps&#39;)
+    const initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, &#39;mapDispatchToProps&#39;)
+    const initMergeProps = match(mergeProps, mergePropsFactories, &#39;mergeProps&#39;)
+    //connect函数会返回connectAdvanced的执行结果，这个执行结果是一个Connect高阶组件。
+    //connectAdvanced函数(执行结果)返回的高阶组件接收原始低阶组件作为参数，返回Connect组件
+    //这里的connectHOC就是connectAdvanced函数
+    return connectHOC(selectorFactory, {
+      // used in error messages
+      methodName: &#39;connect&#39;,
+
+       // used to compute Connect&#39;s displayName from the wrapped component&#39;s displayName.
+      getDisplayName: name =&gt; `Connect(${name})`,
+
+      // if mapStateToProps is falsy, the Connect component doesn&#39;t subscribe to store state changes
+      shouldHandleStateChanges: Boolean(mapStateToProps),
+
+      // passed through to selectorFactory
+      initMapStateToProps,
+      initMapDispatchToProps,
+      initMergeProps,
+      pure,
+      areStatesEqual,
+      areOwnPropsEqual,
+      areStatePropsEqual,
+      areMergedPropsEqual,
+
+      // any extra options args can override defaults of connect or connectAdvanced
+      ...extraOptions
+    })
+  }
+}
+
+export default createConnect()//返回的connect函数是通过默认参数创建的，也就是上面所说的“官方”的
+</code></pre><p>从上面的源码来看，connect方法是通过createConnect工厂方法创建出来的。 createConnect方法接收的一个对象作为参数：</p>
+<pre><code>export function createConnect({
+  connectHOC = connectAdvanced,
+  mapStateToPropsFactories = defaultMapStateToPropsFactories,
+  mapDispatchToPropsFactories = defaultMapDispatchToPropsFactories,
+  mergePropsFactories = defaultMergePropsFactories,
+  selectorFactory = defaultSelectorFactory
+} = {}) {
+</code></pre><p>如果没有提供参数，则会使用默认的一些参数。其中：</p>
+<ul>
+<li>connectAdvanced。 就是我们前面提到的，connectAdvanced的执行结果实际上就是我们前面所说的高阶组件。所以说，高阶组件的逻辑实际上不在connect，而在connectAdvanced。</li><li>defaultMapStateToPropsFactories。 是mapStateToProps相关的工厂函数，我们在调用connect的时候所传递的mapStateToProps会被它做一定的处理，这其中包括处理未传递mapStateToProps时的逻辑。</li><li>defaultMapDispatchToPropsFactories。 是mapDispatchToProps相关的工厂函数，我们在调用connect的时候所传递的mapDispatchToProps会被它做一定的处理，这其中包括处理未传递mapDispatchToProps时的逻辑。</li><li>defaultMergePropsFactories。 是mergeProps相关的工厂函数，我们在调用connect的时候所传递的mergeProps会被它做一定的处理，这其中包括处理未传递mergeProps时的逻辑。</li><li>selectorFactory。 </li></ul>
+<p>在来看看connect函数的参数：</p>
+<pre><code>return function connect(//connect函数接收的一些参数
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps,
+    {
+      pure = true,
+      areStatesEqual = strictEqual,
+      areOwnPropsEqual = shallowEqual,
+      areStatePropsEqual = shallowEqual,
+      areMergedPropsEqual = shallowEqual,
+      ...extraOptions
+    } = {}
+)
+</code></pre><p>通常我们使用connect的时候只会给他传递mapStateToProps和mapDispatchToProps这两个参数，但是从connect函数源码来看，connect函数实际上接收四个参数，分别是：</p>
+<ul>
+<li>mapStateToProps。 将store的state映射为组件的props</li><li>mapDispatchToProps。 将strore的dispatch映射为组件的方法。</li><li>mergeProps。 涉及到props的合并。</li><li>options。 这个参数是一个对象，可以传递很多定制connect行为的参数。 这其中主要有：</li></ul>
+<ul>
+<li>pure = true</li><li>areStatesEqual = strictEqual</li><li>areOwnPropsEqual = shallowEqual</li><li>areStatePropsEqual = shallowEqual</li><li>areMergedPropsEqual = shallowEqual</li></ul>
+<p>我们接下来看connect的代码：</p>
+<pre><code>//检查mapStateToProps，mapDispatchToProps，mergePropsFactories三个参数,返回的是initProxySelector
+//有如下语法签名：
+//initProxySelector (dispatch, { displayName })
+const initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, &#39;mapStateToProps&#39;)
+const initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, &#39;mapDispatchToProps&#39;)
+const initMergeProps = match(mergeProps, mergePropsFactories, &#39;mergeProps&#39;)
+</code></pre><p>这段代码主要是对我们调用connect时针对有没有传入的mapStateToProps、mapDispatchToProps、mergeProps三个参数做了归一化处。</p>
+<p>match是一个辅助函数，遍历三个参数对应的工厂函数，如果匹配到了(传了参数或没传参数)，则返回对应的结果。</p>
+<pre><code>//把我们定义的各种映射函数作为参数传递给工厂函数，将工厂函数的执行结果返回
+function match(arg, factories, name) {
+  for (let i = factories.length - 1; i &gt;= 0; i--) {
+    const result = factories[i](arg)
+    if (result) return result
+  }
+
+  return (dispatch, options) =&gt; {
+    throw new Error(`Invalid value of type ${typeof arg} for ${name} argument when connecting component ${options.wrappedComponentName}.`)
+  }
+}
+</code></pre><p> 我们分别来看一下各个工厂的实现实。</p>
+<h5 id="defaultmapstatetopropsfactories">defaultMapStateToPropsFactories</h5>
+<p>defaultMapStateToPropsFactories是通过mapStateToProps.js导出的，我们看看它的源码：</p>
+<pre><code>import { wrapMapToPropsConstant, wrapMapToPropsFunc } from &#39;./wrapMapToProps&#39;
+//当MapStateToProps时函数的时候
+export function whenMapStateToPropsIsFunction(mapStateToProps) {
+  return (typeof mapStateToProps === &#39;function&#39;)
+    ? wrapMapToPropsFunc(mapStateToProps, &#39;mapStateToProps&#39;)//实际调用的是wrapMapToPropsFunc函数
+    : undefined
+}
+//当没有传递MapStateToProps参数的时候
+export function whenMapStateToPropsIsMissing(mapStateToProps) {
+  return (!mapStateToProps)
+    ? wrapMapToPropsConstant(() =&gt; ({}))
+    : undefined
+}
+
+export default [
+  whenMapStateToPropsIsFunction,
+  whenMapStateToPropsIsMissing
+]
+</code></pre><p>可以看到工厂根据mapStateToProps的传入与否实现不同的处理。 这里面最终都是调用的wrapMapToPropsFunc函数：</p>
+<ul>
+<li>如果传递了mapStateToProps，wrapMapToPropsFunc会将mapStateToProps和字符串“mapStateToProps”作为参数调用</li><li>如果没有传递mapStateToProps， 则wrapMapToPropsFunc会将空函数作为参数调用。</li></ul>
+<p>wrapMapToPropsFunc这个函数在wrapMapToProps.js中定义。我们来看一下：</p>
+<pre><code>// Used by whenMapStateToPropsIsFunction and whenMapDispatchToPropsIsFunction,
+// this function wraps mapToProps in a proxy function which does several things:
+// 
+//  * Detects whether the mapToProps function being called depends on props, which
+//    is used by selectorFactory to decide if it should reinvoke on props changes.
+//    
+//  * On first call, handles mapToProps if returns another function, and treats that
+//    new function as the true mapToProps for subsequent calls.
+//    
+//  * On first call, verifies the first result is a plain object, in order to warn
+//    the developer that their mapToProps function is not returning a valid result.
+// 
+/*
+  这个函数将mapToProps包裹在一个代理函数中，这个代理函数做了下面几件事：
+
+  1、检查mapToProps函数是否基于props被调用，这用于selectorFactory来决定是否在props改变的时候调用
+  2、第一次调用mapToProps时，如果mapToProps返回的还是个函数的话，处理这种情况。它会把这个新的函数作为mapToProps
+  3、第一次调用时，确认第一次结果是纯对象，用于告警开发者他们的mapToProps没有返回有效值
+*/   
+export function wrapMapToPropsFunc(mapToProps, methodName) {
+  return function initProxySelector(dispatch, { displayName }) {
+    //定义一个代理函数将mapToProps包裹在一个代理函数中
+    const proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
+      return proxy.dependsOnOwnProps
+        ? proxy.mapToProps(stateOrDispatch, ownProps)
+        : proxy.mapToProps(stateOrDispatch)
+    }
+
+    // allow detectFactoryAndVerify to get ownProps
+    proxy.dependsOnOwnProps = true
+    //检查工厂并验证，第一次执行的时候是这个定义的函数，后面执行的时候都是用的原来的mapToProps
+    proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
+      proxy.mapToProps = mapToProps
+      proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps)
+      let props = proxy(stateOrDispatch, ownProps)
+      //2、第一次调用mapToProps时，如果mapToProps返回的还是个函数的话，处理这种情况。它会把这个新的函数作为mapToProps
+      if (typeof props === &#39;function&#39;) {
+        proxy.mapToProps = props
+        proxy.dependsOnOwnProps = getDependsOnOwnProps(props)
+        props = proxy(stateOrDispatch, ownProps)
+      }
+      //3、第一次调用时，确认第一次结果是纯对象，用于告警开发者他们的mapToProps没有返回有效值
+      if (process.env.NODE_ENV !== &#39;production&#39;) 
+        verifyPlainObject(props, displayName, methodName)
+
+      return props
+    }
+
+    return proxy
+  }
+}
+</code></pre><p>defaultMapStateToPropsFactories， defaultMergePropsFactories的实现类似，我们就不再赘述。</p>
+<p>最终，connect函数会返回connectAdvanced的执行结果，这个执行结果是一个Connect高阶组件。connectAdvanced函数(执行结果)返回的高阶组件接收原始低阶组件作为参数，返回Connect组件</p>
+<pre><code>//这里的connectHOC就是connectAdvanced函数
+return connectHOC(selectorFactory, {
+  // used in error messages
+  methodName: &#39;connect&#39;,
+
+   // used to compute Connect&#39;s displayName from the wrapped component&#39;s displayName.
+  getDisplayName: name =&gt; `Connect(${name})`,
+
+  // if mapStateToProps is falsy, the Connect component doesn&#39;t subscribe to store state changes
+  shouldHandleStateChanges: Boolean(mapStateToProps),
+
+  // passed through to selectorFactory
+  initMapStateToProps,
+  initMapDispatchToProps,
+  initMergeProps,
+  pure,
+  areStatesEqual,
+  areOwnPropsEqual,
+  areStatePropsEqual,
+  areMergedPropsEqual,
+
+  // any extra options args can override defaults of connect or connectAdvanced
+  ...extraOptions
+})
+</code></pre><p>下面我们来研究一下这个connectAdvanced函数。</p>
+<h3 id="1-2-connectadvanced-">1.2 connectAdvanced函数</h3>
+<p>前面说了，connect函数会返回connectAdvanced的执行结果，这个执行结果是一个Connect高阶组件。 大部分的逻辑实际上是在connectAdvanced中实现的，下面是它的源码：</p>
+<pre><code>import hoistStatics from &#39;hoist-non-react-statics&#39;
+import invariant from &#39;invariant&#39;
+import { Component, createElement } from &#39;react&#39;
+import { polyfill } from &#39;react-lifecycles-compat&#39;
+
+import Subscription from &#39;../utils/Subscription&#39;
+import { storeShape, subscriptionShape } from &#39;../utils/PropTypes&#39;
+
+let hotReloadingVersion = 0
+function noop() {}
+function makeUpdater(sourceSelector, store) {
+  return function updater(props, prevState) {
+    try {
+      const nextProps = sourceSelector(store.getState(), props)
+      if (nextProps !== prevState.props || prevState.error) {
+        return {
+          shouldComponentUpdate: true,
+          props: nextProps,
+          error: null,
+        }
+      }
+      return {
+        shouldComponentUpdate: false,
+      }
+    } catch (error) {
+      return {
+        shouldComponentUpdate: true,
+        error,
+      }
+    }
+  }
+}
+
+export default function connectAdvanced(
+  /*
+    selectorFactory is a func that is responsible for returning the selector function used to
+    compute new props from state, props, and dispatch. For example:
+
+      export default connectAdvanced((dispatch, options) =&gt; (state, props) =&gt; ({
+        thing: state.things[props.thingId],
+        saveThing: fields =&gt; dispatch(actionCreators.saveThing(props.thingId, fields)),
+      }))(YourComponent)
+
+    Access to dispatch is provided to the factory so selectorFactories can bind actionCreators
+    outside of their selector as an optimization. Options passed to connectAdvanced are passed to
+    the selectorFactory, along with displayName and WrappedComponent, as the second argument.
+
+    Note that selectorFactory is responsible for all caching/memoization of inbound and outbound
+    props. Do not use connectAdvanced directly without memoizing results between calls to your
+    selector, otherwise the Connect component will re-render on every state or props change.
+  */
+  /*
+    selectorFactory是一个工厂函数，负责返回一个selector函数，这个函数通过 state, props, dispatch计算新的props
+    比如：
+
+          export default connectAdvanced((dispatch, options) =&gt; (state, props) =&gt; ({
+            thing: state.things[props.thingId],
+            saveThing: fields =&gt; dispatch(actionCreators.saveThing(props.thingId, fields)),
+          }))(YourComponent)
+    提供了dispatch供selectorFactories工厂函数访问这样selectorFactories工厂函数可以在selector外面进行actionCreators
+    的绑定，这是一种优化。传递给connectAdvanced的Options参数与displayName和WrappedComponent一起作为第二个参数
+    传递给selectorFactory。
+    请注意，selectorFactory负责入站和出站props的所有缓存/记忆。调用选择器之间，在没有记忆结果的情况下不要直接使用
+    connectAdvanced，否则Connect组件将在每个状态或props更改时重新渲染
+  */
+  selectorFactory,
+  // options object:
+  {
+    // the func used to compute this HOC&#39;s displayName from the wrapped component&#39;s displayName.
+    // probably overridden by wrapper functions such as connect()
+    //该函数用来基于被包裹的低阶组件名字计算高阶组件的显示名字
+    getDisplayName = name =&gt; `ConnectAdvanced(${name})`,
+
+    // shown in error messages
+    // 在出错时显示
+    // probably overridden by wrapper functions such as connect()
+    methodName = &#39;connectAdvanced&#39;,
+
+    // if defined, the name of the property passed to the wrapped element indicating the number of
+    // calls to render. useful for watching in react devtools for unnecessary re-renders.
+    renderCountProp = undefined,
+
+    // determines whether this HOC subscribes to store changes
+    // 决定该高阶组件是否订阅store的变化
+    shouldHandleStateChanges = true,
+
+    // the key of props/context to get the store
+    // props和context与store关联起来的key
+    storeKey = &#39;store&#39;,
+
+    // if true, the wrapped element is exposed by this HOC via the getWrappedInstance() function.
+    withRef = false,
+
+    // additional options are passed through to the selectorFactory
+    ...connectOptions
+  } = {}
+) {
+  //订阅者key
+  const subscriptionKey = storeKey + &#39;Subscription&#39;
+  const version = hotReloadingVersion++
+
+  const contextTypes = {
+    [storeKey]: storeShape,
+    [subscriptionKey]: subscriptionShape,
+  }
+  const childContextTypes = {
+    [subscriptionKey]: subscriptionShape,
+  }
+
+  function getDerivedStateFromProps(nextProps, prevState) {
+    return prevState.updater(nextProps, prevState)
+  }
+  //connectAdvanced返回的是一个高阶组件，被包裹的地接组件就是我们调用connect方法时传递的业务组件
+  return function wrapWithConnect(WrappedComponent) {
+    invariant(
+      typeof WrappedComponent == &#39;function&#39;,
+      `You must pass a component to the function returned by ` +
+      `${methodName}. Instead received ${JSON.stringify(WrappedComponent)}`
+    )
+
+    const wrappedComponentName = WrappedComponent.displayName
+      || WrappedComponent.name
+      || &#39;Component&#39;
+
+    const displayName = getDisplayName(wrappedComponentName)
+
+    const selectorFactoryOptions = {
+      ...connectOptions,
+      getDisplayName,
+      methodName,
+      renderCountProp,
+      shouldHandleStateChanges,
+      storeKey,
+      withRef,
+      displayName,
+      wrappedComponentName,
+      WrappedComponent
+    }
+    // 新组件，我们传递的业务组件，最终变成了这个组件
+    class Connect extends Component {
+      constructor(props, context) {
+        super(props, context)
+
+        this.version = version
+        this.renderCount = 0
+        this.store = props[storeKey] || context[storeKey]//可以通过props属性传递store，也可以直接通过context拿到
+        this.propsMode = Boolean(props[storeKey])
+        this.setWrappedInstance = this.setWrappedInstance.bind(this)
+
+        invariant(this.store,
+          `Could not find &quot;${storeKey}&quot; in either the context or props of ` +
+          `&quot;${displayName}&quot;. Either wrap the root component in a &lt;Provider&gt;, ` +
+          `or explicitly pass &quot;${storeKey}&quot; as a prop to &quot;${displayName}&quot;.`
+        )
+
+        this.state = {
+          updater: this.createUpdater()//创建更新函数
+        }
+        this.initSubscription()//初始化时候执行订阅，会实例化Subscription挂载在该组件上
+      }
+
+      getChildContext() {
+        // If this component received store from props, its subscription should be transparent
+        // to any descendants receiving store+subscription from context; it passes along
+        // subscription passed to it. Otherwise, it shadows the parent subscription, which allows
+        // Connect to control ordering of notifications to flow top-down.
+        /**
+         * 如果此组件通过props接收store，那它的subscription应该对任何从context接收store+subscription的后代
+         * 保持透明，它将传递过来的subscription传递下去。
+         * 否则，它会影响父组件的subscription，这将允许Connect组件控制自顶向下通知流的顺序。
+         */
+        const subscription = this.propsMode ? null : this.subscription
+        return { [subscriptionKey]: subscription || this.context[subscriptionKey] }
+      }
+
+      componentDidMount() {
+        //如果指定了该高阶组件不订阅store的变化，那么直接返回
+        if (!shouldHandleStateChanges) return
+
+        // componentWillMount fires during server side rendering, but componentDidMount and
+        // componentWillUnmount do not. Because of this, trySubscribe happens during ...didMount.
+        // Otherwise, unsubscription would never take place during SSR, causing a memory leak.
+        // To handle the case where a child component may have triggered a state change by
+        // dispatching an action in its componentWillMount, we have to re-run the select and maybe
+        // re-render.
+        /**
+         * 在服务端渲染的时候，componentWillMount钩子函数会被触发。但是componentDidMount 和 componentWillUnmount
+         * 函数并不会触发。因此，trySubscribe需要在componentDidMount中发生。否则，取消订阅永远不会再SSR中发生。这样就会
+         * 导致内存泄漏。
+         * 
+         * 子组件可能在componentWillMount中dispat action触发状态变化，为了处理这种场景，
+         * 我们需要重新运行select并且可能会重新渲染。
+         */
+        this.subscription.trySubscribe()
+        this.runUpdater()
+      }
+
+      shouldComponentUpdate(_, nextState) {
+        return nextState.shouldComponentUpdate
+      }
+      //卸载的钩子函数
+      componentWillUnmount() {
+        if (this.subscription) this.subscription.tryUnsubscribe()
+        this.subscription = null
+        this.notifyNestedSubs = noop
+        this.store = null
+        this.isUnmounted = true
+      }
+      //拿到被包裹的低阶组件的实例
+      getWrappedInstance() {
+        invariant(withRef,
+          `To access the wrapped instance, you need to specify ` +
+          `{ withRef: true } in the options argument of the ${methodName}() call.`
+        )
+        return this.wrappedInstance
+      }
+      //获得低阶组件的实例
+      setWrappedInstance(ref) {
+        this.wrappedInstance = ref
+      }
+
+      createUpdater() {
+        //源selector，通过selectorFactory工厂函数生成
+        const sourceSelector = selectorFactory(this.store.dispatch, selectorFactoryOptions)
+        //sourceSelector是一个函数，接收(state，props)
+        return makeUpdater(sourceSelector, this.store)
+      }
+
+      runUpdater(callback = noop) {
+        if (this.isUnmounted) {
+          return
+        }
+
+        this.setState(prevState =&gt; prevState.updater(this.props, prevState), callback)
+      }
+
+      initSubscription() {
+        //如果该高阶组件不需要订阅store的变化，那就没必须实例化Subscription
+        if (!shouldHandleStateChanges) return
+
+        // parentSub&#39;s source should match where store came from: props vs. context. A component
+        // connected to the store via props shouldn&#39;t use subscription from context, or vice versa.
+        /*
+           父组件的Subscription实例的数据源必须和该组件store的来一致（props vs. context）。一个组件如果通过
+           props连接到store，那它就不能使用来源于context的Subscription，反之亦然。
+        */
+        // 根据模式，选择对应的父组件的Subscription
+        const parentSub = (this.propsMode ? this.props : this.context)[subscriptionKey]
+        //实例化一个观察者
+        this.subscription = new Subscription(this.store, parentSub, this.onStateChange.bind(this))
+
+        // `notifyNestedSubs` is duplicated to handle the case where the component is  unmounted in
+        // the middle of the notification loop, where `this.subscription` will then be null. An
+        // extra null check every change can be avoided by copying the method onto `this` and then
+        // replacing it with a no-op on unmount. This can probably be avoided if Subscription&#39;s
+        // listeners logic is changed to not call listeners that have been unsubscribed in the
+        // middle of the notification loop.
+        this.notifyNestedSubs = this.subscription.notifyNestedSubs.bind(this.subscription)
+      }
+
+      onStateChange() {
+        this.runUpdater(this.notifyNestedSubs)
+      }
+
+      isSubscribed() {
+        return Boolean(this.subscription) &amp;&amp; this.subscription.isSubscribed()
+      }
+
+      addExtraProps(props) {
+        if (!withRef &amp;&amp; !renderCountProp &amp;&amp; !(this.propsMode &amp;&amp; this.subscription)) return props
+        // make a shallow copy so that fields added don&#39;t leak to the original selector.
+        // this is especially important for &#39;ref&#39; since that&#39;s a reference back to the component
+        // instance. a singleton memoized selector would then be holding a reference to the
+        // instance, preventing the instance from being garbage collected, and that would be bad
+        const withExtras = { ...props }
+        if (withRef) withExtras.ref = this.setWrappedInstance
+        if (renderCountProp) withExtras[renderCountProp] = this.renderCount++
+        if (this.propsMode &amp;&amp; this.subscription) withExtras[subscriptionKey] = this.subscription
+        return withExtras
+      }
+
+      render() {
+        if (this.state.error) {
+          throw this.state.error
+        } else {
+          //基于原组件创建新组件，添加额外属性
+          return createElement(WrappedComponent, this.addExtraProps(this.state.props))
+        }
+      }
+    }
+    // 定义静态属性和方法
+    Connect.WrappedComponent = WrappedComponent
+    Connect.displayName = displayName
+    Connect.childContextTypes = childContextTypes
+    Connect.contextTypes = contextTypes
+    Connect.propTypes = contextTypes
+    Connect.getDerivedStateFromProps = getDerivedStateFromProps
+
+    if (process.env.NODE_ENV !== &#39;production&#39;) {
+      Connect.prototype.componentDidUpdate = function componentDidUpdate() {
+        // We are hot reloading!
+        if (this.version !== version) {
+          this.version = version
+
+          // If any connected descendants don&#39;t hot reload (and resubscribe in the process), their
+          // listeners will be lost when we unsubscribe. Unfortunately, by copying over all
+          // listeners, this does mean that the old versions of connected descendants will still be
+          // notified of state changes; however, their onStateChange function is a no-op so this
+          // isn&#39;t a huge deal.
+          let oldListeners = [];
+
+          if (this.subscription) {
+            oldListeners = this.subscription.listeners.get()
+            this.subscription.tryUnsubscribe()
+          }
+          this.initSubscription()
+          if (shouldHandleStateChanges) {
+            this.subscription.trySubscribe()
+            oldListeners.forEach(listener =&gt; this.subscription.listeners.subscribe(listener))
+          }
+
+          const updater = this.createUpdater()
+          this.setState({updater})
+          this.runUpdater()
+        }
+      }
+    }
+
+    polyfill(Connect)
+
+    return hoistStatics(Connect, WrappedComponent)//拷贝低阶组件WrappedComponent的静态属性和方法
+  }
+}
+</code></pre><p>这里我们可以重点看一下高阶组件的实现：</p>
+<pre><code>//订阅者key
+  const subscriptionKey = storeKey + &#39;Subscription&#39;
+  const version = hotReloadingVersion++
+
+  const contextTypes = {
+    [storeKey]: storeShape,
+    [subscriptionKey]: subscriptionShape,
+  }
+  const childContextTypes = {
+    [subscriptionKey]: subscriptionShape,
+  }
+
+  function getDerivedStateFromProps(nextProps, prevState) {
+    return prevState.updater(nextProps, prevState)
+  }
+  //connectAdvanced返回的是一个高阶组件，被包裹的地接组件就是我们调用connect方法时传递的业务组件
+  return function wrapWithConnect(WrappedComponent) {
+    invariant(
+      typeof WrappedComponent == &#39;function&#39;,
+      `You must pass a component to the function returned by ` +
+      `${methodName}. Instead received ${JSON.stringify(WrappedComponent)}`
+    )
+
+    const wrappedComponentName = WrappedComponent.displayName
+      || WrappedComponent.name
+      || &#39;Component&#39;
+
+    const displayName = getDisplayName(wrappedComponentName)
+
+    const selectorFactoryOptions = {
+      ...connectOptions,
+      getDisplayName,
+      methodName,
+      renderCountProp,
+      shouldHandleStateChanges,
+      storeKey,
+      withRef,
+      displayName,
+      wrappedComponentName,
+      WrappedComponent
+    }
+    // 新组件，我们传递的业务组件，最终变成了这个组件
+    class Connect extends Component {
+      constructor(props, context) {
+        super(props, context)
+
+        this.version = version
+        this.renderCount = 0
+        this.store = props[storeKey] || context[storeKey]//可以通过props属性传递store，也可以直接通过context拿到
+        this.propsMode = Boolean(props[storeKey])
+        this.setWrappedInstance = this.setWrappedInstance.bind(this)
+
+        invariant(this.store,
+          `Could not find &quot;${storeKey}&quot; in either the context or props of ` +
+          `&quot;${displayName}&quot;. Either wrap the root component in a &lt;Provider&gt;, ` +
+          `or explicitly pass &quot;${storeKey}&quot; as a prop to &quot;${displayName}&quot;.`
+        )
+
+        this.state = {
+          updater: this.createUpdater()//创建更新函数
+        }
+        this.initSubscription()//初始化时候执行订阅，会实例化Subscription挂载在该组件上
+      }
+
+      getChildContext() {
+        // If this component received store from props, its subscription should be transparent
+        // to any descendants receiving store+subscription from context; it passes along
+        // subscription passed to it. Otherwise, it shadows the parent subscription, which allows
+        // Connect to control ordering of notifications to flow top-down.
+        /**
+         * 如果此组件通过props接收store，那它的subscription应该对任何从context接收store+subscription的后代
+         * 保持透明，它将传递过来的subscription传递下去。
+         * 否则，它会影响父组件的subscription，这将允许Connect组件控制自顶向下通知流的顺序。
+         */
+        const subscription = this.propsMode ? null : this.subscription
+        return { [subscriptionKey]: subscription || this.context[subscriptionKey] }
+      }
+
+      componentDidMount() {
+        //如果指定了该高阶组件不订阅store的变化，那么直接返回
+        if (!shouldHandleStateChanges) return
+
+        // componentWillMount fires during server side rendering, but componentDidMount and
+        // componentWillUnmount do not. Because of this, trySubscribe happens during ...didMount.
+        // Otherwise, unsubscription would never take place during SSR, causing a memory leak.
+        // To handle the case where a child component may have triggered a state change by
+        // dispatching an action in its componentWillMount, we have to re-run the select and maybe
+        // re-render.
+        /**
+         * 在服务端渲染的时候，componentWillMount钩子函数会被触发。但是componentDidMount 和 componentWillUnmount
+         * 函数并不会触发。因此，trySubscribe需要在componentDidMount中发生。否则，取消订阅永远不会再SSR中发生。这样就会
+         * 导致内存泄漏。
+         * 
+         * 子组件可能在componentWillMount中dispat action触发状态变化，为了处理这种场景，
+         * 我们需要重新运行select并且可能会重新渲染。
+         */
+        this.subscription.trySubscribe()
+        this.runUpdater()
+      }
+
+      shouldComponentUpdate(_, nextState) {
+        return nextState.shouldComponentUpdate
+      }
+      //卸载的钩子函数
+      componentWillUnmount() {
+        if (this.subscription) this.subscription.tryUnsubscribe()
+        this.subscription = null
+        this.notifyNestedSubs = noop
+        this.store = null
+        this.isUnmounted = true
+      }
+      //拿到被包裹的低阶组件的实例
+      getWrappedInstance() {
+        invariant(withRef,
+          `To access the wrapped instance, you need to specify ` +
+          `{ withRef: true } in the options argument of the ${methodName}() call.`
+        )
+        return this.wrappedInstance
+      }
+      //获得低阶组件的实例
+      setWrappedInstance(ref) {
+        this.wrappedInstance = ref
+      }
+
+      createUpdater() {
+        //源selector，通过selectorFactory工厂函数生成
+        const sourceSelector = selectorFactory(this.store.dispatch, selectorFactoryOptions)
+        //sourceSelector是一个函数，接收(state，props)
+        return makeUpdater(sourceSelector, this.store)
+      }
+
+      runUpdater(callback = noop) {
+        if (this.isUnmounted) {
+          return
+        }
+
+        this.setState(prevState =&gt; prevState.updater(this.props, prevState), callback)
+      }
+
+      initSubscription() {
+        //如果该高阶组件不需要订阅store的变化，那就没必须实例化Subscription
+        if (!shouldHandleStateChanges) return
+
+        // parentSub&#39;s source should match where store came from: props vs. context. A component
+        // connected to the store via props shouldn&#39;t use subscription from context, or vice versa.
+        /*
+           父组件的Subscription实例的数据源必须和该组件store的来一致（props vs. context）。一个组件如果通过
+           props连接到store，那它就不能使用来源于context的Subscription，反之亦然。
+        */
+        // 根据模式，选择对应的父组件的Subscription
+        const parentSub = (this.propsMode ? this.props : this.context)[subscriptionKey]
+        //实例化一个观察者
+        this.subscription = new Subscription(this.store, parentSub, this.onStateChange.bind(this))
+
+        // `notifyNestedSubs` is duplicated to handle the case where the component is  unmounted in
+        // the middle of the notification loop, where `this.subscription` will then be null. An
+        // extra null check every change can be avoided by copying the method onto `this` and then
+        // replacing it with a no-op on unmount. This can probably be avoided if Subscription&#39;s
+        // listeners logic is changed to not call listeners that have been unsubscribed in the
+        // middle of the notification loop.
+        this.notifyNestedSubs = this.subscription.notifyNestedSubs.bind(this.subscription)
+      }
+
+      onStateChange() {
+        this.runUpdater(this.notifyNestedSubs)
+      }
+
+      isSubscribed() {
+        return Boolean(this.subscription) &amp;&amp; this.subscription.isSubscribed()
+      }
+
+      addExtraProps(props) {
+        if (!withRef &amp;&amp; !renderCountProp &amp;&amp; !(this.propsMode &amp;&amp; this.subscription)) return props
+        // make a shallow copy so that fields added don&#39;t leak to the original selector.
+        // this is especially important for &#39;ref&#39; since that&#39;s a reference back to the component
+        // instance. a singleton memoized selector would then be holding a reference to the
+        // instance, preventing the instance from being garbage collected, and that would be bad
+        const withExtras = { ...props }
+        if (withRef) withExtras.ref = this.setWrappedInstance
+        if (renderCountProp) withExtras[renderCountProp] = this.renderCount++
+        if (this.propsMode &amp;&amp; this.subscription) withExtras[subscriptionKey] = this.subscription
+        return withExtras
+      }
+
+      render() {
+        if (this.state.error) {
+          throw this.state.error
+        } else {
+          //基于原组件创建新组件，添加额外属性
+          return createElement(WrappedComponent, this.addExtraProps(this.state.props))
+        }
+      }
+    }
+    // 定义静态属性和方法
+    Connect.WrappedComponent = WrappedComponent
+    Connect.displayName = displayName
+    Connect.childContextTypes = childContextTypes
+    Connect.contextTypes = contextTypes
+    Connect.propTypes = contextTypes
+    Connect.getDerivedStateFromProps = getDerivedStateFromProps
+
+    if (process.env.NODE_ENV !== &#39;production&#39;) {
+      Connect.prototype.componentDidUpdate = function componentDidUpdate() {
+        // We are hot reloading!
+        if (this.version !== version) {
+          this.version = version
+
+          // If any connected descendants don&#39;t hot reload (and resubscribe in the process), their
+          // listeners will be lost when we unsubscribe. Unfortunately, by copying over all
+          // listeners, this does mean that the old versions of connected descendants will still be
+          // notified of state changes; however, their onStateChange function is a no-op so this
+          // isn&#39;t a huge deal.
+          let oldListeners = [];
+
+          if (this.subscription) {
+            oldListeners = this.subscription.listeners.get()
+            this.subscription.tryUnsubscribe()
+          }
+          this.initSubscription()
+          if (shouldHandleStateChanges) {
+            this.subscription.trySubscribe()
+            oldListeners.forEach(listener =&gt; this.subscription.listeners.subscribe(listener))
+          }
+
+          const updater = this.createUpdater()
+          this.setState({updater})
+          this.runUpdater()
+        }
+      }
+    }
+
+    polyfill(Connect)
+
+    return hoistStatics(Connect, WrappedComponent)//拷贝低阶组件WrappedComponent的静态属性和方法
+</code></pre><p>这里面可以看出，在componentDidMount中调用了trySubscribe进行对store进行订阅，同时接着调用了runUpdater进行更新：</p>
+<pre><code> componentDidMount() {
+        //如果指定了该高阶组件不订阅store的变化，那么直接返回
+        if (!shouldHandleStateChanges) return
+
+        // componentWillMount fires during server side rendering, but componentDidMount and
+        // componentWillUnmount do not. Because of this, trySubscribe happens during ...didMount.
+        // Otherwise, unsubscription would never take place during SSR, causing a memory leak.
+        // To handle the case where a child component may have triggered a state change by
+        // dispatching an action in its componentWillMount, we have to re-run the select and maybe
+        // re-render.
+        /**
+         * 在服务端渲染的时候，componentWillMount钩子函数会被触发。但是componentDidMount 和 componentWillUnmount
+         * 函数并不会触发。因此，trySubscribe需要在componentDidMount中发生。否则，取消订阅永远不会再SSR中发生。这样就会
+         * 导致内存泄漏。
+         * 
+         * 子组件可能在componentWillMount中dispat action触发状态变化，为了处理这种场景，
+         * 我们需要重新运行select并且可能会重新渲染。
+         */
+        this.subscription.trySubscribe()
+        this.runUpdater()
+      }
+</code></pre><p>runUpdater如下，每次运行都会执行callback，对于首次运行的时候callback是个空函数：</p>
+<pre><code>runUpdater(callback = noop) {
+    if (this.isUnmounted) {
+      return
+    }
+
+    this.setState(prevState =&gt; prevState.updater(this.props, prevState), callback)
+  }
+</code></pre><p>而subscription是在高阶组件构造函数中调用initSubscription实例化的。</p>
+<pre><code>initSubscription() {
+    //如果该高阶组件不需要订阅store的变化，那就没必须实例化Subscription
+    if (!shouldHandleStateChanges) return
+
+    // parentSub&#39;s source should match where store came from: props vs. context. A component
+    // connected to the store via props shouldn&#39;t use subscription from context, or vice versa.
+    /*
+       父组件的Subscription实例的数据源必须和该组件store的来一致（props vs. context）。一个组件如果通过
+       props连接到store，那它就不能使用来源于context的Subscription，反之亦然。
+    */
+    // 根据模式，选择对应的父组件的Subscription
+    const parentSub = (this.propsMode ? this.props : this.context)[subscriptionKey]
+    //实例化一个观察者
+    this.subscription = new Subscription(this.store, parentSub, this.onStateChange.bind(this))
+
+    // `notifyNestedSubs` is duplicated to handle the case where the component is  unmounted in
+    // the middle of the notification loop, where `this.subscription` will then be null. An
+    // extra null check every change can be avoided by copying the method onto `this` and then
+    // replacing it with a no-op on unmount. This can probably be avoided if Subscription&#39;s
+    // listeners logic is changed to not call listeners that have been unsubscribed in the
+    // middle of the notification loop.
+    this.notifyNestedSubs = this.subscription.notifyNestedSubs.bind(this.subscription)
+  }
+</code></pre><p>实例化subscription时候给它订阅了store的变化，并将onStateChange注册为响应函数，每当store变化的时候又会触发onStateChange执行，onStateChange执行会调用runUpdater方法：</p>
+<pre><code>onStateChange() {
+    this.runUpdater(this.notifyNestedSubs)
+}
+</code></pre><p>这个时候runUpdater是有callback的，这个callback就是发布(notify)函数。 </p>
+<h3 id="react-store-">React是如何知道store状态已经发生改变的？</h3>
+<p>在高阶组件内使用的subscription是由观察者模式实例化的，我们还可以注意到，实例化的时候把父亲的subscription（即 parentSub）也传了过去，这样当parentSub存在时，可以确保祖先组件在后代组件之前重新渲染，这个观察者的模式定义在utils/Subscription.js中，它的源码如下：</p>
+<pre><code>// encapsulates the subscription logic for connecting a component to the redux store, as
+// well as nesting subscriptions of descendant components, so that we can ensure the
+// ancestor components re-render before descendants
+// 封装用于将组件connect到redux store的订阅逻辑，以及嵌套后代组件的订阅，以便我们可以确保祖先组件在后代组件之前重新渲染
+const CLEARED = null
+const nullListeners = { notify() {} }
+//创建监听集合，这是一个典型的观察者（发布/订阅/取消订阅）模式
+function createListenerCollection() {
+  // the current/next pattern is copied from redux&#39;s createStore code.
+  // TODO: refactor+expose that code to be reusable here?
+  let current = []
+  let next = []
+
+  return {
+    clear() { //清除全部
+      next = CLEARED
+      current = CLEARED
+    },
+
+    notify() { // 发布
+      const listeners = current = next
+      for (let i = 0; i &lt; listeners.length; i++) {
+        listeners[i]() //遍历执行订阅的响应函数
+      }
+    },
+
+    get() {
+      return next
+    },
+
+    subscribe(listener) { //订阅某个事件，参数是响应函数
+      let isSubscribed = true
+      if (next === current) next = current.slice() //确保真正的拷贝，next和current是独立的
+      next.push(listener) //放入next
+      //取消订阅，老套路，订阅的返回一半都是一个取消订阅的函数
+      return function unsubscribe() {
+        if (!isSubscribed || current === CLEARED) return
+        isSubscribed = false
+
+        if (next === current) next = current.slice()
+        next.splice(next.indexOf(listener), 1)//把listener从订阅列表中删除
+      }
+    }
+  }
+}
+// Subscription类
+export default class Subscription {
+  //实例化的参数是store（状态树）, parentSub(父组件的Subscription实例)，onStateChange(state改变时的回调)
+  constructor(store, parentSub, onStateChange) {
+    this.store = store
+    this.parentSub = parentSub
+    this.onStateChange = onStateChange
+    this.unsubscribe = null //初始化为null
+    this.listeners = nullListeners //初始化为空函数
+  }
+  //增加订阅
+  addNestedSub(listener) {
+    this.trySubscribe()
+    return this.listeners.subscribe(listener)//最终的订阅都是通过观察者实例listeners来管理
+  }
+  //发布消息给订阅者们
+  notifyNestedSubs() {
+    this.listeners.notify()
+  }
+  //是否已订阅
+  isSubscribed() {
+    return Boolean(this.unsubscribe)
+  }
+
+  trySubscribe() {
+    //如果没有订阅(如果订阅了，会有取消订阅的函数)，则订阅
+    if (!this.unsubscribe) {
+      ////确保祖先组件在后代组件之前重新渲染
+      this.unsubscribe = this.parentSub
+        ? this.parentSub.addNestedSub(this.onStateChange) 
+        : this.store.subscribe(this.onStateChange)//否则，使用store上原生的订阅函数
+
+      this.listeners = createListenerCollection()//创建观察者实例
+    }
+  }
+
+  tryUnsubscribe() {
+    if (this.unsubscribe) {
+      this.unsubscribe() //执行取消订阅
+      this.unsubscribe = null
+      this.listeners.clear()//订阅列表清空
+      this.listeners = nullListeners//还原
+    }
+  }
+}
+</code></pre><p>可以看出来，每一个connect后的容器组件都通过store.subscribe订阅了store的变化。 所以每当dispatch一个action改变state的时候，dispatch函数的末尾都会执行listeners。 从而执行了我们在这里subcribe的那个callback。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

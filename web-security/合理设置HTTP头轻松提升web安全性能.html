@@ -521,7 +521,7 @@ vertical-align:1px;
 <h4 id="2-1-http-strict-transport-security-hsts-">2.1 HTTP Strict Transport Security (HSTS)</h4>
 <p>HTTP Strict Transport Security指示浏览器只能通过https去访问web服务器。 一旦在服务端进行了设置，HTTP响应头中将包含Strict-Transport-Security头字段。 当浏览器收到这个头的时候会将所有的请求通过https发送。 HSTS可设置为3个值：</p>
 <ul>
-<li>Max-age： 该值定义了在多久的时间内，只能通过https访问，默认的取值是31536000秒，也就是1年(365天)，这也是该值的最大有效值。 服务端在每次响应的时候更新这个值这样该值就不会过期。</li><li>IncludeSubDomains： 表示将该设置同时应用于子域名。</li><li>Preload：Preload 列表是硬编码在Google Chrome浏览器里的，网站的拥有者可以将自己的URL提交给Chrome放进这个列表中。该列表由Google维护，但是也被其它浏览器使用，该列表可以在这里看到：<a href="https://chromium.googlesource.com/chromium/src/+/master/net/http/transport_security_state_static.json">https://chromium.googlesource.com/chromium/src/+/master/net/http/transport_security_state_static.json</a></li></ul>
+<li>Max-age： 该值定义了在多久的时间内，只能通过https访问，默认的取值是31536000秒，也就是1年(365天)，这也是该值的最大有效值。 服务端在每次响应的时候更新这个值这样该值就不会过期。</li><li>IncludeSubDomains： 表示将该设置同时应用于子域名。</li><li></li><li>：Preload 列表是硬编码在Google Chrome浏览器里的，网站的拥有者可以将自己的URL提交给Chrome放进这个列表中。该列表由Google维护，但是也被其它浏览器使用，该列表可以在<a href="https://chromium.googlesource.com/chromium/src/+/master/net/http/transport_security_state_static.json">这里</a>看到.</li></ul>
 <p>下面是<a href="https://www.jianshu.com/">简书</a>网站的使用案例：</p>
 <p><img src="https://i.imgur.com/JGBeloR.png" alt=""></p>
 <h5 id="-">攻击场景</h5>
