@@ -14,7 +14,7 @@ https://cdn.gscxs.cn/tt/duan_so21bb160.js
 		
 		
 		
-很明显是一段经过加密过的js。里面有个信息：**sojson.com**(http://sojson.com)，可以猜测这段脚本可能是用的sojson.com的能力进行加密的。
+很明显是一段经过加密过的js。里面有个信息：**sojson.com**(http://sojson.com) ，可以猜测这段脚本可能是用的sojson.com的能力进行加密的。
 	
 去sojson.com看看，emmmm，果然sojson提供了不少js加密的能力：
 

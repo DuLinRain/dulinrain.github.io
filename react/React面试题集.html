@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>React面试题集</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+</head>
+<body>
+<h1 id="react-">React面试题集</h1>
+<h3 id="1-react-">1、 什么是React?</h3>
+<p>React是fb开源的JS库，用于构建复杂的web用户界面。它的核心目的是构建UI组件，通常对应于MVC模式中的V(View)。</p>
+<h3 id="2-redux-">2、 什么是Redux？</h3>
+<p>Redux是为js应用提供可预测的状态管理器，通常认为它受Flux启发。</p>
+<h3 id="3-dom-">3、 什么是虚拟DOM？</h3>
+<p>虚拟DOM（VDOM）是真实DOM在内存中的表示。 UI的展示保存在内存中并与真实DOM同步。 它发生在调用render函数与将元素显示在屏幕 这两个步骤之间。 整个过程也称为reconciliation。</p>
+<h3 id="4-flux-">4、 什么是Flux?</h3>
+<p>Flux是一种应用程序设计范例，用于替代更传统的mvc模式。 它不是一个框架或库，而是一种新的体系结构，它提出了单向数据流的概念。 在使用React时，Facebook在内部使用此模式调度程序，存储和视图组件之间的工作流程具有不同的输入和输出，如下所示：</p>
+<p><img src="https://i.imgur.com/d3vvpjx.png" alt=""></p>
+<h3 id="5-react-">5、 React的优势是什么？</h3>
+<p>React有以下几个优势：</p>
+<ol>
+<li>通过Virtual DOM提升了应用程序的性能</li><li>JSX语法使得代码更好读写</li><li>既可以在客户端render也可以在服务端render，这位ssr提供了可能。</li></ol>
+<h3 id="6-react-">6、 React的主要特性？</h3>
+<ol>
+<li>使用虚拟DOM代替真实DOM。</li><li>支持SSR</li><li>遵循单向数据流或数据绑定</li><li>使用可重用组件构建复杂UI</li></ol>
+<h3 id="7-">7、 表示组件和容器组件有什么区别?</h3>
+<ul>
+<li><strong>表示组件</strong>-顾名思义，表示组件只关心UI长什么样(how things look)，他们通常只通过props接收数据和callback。 这些组件很少拥有自己的state，即使有也仅仅用于表示UI状态而不是数据状态。</li><li><strong>容器组件</strong>-容器组件更关心如何工作(how things work)。 容器组件为表示组件或其它容器组件提供数据与行为。它们通常也是有状态的，因为它们充当数据源。</li></ul>
+<h3 id="8-react-">8、 描述一下React是如何处理事件的？</h3>
+<p>为了解决跨浏览器兼容性问题，React中的事件处理程序将传递合成事件的实例，这是React围绕浏览器原生事件的跨浏览器封装。这些合成事件与我们习惯的原生事件具有相同的接口，并且它们在所有浏览器中的工作方式相同。</p>
+<p>更重要的是，React并不是为每个组件/元素绑定对应的事件，而是采用流行的事件委托方式，使用单个事件侦听器绑定在根元素侦听顶级的所有事件。 这对性能有好处，这也意味着React不需要担心在更新DOM时跟踪事件监听器。</p>
+<p>为每个DOM元素绑定事件是一个非常消耗性能和内存的事情，React也采用了流行的事件委托机制，但是React走的更远。 React在文档的根元素上绑定了事件监听器，当事件触发的时候，浏览器会为我们提供目标DOM的节点，那React是如何将事件传递下去的呢？是在虚拟DOM层级上进行迭代传递的吗？</p>
+<p>答案是否定的。</p>
+<p>React并不会在虚拟DOM层级上进行迭代，React的每一个层级的组件都有一个编码的ID用于描述它所处的层级，可以通过简单的字符串操作来找到所有的父元素ID，以此可以将事件监听器存储在hash map中，相比于将事件绑定在虚拟DOM上具有更好的性能。下面是一个简单的例子：</p>
+<pre><code>// dispatchEvent(&#39;click&#39;, &#39;a.b.c&#39;, event) //fire一个事件
+ clickCaptureListeners[&#39;a&#39;](event); //捕获
+ clickCaptureListeners[&#39;a.b&#39;](event);  //捕获
+ clickCaptureListeners[&#39;a.b.c&#39;](event); //捕获
+ clickBubbleListeners[&#39;a.b.c&#39;](event); //冒泡
+ clickBubbleListeners[&#39;a.b&#39;](event); //冒泡
+ clickBubbleListeners[&#39;a&#39;](event); //冒泡
+</code></pre><p>浏览器会为每个事件和每个侦听器创建一个新的事件对象。，你可以保持事件对象的引用，甚至修改它。但是，这意味着要进行大量的内存分配。 React在启动的时候分配了一个事件对象池，任何时候需要的时候，都可以进行重用，这极大的减少了垃圾回收。</p>
+<h3 id="9-react-state-">9、 React中的state是什么？</h3>
+<p>组件的状态是一个对象，它包含一些可能在组件的生命周期内发生变化的信息。 我们应该总是尽量使我们的状态尽可能简单，并尽量减少有状态组件的数量。</p>
+<h3 id="10-state-props-">10、 state和props的区别?</h3>
+<p>props和state都是纯JavaScript对象。 虽然它们都包含影响渲染输出的信息，但它们在组件方面的功能却不同。即：</p>
+<ul>
+<li>props传递给组件类似于给函数传递参数</li><li>state之于组件类似于函数中定义的变量</li></ul>
+<h3 id="11-react-">11、 React有什么不足或限制？</h3>
+<ul>
+<li>React只是一个视图框架，而不是一个完整的MVC框架</li><li>对于不熟悉Web开发的初学者来说，有一个学习曲线。</li><li>将React.js集成到传统的MVC框架中需要一些额外的配置</li><li>代码复杂性随内联模板和JSX而增加。</li><li>太多较小的组件导致过度工程或样板</li></ul>
+<h3 id="12-react-">12、 在React中元素和组件的区别？</h3>
+<p>简而言之，React元素描述了您希望在屏幕上看到的内容。 不那么简单地说，React元素是某些UI的对象表示。</p>
+<p>React组件是一个函数或类，它可选地接受输入并返回一个React元素（通常通过JSX将其转换为createElement调用）。</p>
+<h3 id="13-react-angular-">13、 React和Angular有什么区别?</h3>
+<h3 id="14-flux-redux-">14、 相比Flux，Redux有啥缺陷？</h3>
+<h3 id="15-react16-error-boundaries-">15、 React16中的错误边界（error boundaries）是啥？</h3>
+<h3 id="16-react-classname-class-">16、 React为啥要适用className替换class作为属性名?</h3>
+<p>class是JS中的关键字，而JSX是扩展的JS语法，所以会冲突</p>
+<h3 id="17-react-redux-store-">17、 在React组件外如何访问Redux的store？</h3>
+<h3 id="18-jsx-">18、 JSX是什么？</h3>
+<p>当Facebook首次向全世界发布React时，他们还引入了一种名为JSX的新方法，它将原始HTML模板嵌入到JavaScript代码中。 浏览器无法读取JSX代码本身; 它必须使用像Babel和webpack这样的工具转换成传统的JavaScript。 虽然许多开发人员可以理解地反对它，但JSX（与ES2015一起）已经成为定义React组件的事实方法。</p>
+<h3 id="19-state-">19、 为什么不能直接修改state？</h3>
+<p>如果您尝试直接更新状态，不会重新渲染组件。<br>应该使用setState（）方法。 它会安排对组件状态对象的更新。 当状态改变时，组件通过重新呈现来响应</p>
+<h3 id="20-react-">20、 React组件的生命周期是什么？</h3>
+<p>React组件的生命周期可分为四大部分：</p>
+<ol>
+<li>实例化。在这个时期组件会设置初始state和默认props</li><li>挂载。组件已经准备好挂载到浏览器DOM中。这一时期包括componentWillMount 和 componentDidMount 2个生命周期方法</li><li>更新。在这一周期，组件通过2种方式实现更新：接收props以及更新state。这一阶段会涉及componentWillReceiveProps,shouldComponentUpdate, componentWillUpdate 和 componentDidUpdate 四个方法。</li><li>卸载。 在这一阶段，组件已经不再需要，被从DOM中移除。这一时期涉及的方法有componentWillUnmount。<br><img src="https://i.imgur.com/ObQW1fT.jpg" alt=""></li></ol>
+<p><img src="https://i.imgur.com/SdJYevY.png" alt=""></p>
+<h3 id="21-react-forceupdate-">21、 React在什么情况下要使用forceUpdate？</h3>
+<p>如果存在某些条件，React未检测到需要更新UI, 可以调用则forceUpdate强制重新render。 但通常这不需要调用。</p>
+<h3 id="22-">22、 下面这个代码错在哪里？</h3>
+<pre><code>this.setState((prevState, props) =&gt; {
+  return {
+    streak: prevState.streak + props.count
+  }
+})
+</code></pre><p>它没有任何问题。 它很少使用，也不为人所知，你可以将一个函数传递给接收先前状态的setState，并返回一个新的状态，正如我们上面所做的那样。 并且它不仅没有错，而且如果您需要根据以前的状态设置新状态，推荐使用它。</p>
+<h3 id="23-">23、 受控组件和非受控组件？</h3>
+<p>可参考<a href="https://dulinrain.github.io/react/React%E4%B9%8B%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6%E4%B8%8E%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6.html">React之受控组件与非受控组件</a></p>
+<h3 id="24-react-">24、 React中副作用是什么意思？举几个例子？</h3>
+<p>“副作用”是影响正在执行的函数范围之外的任何事物。例如，这些可以是网络请求，它使您的代码与第三方通信（从而发出请求，导致记录日志，保存或更新缓存，功能之外的各种效果）。</p>
+<p>还有更微妙的副作用。更改闭包范围变量的值是副作用。将新元素push到作为参数传入的数组是副作用。没有副作用的函数称为“纯”函数：它们接受参数，并返回值。执行该功能时没有其他任何事情发生。这使得易于测试，易于推理，并且在优化或重构方面，满足此描述的函数具有各种有用的属性。</p>
+<p>纯函数是确定性的（意味着，给定输入，它们总是返回相同的输出），但这并不意味着所有不纯函数都有副作用。例如，在函数内生成随机值会使其不纯，但不会产生副作用。 React完全是关于纯函数的，并要求您确保几个生命周期方法为纯函数。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
