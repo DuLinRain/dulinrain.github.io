@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chromium进程模型</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+</head>
+<body>
+<h1 id="chromium-">Chromium进程模型</h1>
+<p>本文讲述的是Chromium渲染器进程所支持的几种不同的进程模型以及各模型存在的问题。</p>
+<h3 id="-">概述</h3>
+<p>Web内容已演变为包含大量在浏览器中运行的动态代码，从而使许多网站更像是应用程序而不是纯文档。这种演变也将浏览器的角色从一个简单的文档渲染器转换成了一个操作系统。Chromium就是按照类似操作系统的样子去开发的，通过使用多个操作系统进程来确保站点-站点的隔离以及站点-浏览器的隔离，从而让这些应用以安全和健壮的方式运行。这改善了浏览器的健壮性，因为每个进程运行在独立的地址空间，由操作系统进行调度，并且一个挂了也不会影响另外一个。用户也可以在Chrome的任务管理器中看到每个进程的资源使用。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNlpBhjTcAClpsCjadNoOVvnKpo0wwfYfl945GHzRj6oXS6Ahg2e1R7w/0?wx_fmt=png" alt=""></p>
+<p>有很多种方式可以将web浏览器划分到不同的操作系统运行，而选择最好的架构则取决于很多种因素，其中包括：稳定性、资源使用率以及对实际使用的监测。Chromium支持四种不同的进程模型可供实验，并且将其中一种适合大多数用户的模型作为默认模型。</p>
+<h3 id="-">支持的模型</h3>
+<p>Chromium支持四种不同的模型，不同的模型会影响浏览器如何将页面分配给渲染器进程。默认情况下，Chromium为用户访问的每个站点实例（Process-per-site-instance, 即each instance of a web site）分配一个独立的进程。然而，用户也可以通过命令行在Chromium启动时选择其它的模型：每个站点所有实例公用一个进程（one process for all instances of a web site）、每一组连接的tab公用一个进程（one process for each group of connected tabs）、只有一个进程（everything in a single process）。这些模型的区别在于其是否反映了内容的来源、tab之间的关系或者2者共有。本节将详细讲解这几种模型，稍后会在文档中讲述当前实现的各种注意点。</p>
+<h4 id="process-per-site-instance">Process-per-site-instance</h4>
+<p>默认情况下，Chromium会为用户访问的站点的每个实例创建一个渲染器进程。这样可以确保不同的站点渲染在独立的进程中，并且对同一站点的独立访问也是相互隔离的。因此单个站点实例的失败（例如：渲染进程崩掉）或者大量资源使用不会影响浏览器的其它部分。这种模型既基于页面内容的来源，也基于可能由脚本关联的不同tab。因此，2个tab的页面可能是通过同一个进程渲染的，当导航到一个跨站的页面时可能会切换到一个新的渲染器进程。</p>
+<blockquote>
+<p>请注意，Chromium当前的实现中有一些重要警告，请参见下面的“警告”部分。</p>
+</blockquote>
+<p>具体而言，这里定义的站点(site)是域名（如google.com或者bbc.co.uk）+ 协议（如<a href="https://）。这个和同源策略（Same">https://）。这个和同源策略（Same</a> Origin Policy）中的源（Origin）定义很像，但是它会将子域名（如mail.google.com和docs.google.com）以及端口（如 <a href="http://foo.com:8080）都视为同一个站点(site)。">http://foo.com:8080）都视为同一个站点(site)。</a><br>一个“<strong>站点实例</strong>（site instance）”是相互<strong>连接</strong>的相同站点的集合。这里“<strong>连接</strong>”的意思是其中页面之间可以通过脚本获得对应页面的引用（如：某个页面使用Javascript在另一个窗口打开一个新的页面）。</p>
+<blockquote>
+<p>问题：a标签算吗？location.href算吗</p>
+</blockquote>
+<h5 id="-">优点</h5>
+<ul>
+<li>隔离不同站点的内容。这为Web内容提供了一种有意义的命运共享形式，这种形式下其它站点的失败不会影响另外的页面。</li><li>隔离相同站点但在不同tab打开的站点。在不同的tab中访问相同的站点会分别创建独立的渲染进程。这样可以避免竞争以及不同实例相互影响。</li></ul>
+<h5 id="-">缺点</h5>
+<ul>
+<li>更多的内存开销。在大多数工作负载中，这种模型将创建比下面描述的“<strong>Process-per-site</strong>”模型更多的渲染器过程。虽然这会增加稳定性并可能增加并行性的机会，但同时也会增加内存开销。</li><li>实现更复杂。与<strong>每个tab一个进程</strong>（process-per-tab）和<strong>单进程</strong>（single-process）模型相比，这种模型涉及到更复杂的逻辑用来在不同站点导航时切换进程，以及代理一部分不同源站点之间JavaScript行为，如postMessage。</li></ul>
+<h4 id="process-per-site">Process-per-site</h4>
+<p>Chromium也支持将不同站点互相隔离的模型，但是会将所有相同站点的实例放入一个渲染进程处理。要想使用这种模型，可以在Chromium启动时传递--process-per-site命令。这种模型会创建较少的渲染器进程，以牺牲一些健壮性为代价来降低内存开销。这种模型只会基于内容的源，不会基于不同tab之间的关系。</p>
+<h5 id="-">优点</h5>
+<ul>
+<li>隔离不同站点的内容。和process-per-site-instance模型一样，不同的站点会在不同的渲染器进程渲染。</li><li>较少的内存消耗。这种模型相较于process-per-site-instance和process-per-tab模型可能会创建较少的并发进程。如果想减少Chromium的内存占用量的话这种模型可能是理想的。</li></ul>
+<h5 id="-">缺点</h5>
+<ul>
+<li>可能会导致大进程。类似于google.com这样的站点可能会托管很多不同的应用并且都在浏览器中打开，这会导致所有这些打开的内容都会在同一个渲染进程中渲染。这样的话，资源竞争或者某个错误很可能导致很多个tab都挂掉，使得浏览器看起来响应性很差。不幸的是，要在不破坏向后兼容性的情况下，以比注册域名更细的粒度来识别站点边界是很困难的。</li><li>实现起来更复杂。和process-per-site-instance模型类似，这种模型需要设计比较复杂的逻辑来处理导航时的进程切换以及代理一些JavaScript交互。</li></ul>
+<h4 id="process-per-tab">Process-per-tab</h4>
+<p><strong>process-per-site-instance</strong> 和 <strong>process-per-site</strong> 模型在创建进程时都会考虑内容的来源。Chromium也支持一种简单的模型，这种模型将一组script连接的tab放到一个渲染进程处理。这种模型可以在启动时通过<code>--process-per-tab</code>命令行启用。<br>具体来说，我们将一组具有脚本连接彼此的tab称为浏览实例，这也对应于HTML5规范中的“相关浏览上下文单元”。该集包含一个tab和使用Javascript代码打开的其他所有tab。这种tab必须在相同的进程中呈现，以允许在它们之间（最常见的是在同一来源的页面之间）进行Javascript调用。</p>
+<h5 id="-">优点</h5>
+<ul>
+<li>理解简单。每个tab有一个为其服务的单独的渲染进程并且不会随着时间改变。</li></ul>
+<h5 id="-">缺点</h5>
+<ul>
+<li>造成不同页面间非预期的生命共享。如果用户在一个浏览实例中导航到另一个站点，这个新页面会与当前浏览实例中的其它页面共享生命。</li></ul>
+<p>值得注意的是，在process-per-tab模型中，Chromium仍然会在觉得必要或者为了安全的情况下强制进程交换。例如，普通页面不允许和类似“设置”或者“新标签页”等特权页面共享进程。结果就是，该模型在实践中并没有比Process-per-site-instance简单得多。</p>
+<h4 id="single-process">Single process</h4>
+<p>为了对比，Chrome也支持通过<code>--single-process</code>开启单进程模型。在这种模型里，浏览器和渲染引擎都在一个操作系统进程中运行。<br>单进程模型为测量多进程模型架构在不同负载下的性能提供了基准。它并不一种安全或健壮的架构，因为任何一个渲染器挂掉都会导致整个浏览器进程挂掉。它旨在用于测试和开发目的，并且可能包含其他架构中不存在的错误。</p>
+<h3 id="-">沙箱和插件</h3>
+<p>在每一种多进程架构模型中，Chromium的渲染器进程都在一个沙箱进程中执行，这个沙箱进程对用户计算机只有有限的访问能力。这些进程没法直接访问用户的文件系统、显示器以及大多数其它资源。它们智能通过浏览器进程对部分资源进行有限的访问，这样可以在这个地方施加安全策略。这样的结果就是，Chromium的浏览器进程可以减轻被利用的渲染引擎可能造成的损害。<br>浏览器插件，如Flash和Silverlight，也是在它们各自的进程中运行，有些像Flash之类的插件也是在Chromium的沙盒中执行的。在Chromium支持的每一种多进程架构中，每一类激活的插件都运行在同一个进程实例中。因此，所有的Flash插件都运行在相同的进程中，不论它出现在哪个站点或tab。</p>
+<h3 id="-">警告</h3>
+<p>这一小节将列出Chromium多进程模型的当前实现中的一些警告以及对应的说明：</p>
+<ul>
+<li><p>大多数渲染器在tab内发起的导航不会导致进程的交换。如果用户点击一个链接，提交一个表单或者被js重定向，如果目标是跨站的话，Chromium不会试图切换渲染进程。Chromium只会在由浏览器发起的跨站导航情况下切换渲染进程，比如在地址栏输入一个URL或者点击一个书签。结果就是，来自不同站点的页面可能会运行在相同的进程中，这个在process-per-site-instance和process-per-site这2种模型中都有可能。这个情况可能会在Chromium未来版本作为<strong>站点隔离</strong>的一部分做出改变。<br>然而，页面也可以使用一种机制建议浏览器让link打开的页面在一个不同的线程中渲染。方法就是给link加上<code>rel=noreferrer</code> 和 <code>target=_blank</code>属性，大概率情况下是可以生效的。</p>
+</li><li><p>子frame当前是和其父页面渲染在同一个进程。经过跨站子frame（如iframe）没有对父页面脚本的访问并且可以安全地放到一个独立的进程中执行，但是Chromium还没有这么做。和前面一点类似，这意味着<strong>不同站点的页面可能还是会运行在同一个进程</strong>。这可能会在未来的版本中改变。</p>
+</li><li><p>Chromium创建的进程数量是有限制的。这可以避免浏览器占用过多的用户计算机资源。这个限制是根据计算机的内存按比例来的，<strong>最多会有80个进程</strong>。因为有这么一个限制，所以可能会出现一个进程为多个站点服务。这种复用是随机的，但是未来的Chromium可能会采用启发式的算法让更加智能的将站点分配给渲染器进程。</p>
+</li></ul>
+<h3 id="-">实现说明</h3>
+<p>Chromium中有2个类来表示各种模型所需要的抽象：<code>BrowsingInstance</code> 和 <code>SiteInstance</code>。</p>
+<p><code>BrowsingInstance</code>类表示浏览器中的一组脚本连接的tab，在HTML 5规范中也称为相关的浏览上下文的单元。 在“process-per-tab”模型中，我们为每个<code>BrowsingInstance</code>创建一个渲染器进程。</p>
+<p><code>SiteInstance</code>类表示同一站点中的一组连接页面。 它是<code>BrowsingInstance</code>中页面的细分，并且重要的是<code>BrowsingInstance</code>中每个站点只有一个<code>SiteInstance</code>。 在process-per-site-instance进程模型中，我们为每个<code>SiteInstance</code>创建一个渲染器进程。而在实现process-per-site模型时，我们保证所有的相同站点的所有<code>SiteInstance</code>都最终在同一个进程中。</p>
+<h3 id="-">学术文章</h3>
+<ul>
+<li><a href="http://www.charlesreis.com/research/publications/eurosys-2009.pdf">在现代浏览器架构中对web程序进行隔离</a></li><li><a href="http://crypto.stanford.edu/websec/chromium/">Chromium浏览器的安全架构</a></li></ul>
+<h3 id="-">参考</h3>
+<ul>
+<li><a href="https://www.chromium.org/developers/design-documents/process-models">https://www.chromium.org/developers/design-documents/process-models</a></li></ul>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

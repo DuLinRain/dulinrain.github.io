@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>详解await在V8底层的实现</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+</head>
+<body>
+<h1 id="-await-v8-">详解await在V8底层的实现</h1>
+<p>本文将讲述<strong><code>await</code></strong>在V8底层依据<a href="https://tc39.es/ecma262/#await">ECMA-262</a>的实现, 下面是一个简单的异步函数<strong><code>foo</code></strong>:</p>
+<pre><code>async function foo(v) {
+  const w = await v;
+  return w;
+}
+</code></pre><p>当<strong><code>foo</code></strong>被调用的时候，V8会把<strong><code>v</code></strong>用一个<strong><code>promise</code></strong>包裹，同时会暂停异步函数<strong><code>foo</code></strong>的执行直至前面这个<strong><code>promise</code></strong>被<strong><code>resolved</code></strong>。一旦前面这个<strong><code>promise</code></strong>被<strong><code>resolved</code></strong>，<strong><code>foo</code></strong>函数恢复执行。这个<strong><code>promise</code></strong>被<strong><code>resolved</code></strong>后的值赋给<strong><code>w</code></strong>，并且<strong><code>w</code></strong>从<strong><code>foo</code></strong>中返回。</p>
+<p>以上只是一个整体的概述，看起来并不复杂，但实际上在上述过程中，V8底层会引入<strong><code>3</code></strong>个<strong><code>promise</code></strong>和<strong><code>3</code></strong>个<strong>微任务(microtask)</strong>。我们将详细讲解其中的细节。</p>
+<h3 id="await-">await底层实现</h3>
+<p>首先，V8会标记<strong><code>foo</code></strong>函数为<strong>可恢复的(resumable)</strong>，这意味着<strong><code>foo</code></strong>函数的执行可以被暂停并且在后面某个时候(在<strong><code>await</code></strong>那个地方)被恢复。即：</p>
+<pre><code>resumable function foo (v) { //标记foo为resumable
+    ...
+}
+</code></pre><p>然后，V8会创建一个所谓的<strong><code>implicit_promise</code></strong>，这个就是你调用<strong><code>foo</code></strong>之后返回的promise。当这个promse被<strong><code>resilved</code></strong>时会得到<strong><code>w</code></strong>。即</p>
+<pre><code>resumable function foo (v) { //标记foo为resumable
+    implicit_promise = createPromise(); //创建implicit_promise
+    ...
+    resolvePromise(implicit_promise, w);
+}
+</code></pre><p>那么，这会儿剩下的就是整个环节中最复杂和最有趣的地方：<strong><code>await</code></strong>。</p>
+<p>首先，传递给<strong><code>await</code></strong>的值会被一个<strong><code>promise</code></strong>包裹，即：</p>
+<pre><code>resumable function foo (v) { //标记foo为resumable
+    implicit_promise = createPromise(); //创建implicit_promise
+    // 1. 用promise包裹v
+    promise = createPromise();
+    resolvePromise(promise, v);
+    ...
+    resolvePromise(implicit_promise, w);
+}
+</code></pre><p>然后，这会有handlers赋给前面这个包裹<strong><code>promise</code></strong>，以便当这个<strong><code>promise</code></strong>被<strong><code>resolved</code></strong>的时候能够恢复<strong><code>foo</code></strong>的执行。而这个过程又需要创建一个Promise——<strong><code>throwaway</code></strong>。即：</p>
+<pre><code>resumable function foo (v) { //标记foo为resumable
+    implicit_promise = createPromise(); //创建implicit_promise
+    // 1. 用promise包裹v
+    promise = createPromise();
+    resolvePromise(promise, v);
+    // 2. handler赋给前面这个包裹promise
+    throwaway = createPromise();
+    performPromiseThen(promise,
+        res =&gt; resume(&lt;foo&gt;，res),
+        err =&gt; throw(&lt;foo&gt;，err),
+        throwaway);
+    ...
+    resolvePromise(implicit_promise, w);
+}
+</code></pre><p>最后，在前面那个过程完成后，<strong><code>foo</code></strong>函数被暂停执行，并将<strong><code>implicit_promise</code></strong>返回给调用者。一旦<strong>步骤1</strong>中的<strong><code>promise</code></strong>(即包裹<strong><code>promise</code></strong>)被<strong><code>fulfilled</code></strong>，<strong><code>foo</code></strong>函数会恢复执行并拿到结果<strong><code>w</code></strong>，而<strong><code>implicit_promise</code></strong>也会<strong><code>resolved</code></strong>，其值会是<strong><code>w</code></strong>。即：</p>
+<pre><code>resumable function foo (v) { //标记foo为resumable
+    implicit_promise = createPromise(); //创建implicit_promise
+
+    // 1. 用promise包裹v
+    promise = createPromise();
+    resolvePromise(promise, v);
+    // 2. handler赋给前面这个包裹promise
+    throwaway = createPromise();
+    performPromiseThen(promise,
+        res =&gt; resume(&lt;foo&gt;，res),
+        err =&gt; throw(&lt;foo&gt;，err),
+        throwaway);
+    // 3. 暂停foo执行，返回implicit_promise
+    w = suspend(&lt;foo&gt;, implicit_promise);
+
+    resolvePromise(implicit_promise, w);
+}
+</code></pre><p>整个过程如下图所示：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmk6bQg75cPvtLyf5dJQ4zCF3QTmkicnFQqkTLJAuRHYdTHXBMH0SKYoA8pSDPswJbGB80CjLmJdYlQ/0?wx_fmt=png" alt=""></p>
+<p>简单来说，<strong><code>await</code></strong>的整个过程可以概况为：</p>
+<ol>
+<li>用<strong><code>promise</code></strong>包裹<strong><code>v</code></strong>—— <strong><code>v</code></strong>即<strong><code>await</code></strong>右边的内容。</li><li>附加一个<strong><code>handler</code></strong>用于后面恢复异步函数的执行。</li><li>暂停异步函数的执行，返回<strong><code>implicit_promise</code></strong>给调用者。</li></ol>
+<p>让我们接下来一步步的看一下上面的每个步骤。</p>
+<p>假定<strong><code>await</code></strong>右边的本身就是一个promise(注意：就语法规范而言，<strong><code>await</code></strong>右边并不一定要是promise)，这个promise <strong><code>fulfilled</code></strong>之后会返回<strong><code>42</code></strong>的数值。这时，V8 会创建一个<strong><code>promise</code></strong>包裹<strong><code>await</code></strong>右边的内容并且<strong><code>resolve</code></strong> 这个创建的包裹<strong><code>promise</code></strong>。这会把这些promise链推迟到下一个事件循环执行。这是根据ECMA-262中<a href="">PromiseResolveThenableJob</a>的规范实现的。</p>
+<blockquote>
+<p>注：也就是说，不论<strong>await</strong>右边本身是不是一个promise，V8都会创建一个<strong>promise</strong>来包裹<strong>await</strong>右边的内容。</p>
+</blockquote>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmk6bQg75cPvtLyf5dJQ4zCFRjsHoMhJpZNo4ugm6kIk3tfJJnFwwufkVWvan46Xl6YRlXx36qPbjg/0?wx_fmt=png" alt=""></p>
+<blockquote>
+<p>图上绿色从左到右第一个<strong><code>JSPromise</code></strong>就是我们假定的<strong><code>await</code></strong>右边本身就是一个promise，它<strong><code>fulfilled</code></strong>后会返回<strong><code>42</code></strong>的值。第二个<strong><code>JSPromise</code></strong>就是V8创建的一个<strong><code>promise</code></strong>包裹<strong><code>v</code></strong>。第三个<strong><code>JSPromise</code></strong>就是步骤2中创建的一个<strong><code>throwaway</code></strong> promsie，用于<strong><code>foo</code></strong>函数恢复执行。</p>
+</blockquote>
+<p>除了创建那个包裹<strong><code>v</code></strong>的<strong><code>promise</code></strong>，V8在<strong>步骤2</strong>中还创建了一个所谓的<strong><code>throwaway</code></strong> promsie。它之所以叫做<strong><code>throwaway</code></strong>是因为没有任何东西曾经和它链接，它完全是V8引擎内部的。这个<strong><code>throwaway</code></strong> promsie随后被链接到前面创建的那个包裹<strong><code>v</code></strong>的<strong><code>promise</code></strong>上，并且上面附加了一些handlers用于恢复<strong><code>foo</code></strong>函数的执行。这里会有一个<a href="https://tc39.es/ecma262/#sec-promiseresolvethenablejob">PromiseResolveThenableJob</a>被加入到微任务队列。本质上，这里的<strong><code>performPromiseThen</code></strong>所做的就是<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">Promise.prototype.then()</a>所做的工作。最终，<strong><code>foo</code></strong>函数的执行被暂停，控制流返回到调用者。</p>
+<p>调用者继续执行，而由于我们的代码只有<strong><code>foo</code></strong>这个函数，没其他逻辑，所以最终调用栈(事件循环的任务队列)被清空。这时，V8引擎开始执行微任务队列中的任务：之前加入到微任务队列中的<a href="https://tc39.es/ecma262/#sec-promiseresolvethenablejob">PromiseResolveThenableJob</a>。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmk6bQg75cPvtLyf5dJQ4zCFDeLPV9TVp14ibQHnia0SsUgfbvJy62alHU6GBIDtPK4TgMH24icZrAsug/0?wx_fmt=png" alt=""></p>
+<p><a href="https://tc39.es/ecma262/#sec-promiseresolvethenablejob">PromiseResolveThenableJob</a> 这个微任务又会把一个新的微任务 <a href="https://tc39.es/ecma262/#sec-promisereactionjob">PromiseReactionJob</a> 放入微任务队列，这个 <a href="https://tc39.es/ecma262/#sec-promisereactionjob">PromiseReactionJob</a> 微任务会把<strong><code>await</code></strong>右边内容的得到的值链接到V8创建的那个包裹<strong><code>v</code></strong>的<strong><code>promise</code></strong>上(即下图上方绿色部分第二个<strong><code>JSPromsie</code></strong>, 此时处于<strong><code>pending</code></strong>)。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmk6bQg75cPvtLyf5dJQ4zCFDeLPV9TVp14ibQHnia0SsUgfbvJy62alHU6GBIDtPK4TgMH24icZrAsug/0?wx_fmt=png" alt=""></p>
+<p>因为微任务队列必须要清空之后才能回到主循环，所以V8会继续执行前面加入的微任务<a href="https://tc39.es/ecma262/#sec-promisereactionjob">PromiseReactionJob</a> 。<a href="https://tc39.es/ecma262/#sec-promisereactionjob">PromiseReactionJob</a> 执行完后，会用从<strong><code>v</code></strong>得到的值(本例这里是<strong><code>42</code></strong>) <strong><code>fulfill</code></strong> 那个包裹的<strong><code>promsie</code></strong>(即下图上方绿色部分第二个<strong><code>JSPromsie</code></strong>, 此时处于<strong><code>fulfilled</code></strong>)。</p>
+<p>在这个<a href="https://tc39.es/ecma262/#sec-promisereactionjob">PromiseReactionJob</a> 执行完后，又会加入一个针对<strong><code>throwaway</code></strong> promsie的<a href="https://tc39.es/ecma262/#sec-promisereactionjob">PromiseReactionJob</a> 微任务到微任务队列。可以看到此时第三个<strong><code>JSPromsie</code></strong>状态是<strong><code>pending</code></strong>.</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmk6bQg75cPvtLyf5dJQ4zCFqHTV2nZIcXRgw20VUsnWabCB9oVF8iaTCkaJeMxEomHD50WKXeCEr1g/0?wx_fmt=png" alt=""></p>
+<p>V8引擎会继续执行微任务队列中的微任务。当刚才的第二个<a href="https://tc39.es/ecma262/#sec-promisereactionjob">PromiseReactionJob</a> 执行完后会调用我们附加的<strong><code>fulfill/reject</code></strong> handers，不论哪种都会恢复<strong><code>foo</code></strong>函数的执行，返回<strong><code>await</code></strong>的结果——<strong><code>42</code></strong>。此时微任务队列被情况，执行流回到主事件循环：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmk6bQg75cPvtLyf5dJQ4zCFrbdLkia49oGRhWnPWX0D8HMuBopxCrYBI8WF6SAwZ2ic3zGOkKP05e5A/0?wx_fmt=png" alt=""></p>
+<h3 id="await-">await的开销总结</h3>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmk6bQg75cPvtLyf5dJQ4zCFibcRicMR0SpoiboS9zZX8pLmKVY0czbib77e67MJmYZia96QVaIEqqEzvZg/0?wx_fmt=png" alt=""></p>
+<p>从上面的介绍我们了解到，对于每个<strong><code>await</code></strong>, V8引擎都需要创建<strong><code>2</code></strong>个<strong>额外</strong>的<strong><code>promise</code></strong>——包裹<strong><code>v</code></strong>的<strong><code>promsie</code></strong>(即使<strong><code>await</code></strong>右边本身是个<strong><code>promise</code></strong>，也会创建)<br>和<strong><code>throwaway</code></strong>，以及至少<strong><code>3</code></strong>个<strong>微任务</strong>。想不到就这么简单的一个<strong><code>await</code></strong>里面涉及这么多的开销。!</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmk6bQg75cPvtLyf5dJQ4zCFaSiaXrNlAMrsBeNnKExac3sicf28zyIhyFGOCmrIgg4r2MEGiaj6YEjGQ/0?wx_fmt=png" alt=""></p>
+<p>我们来具体看一下这些开销来自哪里。上面第一行代码负责创建包裹<strong><code>promise</code></strong>。第二行立即使用<strong><code>v</code></strong>的值<strong><code>resolve</code></strong>这个包裹<strong><code>promise</code></strong>。这2行代码会导致<strong><code>1</code></strong>个额外的<strong><code>promise</code></strong>被创建以及<strong><code>2</code></strong>个<strong>微任务</strong>被加入到微任务队列。当<strong><code>v</code></strong>本身就是一个<strong><code>promise</code></strong>的时候，还创建一个<strong><code>promise</code></strong>包裹<strong><code>v</code></strong>是很浪费的。而在我们实际使用中，<strong><code>v</code></strong>通常本身都会是一个<strong><code>promise</code></strong>，所以这种情况下很浪费。当然，如果<strong><code>v</code></strong>本身不是一个<strong><code>promise</code></strong>的话，这里还是需要为它创建一个<strong><code>promise</code></strong>包裹它的。</p>
+<p>这不禁提供了一种在V8中优化<strong><code>await</code></strong>的思路——根据<strong><code>v</code></strong>是否本身是<strong><code>promise</code></strong>来决定创建或不创建<strong><code>promise</code></strong>包裹<strong><code>v</code></strong>。当然除了这个包裹<strong><code>promise</code></strong>，<strong><code>throwaway</code></strong> promise本质上也是浪费的，我们将在后面的文章中详细讲解优化<strong><code>await</code></strong>的方式。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
