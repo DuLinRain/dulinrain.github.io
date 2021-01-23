@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>深入理解HMR实现原理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+</head>
+<body>
+<h1 id="-hmr-">深入理解HMR实现原理</h1>
+<h3 id="-hmr-">一. 什么是HMR?</h3>
+<p>HMR，又称模块热替换，是对于我们高效地进行前端开发非常有帮助，热模块替换是一种Webpack功能，可在不重新加载浏览器的情况下更新您的Javascript。 热模块替换中的“模块”仅指您的每个Javascript源代码文件。 回顾一下，在没有各种构建工具之前，我们最原始的开手动，然后用webpack -w，再后来有了HMR。</p>
+<h3 id="-hmr-">二. HMR的实现原理</h3>
+<p>当启用HMR后，webpack在你的输出bundle中插入了一段叫做<strong>HMR Runtime</strong>的代码，当你的bundle在浏览器中加载后，这段代码也会运行，它负责接收webpack的通知并且拉取更新。</p>
+<p>当然，只有客户端的代码是不够的，webpack自生会运行一个叫做<strong>HMR Server</strong>的代码, 用于通知<strong>HMR Runtime</strong>何时去更新代码，同时也负责将新的代码以json的形式发送给<strong>HMR Runtime</strong>。</p>
+<p><strong>HMR Server</strong>、<strong>HMR Runtime</strong>、本地源文件、webpack之间的关系可以用如下图来表述：</p>
+<p><img src="https://i.imgur.com/DbyoFOD.png" alt=""></p>
+<p>让我们先来看看这些名词：</p>
+<p><strong>webpack compiler:</strong> 编译器是webpack的核心负责将源代码打包成bundle.js输出。<br><strong>HMR server：</strong>负责通知并发送热模块给HMR Runtime<br><strong>Bundle Server:</strong> 负责给浏览器提供bundle.js<br><strong>bundle.js：</strong>webpack compiler编译出的js，会以script的标签插入页面<br><strong>HMR runtime：</strong> 这段代码被注入到bundle.js中，他会预HMR Server通信并更新模块</p>
+<p>启动流程</p>
+<p>当你第一次启动HMR(使用webpack-dev-server 或 webpack-hot-middleware))的时候，会生成一个初始的bundle.js。其实不论你用没用到HMR，都会有前述这个过程。也就是：</p>
+<p>A： Webpack Compiler 编译 JS 代码.<br>B： Bundle Server 打包bundle给浏览器加载使用。</p>
+<p>使用HMR后，会有一个更新流程。</p>
+<p>更新流程</p>
+<p>更新流程涉及到好几步：</p>
+<p>1、你改变你的源代码并保存。<br>2、文本编辑器检查到更新，通知webpack。<br>3、webpack compiler重新构建一个或多个模块，并通知HMR Server有新的模块更新。<br>4、HMR Server通过websocket或其它方式通知HMR Runtime它需要更新，HMR Runtime通过HTTP向HMR Server请求更新的模块。<br>5、HMR Runtime用收到的新模块替换旧模块，如果它没法替换的话会直接整个刷新浏览器。</p>
+<p>模块热替换不会解除旧模块代码中的副作用，如果你的旧模块有副作用，你需要手动的调用module.hot.dispose()去解除。比如setInterval之类的副作用。</p>
+<h3 id="-hmr-">三. 如何配置HMR？</h3>
+<p>配置HMR最常见的有2种方法：</p>
+<ol>
+<li>使用webpack-dev-server配置</li><li>使用webpack-dev-middleware和webpack-hot-middleware配置</li></ol>
+<p>下面我们来分别看看这两种配置方法；</p>
+<h4 id="3-1-webpack-dev-server-">3.1 使用webpack-dev-server配置</h4>
+<p>使用webpack-dev-server配置是最简单的配置方法，这也是webpack官方推荐的方式。它的配置只需要几步：</p>
+<h5 id="3-1-1-webpack-dev-server">3.1.1、 安装webpack-dev-server</h5>
+<pre><code>npm install webpack-dev-server --save-dev
+</code></pre><blockquote>
+<p>注意：尽管你也可以全局安装，但官方建议还是本地安装，它会优先使用本地安装</p>
+</blockquote>
+<h5 id="3-1-2-package-json-">3.1.2、 修改package.json，增加启动脚本</h5>
+<pre><code>&quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;webpack-dev-server&quot;,
+ }
+</code></pre><h5 id="3-1-3-webpack-config-js-">3.1.3、 在webpack.config.js中配置插件</h5>
+<p>webpack.config.js</p>
+<pre><code>const path = require(&#39;path&#39;);
+const webpack = require(&#39;webpack&#39;);
+module.exports = {
+  entry: &#39;./src/index.js&#39;,
+  plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  mode: &#39;development&#39;,
+  output: {
+    filename: &#39;bundle.js&#39;,
+    path: path.resolve(__dirname, &#39;dist&#39;)
+  }
+};
+</code></pre><h5 id="3-1-4-">3.1.4、启动</h5>
+<pre><code>npm run dev
+</code></pre><p>一般你会在node命令行看到如下输出：</p>
+<p><img src="https://i.imgur.com/KAeHuJf.png" alt=""></p>
+<p>webpack-dev-server给我们在8080端口启动了服务，服务的目录相对于根目录。</p>
+<p>所以，一般我们在根目录下有个index.html文件，文件引入的脚本与我们在webpack.config.js中配置的输出脚本名相对应，然后我们打开响应的端口，就可以看到相应的效果了。</p>
+<p>index.html</p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;起步&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>有时候，我们想对服务器端口等做一些调整，对服务目录做调整等等，你可以在webpack中配置devServer属性：</p>
+<pre><code>devServer: {
+  contentBase: path.join(__dirname, &quot;dist&quot;),
+  compress: true,
+  port: 9000,
+  hot: true
+}
+</code></pre><p>devServer可配置的选项很多，我们就不一一赘述，想了解的可以参考<a href="https://webpack.docschina.org/configuration/dev-server/#devserver">这里</a>。</p>
+<p><img src="https://i.imgur.com/y0atAB5.png" alt=""><img src="https://i.imgur.com/DQwa1Ms.png" alt=""></p>
+<h4 id="3-2-webpack-dev-middleware-webpack-hot-middleware-">3.2 使用webpack-dev-middleware和webpack-hot-middleware配置</h4>
+<p>使用webpack-dev-middleware和webpack-hot-middleware配置其实也很简单，只不过我们需要自己写server.js，用来启动express服务。 它的步骤如下：</p>
+<h5 id="3-2-1-webpack-dev-middleware-webpack-hot-middleware-express">3.2.1、 安装webpack-dev-middleware和webpack-hot-middleware和express</h5>
+<pre><code>npm install webpack-dev-middleware webpack-hot-middleware express --save-dev
+</code></pre><h5 id="3-2-2-webpack-config-js">3.2.2、 修改webpack.config.js</h5>
+<pre><code>const path = require(&#39;path&#39;);
+const webpack = require(&#39;webpack&#39;);
+module.exports = {
+  entry: [&#39;webpack-hot-middleware/client?noInfo=true&amp;reload=true&#39; , &#39;./src/index.js&#39;],
+  plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  mode: &#39;development&#39;,
+  output: {
+    filename: &#39;bundle.js&#39;,
+    path: __dirname,//path.resolve(__dirname, &#39;dist&#39;)
+  }
+};
+</code></pre><blockquote>
+<p>注意：入口点加上了&#39;webpack-hot-middleware/client?noInfo=true&amp;reload=true&#39;，是用来让浏览器加载更新，否则webpack会自动编译，但浏览器不会自动加载更新。</p>
+</blockquote>
+<h5 id="3-2-3-server-js-">3.2.3、 编写server.js脚本</h5>
+<pre><code>const webpack = require(&#39;webpack&#39;);
+const middleware = require(&#39;webpack-dev-middleware&#39;);
+var webpackConfig = require(&#39;./webpack.config&#39;);
+var compiler = webpack(webpackConfig);
+const express = require(&#39;express&#39;);
+const app = express();
+
+app.use(middleware(compiler, {
+  // webpack-dev-middleware options
+}));
+app.use(require(&quot;webpack-hot-middleware&quot;)(compiler));
+app.get(&quot;/&quot;, function(req, res) {
+    res.sendFile(__dirname + &#39;/index.html&#39;);
+});
+app.listen(3000, () =&gt; console.log(&#39;Example app listening on port 3000!&#39;))
+</code></pre><h5 id="3-2-4-package-json-">3.2.4、 修改package.json启动脚本</h5>
+<pre><code>&quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;node server.js&quot;,
+ }
+</code></pre><h3 id="-webpack-hot-middleware-hmr-">四. webpack-hot-middleware实现的HMR源码分析</h3>
+<h4 id="4-1-hmr-server-">4.1 HMR Server的源码解读</h4>
+<p>我们知道，我们用express启动了一个服务，调用webpack-dev-middleware相当于启动了一个方框图中的webpack dev server，它会调用webpack的配置文件打包，也就是方框图中的webpack compiler，这个打包服务用于生成bundle.js，相当于是第二节图中的 Bundle server，而使用了webpack-hot-middleware后，相当于在webpack compiler中注入了一个HMR Server。</p>
+<p>HMR Server是由webpack-hot-middleware中的middleware.js文件实现的，它的源代码如下：</p>
+<pre><code>module.exports = webpackHotMiddleware;
+
+var helpers = require(&#39;./helpers&#39;);
+var pathMatch = helpers.pathMatch;
+
+function webpackHotMiddleware(compiler, opts) {
+  opts = opts || {};
+  opts.log = typeof opts.log == &#39;undefined&#39; ? console.log.bind(console) : opts.log;
+  opts.path = opts.path || &#39;/__webpack_hmr&#39;;
+  opts.heartbeat = opts.heartbeat || 10 * 1000;
+  //开启EventStream实现服务端事件推送(SSE)的‘长连接’
+  var eventStream = createEventStream(opts.heartbeat);
+  var latestStats = null;
+  //监听webpack编译完成和编译无效事件
+  if (compiler.hooks) {
+    compiler.hooks.invalid.tap(&quot;webpack-hot-middleware&quot;, onInvalid);
+    compiler.hooks.done.tap(&quot;webpack-hot-middleware&quot;, onDone);
+  } else {
+    compiler.plugin(&quot;invalid&quot;, onInvalid);
+    compiler.plugin(&quot;done&quot;, onDone);
+  }
+  function onInvalid() {
+    latestStats = null;
+    if (opts.log) opts.log(&quot;webpack building...&quot;);
+    //编译无效时向客户端推送building事件
+    eventStream.publish({action: &quot;building&quot;}); 
+  }
+  function onDone(statsResult) {
+    // Keep hold of latest stats so they can be propagated to new clients
+    latestStats = statsResult;
+    //编译完成时向客户端推送built事件，以及状态结果
+    publishStats(&quot;built&quot;, latestStats, eventStream, opts.log);
+  }
+  var middleware = function(req, res, next) {
+    if (!pathMatch(req.url, opts.path)) return next();
+    eventStream.handler(req, res);
+    //发送同步事件
+    if (latestStats) {
+      // Explicitly not passing in `log` fn as we don&#39;t want to log again on
+      // the server
+      publishStats(&quot;sync&quot;, latestStats, eventStream);
+    }
+  };
+  middleware.publish = eventStream.publish;
+  return middleware;
+}
+//创建SSE的函数
+function createEventStream(heartbeat) {
+  var clientId = 0;
+  var clients = {};
+  function everyClient(fn) {
+    Object.keys(clients).forEach(function(id) {
+      fn(clients[id]);
+    });
+  }
+    //每隔heartbeat(默认10s)向客户端推送💓
+  setInterval(function heartbeatTick() {
+    everyClient(function(client) {
+      client.write(&quot;data: \uD83D\uDC93\n\n&quot;);
+    });
+  }, heartbeat).unref();
+  return {
+    handler: function(req, res) {
+      var headers = {
+        &#39;Access-Control-Allow-Origin&#39;: &#39;*&#39;,
+        &#39;Content-Type&#39;: &#39;text/event-stream;charset=utf-8&#39;,
+        &#39;Cache-Control&#39;: &#39;no-cache, no-transform&#39;,
+        // While behind nginx, event stream should not be buffered:
+        // http://nginx.org/docs/http/ngx_http_proxy_module.html#proxy_buffering
+        &#39;X-Accel-Buffering&#39;: &#39;no&#39;
+      };
+
+      var isHttp1 = !(parseInt(req.httpVersion) &gt;= 2);
+      if (isHttp1) {
+        req.socket.setKeepAlive(true);
+        Object.assign(headers, {
+          &#39;Connection&#39;: &#39;keep-alive&#39;,
+        });
+      }
+
+      res.writeHead(200, headers);
+      res.write(&#39;\n&#39;);
+      var id = clientId++;
+      clients[id] = res;
+      req.on(&quot;close&quot;, function(){
+        delete clients[id];
+      });
+    },
+    publish: function(payload) {
+      everyClient(function(client) {
+        //发送数据
+        client.write(&quot;data: &quot; + JSON.stringify(payload) + &quot;\n\n&quot;);
+      });
+    }
+  };
+}
+
+function publishStats(action, statsResult, eventStream, log) {
+  // For multi-compiler, stats will be an object with a &#39;children&#39; array of stats
+    //转换为JSON
+  var bundles = extractBundles(statsResult.toJson({ errorDetails: false }));
+  bundles.forEach(function(stats) {
+    if (log) {
+      log(&quot;webpack built &quot; + (stats.name ? stats.name + &quot; &quot; : &quot;&quot;) +
+        stats.hash + &quot; in &quot; + stats.time + &quot;ms&quot;);
+    }
+    //向每个客户端推送变更模块
+    eventStream.publish({
+      name: stats.name,
+      action: action,
+      time: stats.time,
+      hash: stats.hash,
+      warnings: stats.warnings || [],
+      errors: stats.errors || [],
+      modules: buildModuleMap(stats.modules)
+    });
+  });
+}
+//提取模块
+function extractBundles(stats) {
+  // Stats has modules, single bundle
+  if (stats.modules) return [stats];
+
+  // Stats has children, multiple bundles
+  if (stats.children &amp;&amp; stats.children.length) return stats.children;
+
+  // Not sure, assume single
+  return [stats];
+}
+
+function buildModuleMap(modules) {
+  var map = {};
+  modules.forEach(function(module) {
+    map[module.id] = module.name;
+  });
+  return map;
+}
+</code></pre><p>从以上源代码可以看出，webpackHotMiddleware是webpack-hot-middleware中间件暴露的方法，在该中间件执行的时候，会启动一个EventSource建立和客户端的SSE：</p>
+<pre><code>//开启EventStream实现服务端事件推送(SSE)的‘长连接’
+  var eventStream = createEventStream(opts.heartbeat);
+</code></pre><p>webpack-hot-middleware会监听webpack的invalid和done事件，当检测到invalid时，向客户端推送buiding事件，当检测到done时，向客户端推送built事件以及变更模块。当客户端和服务端第一次连接的时候，服务端会向客户端推送sync事件，进行同步。</p>
+<pre><code>//监听webpack编译完成和编译无效事件
+  if (compiler.hooks) {
+    compiler.hooks.invalid.tap(&quot;webpack-hot-middleware&quot;, onInvalid);
+    compiler.hooks.done.tap(&quot;webpack-hot-middleware&quot;, onDone);
+  } else {
+    compiler.plugin(&quot;invalid&quot;, onInvalid);
+    compiler.plugin(&quot;done&quot;, onDone);
+  }
+  function onInvalid() {
+    latestStats = null;
+    if (opts.log) opts.log(&quot;webpack building...&quot;);
+    //编译无效时向客户端推送building事件
+    eventStream.publish({action: &quot;building&quot;}); 
+  }
+  function onDone(statsResult) {
+    // Keep hold of latest stats so they can be propagated to new clients
+    latestStats = statsResult;
+    //编译完成时向客户端推送built事件，以及状态结果
+    publishStats(&quot;built&quot;, latestStats, eventStream, opts.log);
+  }
+  var middleware = function(req, res, next) {
+    if (!pathMatch(req.url, opts.path)) return next();
+    eventStream.handler(req, res);
+    //发送同步事件
+    if (latestStats) {
+      // Explicitly not passing in `log` fn as we don&#39;t want to log again on
+      // the server
+      publishStats(&quot;sync&quot;, latestStats, eventStream);
+    }
+  };
+</code></pre><p>为了保持和客户端的连接，HMR Server会每隔10s通过SSE向客户端发送心跳。 </p>
+<pre><code>//每隔heartbeat(默认10s)向客户端推送💓
+  setInterval(function heartbeatTick() {
+    everyClient(function(client) {
+      client.write(&quot;data: \uD83D\uDC93\n\n&quot;);
+    });
+  }, heartbeat).unref();
+</code></pre><p>这个在浏览器中也可以很明显的看到：</p>
+<p><img src="https://i.imgur.com/qe8zuJT.png" alt=""></p>
+<h4 id="4-2-hmr-runtime">4.2 HMR Runtime</h4>
+<p>HMR Runtime是webpack打包注入到浏览器的代码，用于接收HMR Server推送的事件并更新模块，它是通过我们在webpack.config.js配置文件的入口中配置实现的：</p>
+<pre><code>const path = require(&#39;path&#39;);
+const webpack = require(&#39;webpack&#39;);
+module.exports = {
+  entry: [&#39;webpack-hot-middleware/client?noInfo=true&amp;reload=true&#39; , &#39;./src/index.js&#39;],
+  ...
+};
+</code></pre><p>它的源代码在webpack-hot-middleware的client.js中实现，其源码如下：</p>
+<pre><code>/*eslint-env browser*/
+/*global __resourceQuery __webpack_public_path__*/
+
+var options = {
+  path: &quot;/__webpack_hmr&quot;, //Event Source的路径
+  timeout: 20 * 1000, //超时时间
+  overlay: true,
+  reload: false, //默认不强刷
+  log: true,
+  warn: true,
+  name: &#39;&#39;,
+  autoConnect: true, //自动连接
+  overlayStyles: {},
+  overlayWarnings: false,
+  ansiColors: {}
+};
+if (__resourceQuery) {
+  var querystring = require(&#39;querystring&#39;);
+  var overrides = querystring.parse(__resourceQuery.slice(1));
+  setOverrides(overrides);
+}
+
+if (typeof window === &#39;undefined&#39;) {
+  // do nothing
+} else if (typeof window.EventSource === &#39;undefined&#39;) {
+  console.warn(
+    &quot;webpack-hot-middleware&#39;s client requires EventSource to work. &quot; +
+    &quot;You should include a polyfill if you want to support this browser: &quot; +
+    &quot;https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events#Tools&quot;
+  );
+} else {
+  if (options.autoConnect) {
+    connect();
+  }
+}
+
+/* istanbul ignore next */
+function setOptionsAndConnect(overrides) {
+  setOverrides(overrides);
+  connect();
+}
+
+function setOverrides(overrides) {
+  if (overrides.autoConnect) options.autoConnect = overrides.autoConnect == &#39;true&#39;;
+  if (overrides.path) options.path = overrides.path;
+  if (overrides.timeout) options.timeout = overrides.timeout;
+  if (overrides.overlay) options.overlay = overrides.overlay !== &#39;false&#39;;
+  if (overrides.reload) options.reload = overrides.reload !== &#39;false&#39;;
+  if (overrides.noInfo &amp;&amp; overrides.noInfo !== &#39;false&#39;) {
+    options.log = false;
+  }
+  if (overrides.name) {
+    options.name = overrides.name;
+  }
+  if (overrides.quiet &amp;&amp; overrides.quiet !== &#39;false&#39;) {
+    options.log = false;
+    options.warn = false;
+  }
+
+  if (overrides.dynamicPublicPath) {
+    options.path = __webpack_public_path__ + options.path;
+  }
+
+  if (overrides.ansiColors) options.ansiColors = JSON.parse(overrides.ansiColors);
+  if (overrides.overlayStyles) options.overlayStyles = JSON.parse(overrides.overlayStyles);
+
+  if (overrides.overlayWarnings) {
+    options.overlayWarnings = overrides.overlayWarnings == &#39;true&#39;;
+  }
+}
+
+function EventSourceWrapper() {
+  var source;
+  var lastActivity = new Date();
+  var listeners = [];
+
+  init();
+  var timer = setInterval(function() {
+    if ((new Date() - lastActivity) &gt; options.timeout) {
+      handleDisconnect();
+    }
+  }, options.timeout / 2);
+
+  function init() {
+    source = new window.EventSource(options.path);
+    source.onopen = handleOnline;
+    source.onerror = handleDisconnect;
+    source.onmessage = handleMessage;
+  }
+
+  function handleOnline() {
+    if (options.log) console.log(&quot;[HMR] connected&quot;);
+    lastActivity = new Date();
+  }
+
+  function handleMessage(event) {
+    lastActivity = new Date();
+    for (var i = 0; i &lt; listeners.length; i++) {
+      listeners[i](event);
+    }
+  }
+
+  function handleDisconnect() {
+    clearInterval(timer);
+    source.close();
+    setTimeout(init, options.timeout);
+  }
+
+  return {
+    addMessageListener: function(fn) {
+      listeners.push(fn);
+    }
+  };
+}
+
+function getEventSourceWrapper() {
+  if (!window.__whmEventSourceWrapper) {
+    window.__whmEventSourceWrapper = {};
+  }
+  if (!window.__whmEventSourceWrapper[options.path]) {
+    // cache the wrapper for other entries loaded on
+    // the same page with the same options.path
+    window.__whmEventSourceWrapper[options.path] = EventSourceWrapper();
+  }
+  return window.__whmEventSourceWrapper[options.path];
+}
+
+function connect() {
+  getEventSourceWrapper().addMessageListener(handleMessage);
+
+  function handleMessage(event) {
+    if (event.data == &quot;\uD83D\uDC93&quot;) {
+      return;
+    }
+    try {
+      processMessage(JSON.parse(event.data));
+    } catch (ex) {
+      if (options.warn) {
+        console.warn(&quot;Invalid HMR message: &quot; + event.data + &quot;\n&quot; + ex);
+      }
+    }
+  }
+}
+
+// the reporter needs to be a singleton on the page
+// in case the client is being used by multiple bundles
+// we only want to report once.
+// all the errors will go to all clients
+var singletonKey = &#39;__webpack_hot_middleware_reporter__&#39;;
+var reporter;
+if (typeof window !== &#39;undefined&#39;) {
+  if (!window[singletonKey]) {
+    window[singletonKey] = createReporter();
+  }
+  reporter = window[singletonKey];
+}
+
+function createReporter() {
+  var strip = require(&#39;strip-ansi&#39;);
+
+  var overlay;
+  if (typeof document !== &#39;undefined&#39; &amp;&amp; options.overlay) {
+    overlay = require(&#39;./client-overlay&#39;)({
+      ansiColors: options.ansiColors,
+      overlayStyles: options.overlayStyles
+    });
+  }
+
+  var styles = {
+    errors: &quot;color: #ff0000;&quot;,
+    warnings: &quot;color: #999933;&quot;
+  };
+  var previousProblems = null;
+  function log(type, obj) {
+    var newProblems = obj[type].map(function(msg) { return strip(msg); }).join(&#39;\n&#39;);
+    if (previousProblems == newProblems) {
+      return;
+    } else {
+      previousProblems = newProblems;
+    }
+
+    var style = styles[type];
+    var name = obj.name ? &quot;&#39;&quot; + obj.name + &quot;&#39; &quot; : &quot;&quot;;
+    var title = &quot;[HMR] bundle &quot; + name + &quot;has &quot; + obj[type].length + &quot; &quot; + type;
+    // NOTE: console.warn or console.error will print the stack trace
+    // which isn&#39;t helpful here, so using console.log to escape it.
+    if (console.group &amp;&amp; console.groupEnd) {
+      console.group(&quot;%c&quot; + title, style);
+      console.log(&quot;%c&quot; + newProblems, style);
+      console.groupEnd();
+    } else {
+      console.log(
+        &quot;%c&quot; + title + &quot;\n\t%c&quot; + newProblems.replace(/\n/g, &quot;\n\t&quot;),
+        style + &quot;font-weight: bold;&quot;,
+        style + &quot;font-weight: normal;&quot;
+      );
+    }
+  }
+
+  return {
+    cleanProblemsCache: function () {
+      previousProblems = null;
+    },
+    problems: function(type, obj) {
+      if (options.warn) {
+        log(type, obj);
+      }
+      if (overlay) {
+        if (options.overlayWarnings || type === &#39;errors&#39;) {
+          overlay.showProblems(type, obj[type]);
+          return false;
+        }
+        overlay.clear();
+      }
+      return true;
+    },
+    success: function() {
+      if (overlay) overlay.clear();
+    },
+    useCustomOverlay: function(customOverlay) {
+      overlay = customOverlay;
+    }
+  };
+}
+
+var processUpdate = require(&#39;./process-update&#39;);
+
+var customHandler;
+var subscribeAllHandler;
+function processMessage(obj) {
+  switch(obj.action) {
+    case &quot;building&quot;:
+      if (options.log) {
+        console.log(
+          &quot;[HMR] bundle &quot; + (obj.name ? &quot;&#39;&quot; + obj.name + &quot;&#39; &quot; : &quot;&quot;) +
+          &quot;rebuilding&quot;
+        );
+      }
+      break;
+    case &quot;built&quot;:
+      if (options.log) {
+        console.log(
+          &quot;[HMR] bundle &quot; + (obj.name ? &quot;&#39;&quot; + obj.name + &quot;&#39; &quot; : &quot;&quot;) +
+          &quot;rebuilt in &quot; + obj.time + &quot;ms&quot;
+        );
+      }
+      // fall through
+    case &quot;sync&quot;:
+      if (obj.name &amp;&amp; options.name &amp;&amp; obj.name !== options.name) {
+        return;
+      }
+      var applyUpdate = true;
+      if (obj.errors.length &gt; 0) {
+        if (reporter) reporter.problems(&#39;errors&#39;, obj);
+        applyUpdate = false;
+      } else if (obj.warnings.length &gt; 0) {
+        if (reporter) {
+          var overlayShown = reporter.problems(&#39;warnings&#39;, obj);
+          applyUpdate = overlayShown;
+        }
+      } else {
+        if (reporter) {
+          reporter.cleanProblemsCache();
+          reporter.success();
+        }
+      }
+      if (applyUpdate) {
+        processUpdate(obj.hash, obj.modules, options);
+      }
+      break;
+    default:
+      if (customHandler) {
+        customHandler(obj);
+      }
+  }
+
+  if (subscribeAllHandler) {
+    subscribeAllHandler(obj);
+  }
+}
+
+if (module) {
+  module.exports = {
+    subscribeAll: function subscribeAll(handler) {
+      subscribeAllHandler = handler;
+    },
+    subscribe: function subscribe(handler) {
+      customHandler = handler;
+    },
+    useCustomOverlay: function useCustomOverlay(customOverlay) {
+      if (reporter) reporter.useCustomOverlay(customOverlay);
+    },
+    setOptionsAndConnect: setOptionsAndConnect
+  };
+}
+</code></pre><h5 id="4-2-1-">4.2.1 建立连接</h5>
+<p>客户端代码在浏览器中加载后，默认会自动建立与HMR Server的连接：</p>
+<pre><code>var options = {
+  path: &quot;/__webpack_hmr&quot;, //Event Source的路径
+  timeout: 20 * 1000, //超时时间
+  overlay: true,
+  reload: false, //默认不强刷
+  log: true,
+  warn: true,
+  name: &#39;&#39;,
+  autoConnect: true, //自动连接
+  overlayStyles: {},
+  overlayWarnings: false,
+  ansiColors: {}
+};
+if (__resourceQuery) {
+  var querystring = require(&#39;querystring&#39;);
+  var overrides = querystring.parse(__resourceQuery.slice(1));
+  setOverrides(overrides);
+}
+
+if (typeof window === &#39;undefined&#39;) {
+  // do nothing
+} else if (typeof window.EventSource === &#39;undefined&#39;) {
+  console.warn(
+    &quot;webpack-hot-middleware&#39;s client requires EventSource to work. &quot; +
+    &quot;You should include a polyfill if you want to support this browser: &quot; +
+    &quot;https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events#Tools&quot;
+  );
+} else {
+  if (options.autoConnect) {
+    connect(); //自动连接
+  }
+}
+</code></pre><h5 id="4-2-2-connect-">4.2.2 connect函数</h5>
+<p>我们来看看connect代码的实现。</p>
+<pre><code>function connect() {
+  getEventSourceWrapper().addMessageListener(handleMessage);
+
+  function handleMessage(event) {
+    if (event.data == &quot;\uD83D\uDC93&quot;) {
+      return;
+    }
+    try {
+      processMessage(JSON.parse(event.data));//处理HMR 推送的更新
+    } catch (ex) {
+      if (options.warn) {
+        console.warn(&quot;Invalid HMR message: &quot; + event.data + &quot;\n&quot; + ex);
+      }
+    }
+  }
+}
+</code></pre><p>它首先通过Event Source来与HMR Server建立连接，然后监听HMR Server推送的事件。 如果收到的是💓，则直接返回。否则调用processMessage处理收到的事件。</p>
+<h5 id="4-2-3-eventsourcewrapper-">4.2.3 EventSourceWrapper函数</h5>
+<p>HMR Runtime会通过lastActivity来判断与HMR Server是否连接。 判断的逻辑是，HMR Runtime会在每次收到SSE事件的时候更新lastActivity为当前时间戳，并且，HMR Runtime自己有一个定时任务，每隔10s去检查最后一次收到消息至此时此刻过去的时间，如果超过设置的超时时间则断开连接并自动重新建立连接。</p>
+<pre><code>  init();
+  //每隔10s去检查最后一次收到消息至此时此刻过去的时间，如果超过设置的超时时间则断开连接
+  var timer = setInterval(function() {
+    if ((new Date() - lastActivity) &gt; options.timeout) {
+      handleDisconnect();
+    }
+  }, options.timeout / 2);
+
+  function init() {
+    source = new window.EventSource(options.path);
+    source.onopen = handleOnline;
+    source.onerror = handleDisconnect;
+    source.onmessage = handleMessage;
+  }
+
+  function handleOnline() {
+    if (options.log) console.log(&quot;[HMR] connected&quot;);
+    lastActivity = new Date();
+  }
+
+  function handleMessage(event) {
+    lastActivity = new Date();//每次收到消息，更新时间戳
+    for (var i = 0; i &lt; listeners.length; i++) {
+      listeners[i](event);
+    }
+  }
+
+  function handleDisconnect() {
+    clearInterval(timer);
+    source.close();
+    //自动重新建立连接。
+    setTimeout(init, options.timeout);
+  }
+</code></pre><h5 id="4-2-4-processmessage-">4.2.4 processMessage函数</h5>
+<p>前面在讲connet的时候，说到了在收到非💓数据的时候会调用processMessage处理更新，processMessage会根据SSE的类型区别对待：</p>
+<ul>
+<li>当收到的SSE是buiding的时候，打印日志。</li><li>当收到的SSE是built的时候打印日志并同步代码(调用processUpdate更新模块)。</li><li><p>当收到的SSE是sync的时候同步代码(调用processUpdate更新模块)。</p>
+<p>  function processMessage(obj) {</p>
+<pre><code>switch(obj.action) {
+  case &quot;building&quot;: //构建无效，对应HMR Server中的invalid
+    if (options.log) {
+      console.log(
+        &quot;[HMR] bundle &quot; + (obj.name ? &quot;&#39;&quot; + obj.name + &quot;&#39; &quot; : &quot;&quot;) +
+        &quot;rebuilding&quot;
+      );
+    }
+    break;
+  case &quot;built&quot;: //构建完成，对应HMR Server中的done
+    if (options.log) {
+      console.log(
+        &quot;[HMR] bundle &quot; + (obj.name ? &quot;&#39;&quot; + obj.name + &quot;&#39; &quot; : &quot;&quot;) +
+        &quot;rebuilt in &quot; + obj.time + &quot;ms&quot;
+      );
+    }
+    // fall through
+  case &quot;sync&quot;:
+    if (obj.name &amp;&amp; options.name &amp;&amp; obj.name !== options.name) {
+      return;
+    }
+    var applyUpdate = true;
+    if (obj.errors.length &gt; 0) {
+      if (reporter) reporter.problems(&#39;errors&#39;, obj);
+      applyUpdate = false;
+    } else if (obj.warnings.length &gt; 0) {
+      if (reporter) {
+        var overlayShown = reporter.problems(&#39;warnings&#39;, obj);
+        applyUpdate = overlayShown;
+      }
+    } else {
+      if (reporter) {
+        reporter.cleanProblemsCache();
+        reporter.success();
+      }
+    }
+    if (applyUpdate) {
+      processUpdate(obj.hash, obj.modules, options); //调用processUpdate更新模块
+    }
+    break;
+  default:
+    if (customHandler) {
+      customHandler(obj);
+    }
+}
+
+if (subscribeAllHandler) {
+  subscribeAllHandler(obj);
+}
+</code></pre><p>  }</p>
+</li></ul>
+<h5 id="4-2-5-processupdate-">4.2.5 processUpdate函数</h5>
+<p>前面说到了，最终的更新模块是通过processUpdate函数来完成的，processUpdate定义在webpack-hot-middleware的process-update.js文件中。 该函数的核心是调用webpac.hot上暴露的check和apply方法，检查并更新模块：</p>
+<pre><code>function check() {
+    var cb = function(err, updatedModules) {
+      if (err) return handleError(err);
+
+      if(!updatedModules) {
+        if (options.warn) {
+          console.warn(&quot;[HMR] Cannot find update (Full reload needed)&quot;);
+          console.warn(&quot;[HMR] (Probably because of restarting the server)&quot;);
+        }
+        performReload();
+        return null;
+      }
+
+      var applyCallback = function(applyErr, renewedModules) {
+        if (applyErr) return handleError(applyErr);
+
+        if (!upToDate()) check();
+
+        logUpdates(updatedModules, renewedModules);
+      };
+
+      var applyResult = module.hot.apply(applyOptions, applyCallback);//应用更新
+      // webpack 2 promise
+      if (applyResult &amp;&amp; applyResult.then) {
+        // HotModuleReplacement.runtime.js refers to the result as `outdatedModules`
+        applyResult.then(function(outdatedModules) {
+          applyCallback(null, outdatedModules);
+        });
+        applyResult.catch(applyCallback);
+      }
+
+    };
+
+    var result = module.hot.check(false, cb);//检查模块更新
+    // webpack 2 promise
+    if (result &amp;&amp; result.then) {
+        result.then(function(updatedModules) {
+            cb(null, updatedModules);
+        });
+        result.catch(cb);
+    }
+}
+</code></pre><blockquote>
+<p>注意：由于我们已经通过 HotModuleReplacementPlugin 启用了模块热替换(Hot Module Replacement)，所以它的check,apply等接口会被暴露在 module.hot 属性上。</p>
+</blockquote>
+<p>至此，在webpack-hot-middleware的支持下，HMR的实现原理就讲述完了。</p>
+<h3 id="-webpack-dev-server-hmr-">五. webpack-dev-server的HMR实现分析</h3>
+<p>第四节我们通过源码讲述了webpack-hot-middleware实现HMR的原理， webpack-dev-server实现的HMR原理和webpack-hot-middleware可以说是一样的，只是webpack-dev-server中的长连接是用websocket实现的。</p>
+<p>HMR只是webpack-dev-server的其中一小部分功能，webpack-dev-server还支持很多强大的功能，所以我们就不专门看他的源码实现了。</p>
+<h3 id="-webpack-hot-middleware-webpack-dev-middleware-webpack-dev-server-">六. webpack-hot-middleware 与 webpack-dev-middleware 与  webpack-dev-server有什么联系和区别？</h3>
+<p>那么讲了这么多，你是不是对webpack-hot-middleware 与 webpack-dev-middleware 与  webpack-dev-server有点傻傻分不清了呢？下面我们总结一下他们的区别和联系。</p>
+<ol>
+<li>webpack-dev-server可单独(实际上webpack-dev-server内部依赖了webpack-dev-middleware包)实现HMR，webpack-hot-middleware 需要与 webpack-dev-middleware结合才能实现。</li><li>webpack-dev-server实现HMR使用的是websocket, webpack-hot-middleware使用的是Event Source。</li><li>webpack-dev-server依赖于webpack-dev-middleware包。</li><li>webpack-dev-server的功能远比webpack-hot-middleware强大。</li></ol>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
