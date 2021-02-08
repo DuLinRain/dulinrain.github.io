@@ -1,4 +1,4 @@
-#几种for循环性能比较
+# 几种for循环性能比较
 直接说结论：**for(reverse)** > **for** > **forEach** > **for ...of**
 > for(reverse)就是从后往前for，这样只需要计算一次数组长度
 
