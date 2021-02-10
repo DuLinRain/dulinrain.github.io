@@ -353,5 +353,7 @@ try {
         await Promise.all(this.tasks)
       }
     }
+
+
 ### 结论
 `@supercharge/promise-pool`所处理的场景其实我们在实际业务中是很可能会遇到的，其核心实现方式是基于`Promise.race` + `Promise.all`实现的。
