@@ -83,7 +83,7 @@
 	
 启动后，每刷新一次页面，页面上的数字就会**+1**，同时我们可以在cookie列表中看到种下了2个cookie:
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmkhfaRUFcBkcxhybH2csjWNOaH9h4lHfV1ibeoN1WELlqy4FD2ufqSrVvqFicuHfUexKdFxaKvTKWVg/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmkhfaRUFcBkcxhybH2csjWNOaH9h4lHfV1ibeoN1WELlqy4FD2ufqSrVvqFicuHfUexKdFxaKvTKWVg/0)
 
 这是很正常的现象，虽然我们没使用持续存储的数据库，但你可能觉得这个数字存储在服务端内存中，每次请求过去，服务端根据这个id（即session_id）去查询该cookie对应的会话内容。但是当我们把**服务器重启后，你会发现这个数字并没有归零，而是在前一次访问的基础上继续增加**。这又是为啥呢？
 
@@ -93,7 +93,7 @@
 
 当然，这只是说koa-session的默认实现如此，实际上koa-session还支持其它很多中自定义的外部存储的实现：
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmkhfaRUFcBkcxhybH2csjWNWIMAuxgQ3tcF8jI9hHicFDXrHVxUrRs8Bnley1cEOE9oGnEib3TvQMCg/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmkhfaRUFcBkcxhybH2csjWNWIMAuxgQ3tcF8jI9hHicFDXrHVxUrRs8Bnley1cEOE9oGnEib3TvQMCg/0)
 
 **那么, `SESSION_ID`的value一般是固定不变的吗？SESSION_ID该怎么生成？**
 
