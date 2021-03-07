@@ -5,7 +5,7 @@
 ### 概述
 Web内容已演变为包含大量在浏览器中运行的动态代码，从而使许多网站更像是应用程序而不是纯文档。这种演变也将浏览器的角色从一个简单的文档渲染器转换成了一个操作系统。Chromium就是按照类似操作系统的样子去开发的，通过使用多个操作系统进程来确保站点-站点的隔离以及站点-浏览器的隔离，从而让这些应用以安全和健壮的方式运行。这改善了浏览器的健壮性，因为每个进程运行在独立的地址空间，由操作系统进行调度，并且一个挂了也不会影响另外一个。用户也可以在Chrome的任务管理器中看到每个进程的资源使用。
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNlpBhjTcAClpsCjadNoOVvnKpo0wwfYfl945GHzRj6oXS6Ahg2e1R7w/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNlpBhjTcAClpsCjadNoOVvnKpo0wwfYfl945GHzRj6oXS6Ahg2e1R7w/0)
 
 有很多种方式可以将web浏览器划分到不同的操作系统运行，而选择最好的架构则取决于很多种因素，其中包括：稳定性、资源使用率以及对实际使用的监测。Chromium支持四种不同的进程模型可供实验，并且将其中一种适合大多数用户的模型作为默认模型。
 
