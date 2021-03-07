@@ -5,7 +5,7 @@
 浏览器中不同的web站点通常是没法互相获取用户数据的，这得归功于实现强制同源策略（Same Origin Policy）的代码。但是偶尔这些代码会有些bug然后恶意网站可能利用它绕过同源策略规则对其它站点进行攻击。Chrome团队致力于尽可能快地修复此类bug。
 
 而站点隔离则是提供了第二道防线让这类攻击更不易成功。它能够确保不同站点的页面总是被放进不同的进程中，每一个都在沙盒中运行，而沙盒是可以对进程的能力进行限制的。它也可以进程从其它站点获取敏感数据。结果就是，恶意站点会发现更难从其它站点窃取数据，即使它能够突破自己进程中的一些约束。
-想了解站点隔离提供的更多技术信息以及它是如何实现的，可以参考项目的[设计文档](https://bytedance.feishu.cn/docs/doccnwOvfSJZDg5rxG3mMkJfWae#YZVJcz)。
+想了解站点隔离提供的更多技术信息以及它是如何实现的，可以参考项目的[设计文档]()。
 
 ### 动机
 Web浏览器的安全非常重要：浏览器必须抵御不信任的站点对其它站点进行攻击以及对用户机器进行控制。考虑到浏览器的复杂性，必须使用一种“深度防御”方法来限制攻击者万一通过某种手段绕过了同源策略或者浏览器内部的安全逻辑造成的攻击。因此，Chrome使用了沙盒（sandbox）以及站点隔离（Site Isolation）技术来尝试防御更强的攻击（如：攻击者可能知道浏览器的bug）。这是由多种不同类型的攻击激发Chrome这么做的。
@@ -46,7 +46,7 @@ Chrome的架构提供了对这类攻击额外的防御。Chrome的[沙盒](https
 - Chrome较高的内存占用。在桌面版Chrome 67中，当打开许多个tab都被站点隔离时内存占用率是10-13%。在Android Chrome 77中大概是3-5%。
 
 #### 对web开发者:
-- 全页面布局不再同步，因为页面的frame可能会分散在多个进程中。 这可能会影响更改frame大小然后向其发送postMessage的页面，因为接收frame在接收消息时可能尚不知道其新大小。 一种解决方法是，如果接收frame需要，则在postMessage本身中发送新的大小。 从Chrome 68开始，页面也可以通过在发送postMessage之前在发送frame中强制布局来解决此问题。 有关更多详细信息，请[参见网站开发人员需要了解的网站隔离](https://bytedance.feishu.cn/docs/doccnwOvfSJZDg5rxG3mMkJfWae#4bzLCH)。
+- 全页面布局不再同步，因为页面的frame可能会分散在多个进程中。 这可能会影响更改frame大小然后向其发送postMessage的页面，因为接收frame在接收消息时可能尚不知道其新大小。 一种解决方法是，如果接收frame需要，则在postMessage本身中发送新的大小。 从Chrome 68开始，页面也可以通过在发送postMessage之前在发送frame中强制布局来解决此问题。 有关更多详细信息，请[参见网站开发人员需要了解的网站隔离]()。
 - 关闭选项卡时，卸载的handlers可能并不总是会运行。 这种情形下postMessage可能不能工作（[964950](https://crbug.com/964950)）。
 - 使用`--disable-web-security`进行调试时，可能还需要禁用站点隔离（使用`--disable-features = IsolateOrigins,site-per-process`）以访问跨域框架。
 
@@ -60,7 +60,7 @@ Chrome的架构提供了对这类攻击额外的防御。Chrome的[沙盒](https
 
 - 在Chrome中输入`chrome://flags#enable-site-per-process`，点击启用，重启。(注意在写本文的时候，这个选项只在Android上有效，在别的平台都是默认开启的，只会有个选项供关闭)
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmN8dRb2vvbjsx2p2s8RjMUYFMuX7QHzKYE1cFuIViaF0pAQQ1yGhfEib3A/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmN8dRb2vvbjsx2p2s8RjMUYFMuX7QHzKYE1cFuIViaF0pAQQ1yGhfEib3A/0)
 
 - 或者使用[企业政策](https://support.google.com/chrome/a/answer/7581529)为企业开启 [SitePerProcess](https://www.chromium.org/administrators/policy-list-3#SitePerProcess) 或 [SitePerProcessAndroid](https://www.chromium.org/administrators/policy-list-3#SitePerProcessAndroid)。
 
@@ -73,7 +73,7 @@ Chrome的架构提供了对这类攻击额外的防御。Chrome的[沙盒](https
 
 - Chrome 77或后续版本，开启`chrome://flags/#isolate-origins`，并输入需要隔离的域名（如https://example.com,https://youtube.com）并重启浏览器。
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNyfP8VTL3CvtXPtFCHribl1gb4qhOcQKWiciawL9oXVWIj8wjHv7JZ93Iw/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNyfP8VTL3CvtXPtFCHribl1gb4qhOcQKWiciawL9oXVWIj8wjHv7JZ93Iw/0)
 
 - 使用命令行标识`--isolate-origins`启动浏览器，后面跟一串逗号分隔的域名，如：
 `--isolate-origins=https://google.com,https://youtube.com`。需要注意的是不要将有效的顶级域名包含进去（如https://co.uk/ 或 https://appspot.com/， 可以在https://publicsuffix.org/这里查看所有列表），因为这些会被忽略掉。
@@ -86,9 +86,9 @@ Chrome的架构提供了对这类攻击额外的防御。Chrome的[沙盒](https
 如果你在站点隔离开启的状态下遇到了问题，你可以通过取消上面的操作来关掉它，来看看问题是否解决。
 你也可以通过访问`chrome://flags＃site-isolation-trial-opt-out`，选择“Disabled (not recommended)”并重新启动，来尝试诊断错误。
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNDt4lcKBu2uvFGKv55Tpicicqh7K9UDJibpy4Q386OqXBNia0F0qSr8oAiaQ/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNDt4lcKBu2uvFGKv55Tpicicqh7K9UDJibpy4Q386OqXBNia0F0qSr8oAiaQ/0)
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNFZFk7cS9Jd4C1HHfMOibVRKdvYjuUBVDZYibuFgWY5CYAp4zOfObKYcA/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNFZFk7cS9Jd4C1HHfMOibVRKdvYjuUBVDZYibuFgWY5CYAp4zOfObKYcA/0)
 
 使用`--disable-site-isolation-trials`启动Chrome浏览器和上面是同样的效果。
 
@@ -98,26 +98,26 @@ Chrome的架构提供了对这类攻击额外的防御。Chrome的[沙盒](https
 #### 验证
 你可以输入`chrome://process-internals`来看站点隔离是否开启。
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmN3mf3jg9ibd7ZY36hcn4wOjEFbqY6rhyVK4wY3U5h1L0ZUTXTxR8FveA/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmN3mf3jg9ibd7ZY36hcn4wOjEFbqY6rhyVK4wY3U5h1L0ZUTXTxR8FveA/0)
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNLeldG3I9xfVQbUMbx9g9vS2waYQZWvOCNBCsrmw0riaAmd9icyLXnrMw/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNLeldG3I9xfVQbUMbx9g9vS2waYQZWvOCNBCsrmw0riaAmd9icyLXnrMw/0)
 
 如果您想测试实践中是否成功打开了站点隔离，可以按照以下步骤操作：
 
 ##### 1. 导航到某个拥有跨站子frame的站点，例如
 ###### a. 导航到http://csreis.github.io/tests/cross-site-iframe.html
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmN69WEVgV6seIjcS6Ih28Dia3ELgHZmsMX4LZj2gECUTgvzztzqHaxr6w/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmN69WEVgV6seIjcS6Ih28Dia3ELgHZmsMX4LZj2gECUTgvzztzqHaxr6w/0)
 
 ###### b. 点击**Go cross-site** (complex page)按钮
 ###### c.  主页面会在http://csreis.github.io/站点下，而子页面会在https://chromium.org/站点下。
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNI9USHrzchnv1aRktdtUn8ibpzO64DYPkic3icyKzwyyVkIqgUnJgQHT5g/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNI9USHrzchnv1aRktdtUn8ibpzO64DYPkic3icyKzwyyVkIqgUnJgQHT5g/0)
 
 ##### 2. 打开Chrome任务管理器：**Chrome Menu** -> **More tools** -> **Task manager** (Shift+Esc)
 ##### 3. 验证主页面和子页面是分别列在独立的一行有着独立的进程，比如：
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNgEKSv3g09ULSB2IxjmzibpBYBkYdqR0rkXC9JWWjfzoxBWZBicQl3Jfw/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmntWsLWYPcpV8t4JvoKdhmNgEKSv3g09ULSB2IxjmzibpBYBkYdqR0rkXC9JWWjfzoxBWZBicQl3Jfw/0)
 
 进程ID分别为`23157`，`23174`。
 
