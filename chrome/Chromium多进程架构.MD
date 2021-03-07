@@ -18,7 +18,7 @@ Chrome把每个tab放在独立的进程中从而确保单个tab渲染引擎中�
 一个Chrome浏览器里面会包含多个进程，通常把**渲染UI和管理tabs以及plugins**的进程称作**主进程**（**main proces**s）或者**浏览器进程**（**browser process**）或者**浏览器**（**browser**）。
 类似的，每个tab则进程叫做**渲染进程**或者**渲染器**。而渲染器使用的是开源的[Blink](https://www.chromium.org/blink)布局引擎进行HTML的解析和布局。
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmn1FQ6ZGu68HY3gqmxcKoRibbe0Y6H8WB0ibdhLUibfCd7hQUzxVkvlLb2S8BTdbrP2cdUCeMO5OecAw/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9Edmn1FQ6ZGu68HY3gqmxcKoRibbe0Y6H8WB0ibdhLUibfCd7hQUzxVkvlLb2S8BTdbrP2cdUCeMO5OecAw/0)
 <center>整体架构</center>
 
 ### 管理渲染进程
@@ -55,11 +55,16 @@ Chrome把每个tab放在独立的进程中从而确保单个tab渲染引擎中�
 
 考虑到渲染器运行在独立的进程中，我们有机会通过沙盒来限制它访问系统资源。例如，我们可以确保渲染器进程只能通过其父浏览器进程来访问网络。同样，我们可以使用主机操作系统的内置权限来限制其对文件系统的访问。
 
-除了限制渲染进程对网络和文件系统的访问，
+除了限制渲染进程对网络和文件系统的访问，也可以限制其对用户显示屏以及相关对象的访问。Chrome将每个渲染进程运行在独立的Windows“桌面”，并且这对用户是不可见的。这样可以避免一个中毒的渲染器进程打开新的窗口或者捕获键盘事件。
 
-In addition to restricting the renderer's access to the filesystem and network, we can also place limitations on its access to the user's display and related objects. We run each render process on a separate Windows "Desktop" which is not visible to the user. This prevents a compromised renderer from opening new windows or capturing keystrokes.
+### 内存
+考虑到渲染器运行在独立的进程中，所以可以直接将隐藏的tab（即非当前tab）作为低优先级调处理。通常，在Windows上，最小化的进程会自动将其内存放入“可用内存”池中。在可用内存比较小时，Windows会将这块内存先交换到磁盘上，然后将高优先级的内存交换到“可用内存”池。这样可以保持用户可见的应用响应性更好。Chrome会将同样的策略应用到隐藏tab上。当某个渲染进程不再持有顶级tab时，Chrome会释放这个进程工作级（working set）的大小从而示意操作系统在必要时可以先将其对应的内存交换到磁盘。因为Chrome开发者发现，减小工作级的大小也会降低用户切换tab时的性能，所以Chrome并不是一次性释放这块内存，而是逐步释放的。这意味着，当用户切回到最近使用过的某个tab时，这个tab对应的内存会比较少使用的tab更可能被分页。当用户机器足够的内存运行所有的应用程序时，这种情况对用户而言是无感知的：Windows只会在需要的时候才会真正回收这些数据，，因此在有足够内存的情况下是不会降低性能的。
 
-未完待续...
+这有助于我们在低内存情况下获得最佳内存使用。极少使用的tab可以被完全交换到磁盘，而经常使用的tab的数据可以完全加载到内存。相反，单进程浏览器会将所有tab的数据随机分配在内存，没法将使用过的和未使用的数据这么彻底的隔离，既导致了内存的浪费，也降低了性能。
+
+### 插件和扩展
+Firefox形式的NPAPI插件运行在独立的进程中，与渲染器进程隔离。这会在插件架构中讲解。
+
 
 ### 参考
 
