@@ -44,15 +44,15 @@
 	
 现在，我们在浏览器输入http://127.0.0.1:3001/并且打开浏览器控制台可以看到如下内容：
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2fyzL0NXO9K3KiaAPMM4zXrNwhiajOONpbsU65nJiae5zfhHaLY8b1B4Bg/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2fyzL0NXO9K3KiaAPMM4zXrNwhiajOONpbsU65nJiae5zfhHaLY8b1B4Bg/0)
 
 在控制台左下角有一个明显的Node图标，表明我们的服务已经和Devtool建立了调试的关系。点一下这个图标我们可以看到熟悉的Devtool调试界面：
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2wVEfdibjicUOykPgWYQzzMH8oY8FDo8Yc4vstj9VC5cWgB3thjdxp9RQ/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2wVEfdibjicUOykPgWYQzzMH8oY8FDo8Yc4vstj9VC5cWgB3thjdxp9RQ/0)
 
 我们可以设置断点进行调试，比如我们在/test路由里设置了一个断点，任何/test的请求都会进入到断点出：
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC29viaIQ8xwWemcHdt9IudzaY5aS0BSDqJR73kIbaPT3WJb8OmP7MpRRw/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC29viaIQ8xwWemcHdt9IudzaY5aS0BSDqJR73kIbaPT3WJb8OmP7MpRRw/0)
 
 我们可以在devtool里打印、查看变量，也可以进行单步调试等等。
 
@@ -61,7 +61,7 @@ V8 Inspector Integration for Node.js使得Node原生的debugger和Devtool之间�
 ### 二、ndb
 <a href="https://github.com/GoogleChromeLabs/ndb"> ndb </a>是Google Chrome实验室开源的一款Node调试工具，它内部依赖于Puppeteer，也可以让我们方便的在浏览器中调试web程序。
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2GJn2f4DQVicrs6dnLibrZGDya0QNuMwz7Os0Z0XlZKBdJw2a2RIC9ibJA/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2GJn2f4DQVicrs6dnLibrZGDya0QNuMwz7Os0Z0XlZKBdJw2a2RIC9ibJA/0)
 
 它的使用方法非常简单，只需要先全局安装：
 
@@ -73,8 +73,8 @@ V8 Inspector Integration for Node.js使得Node原生的debugger和Devtool之间�
 	
 启用ndb后会自动弹出类似于devtool的一个界面：
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2swcK9duDpxgBaDicDfwE3jSa8Zy0tgduNhtCIMQYEwvH4KVA24bWaOw/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2swcK9duDpxgBaDicDfwE3jSa8Zy0tgduNhtCIMQYEwvH4KVA24bWaOw/0)
 
 我们同样可以查看变量，设置断点，查看堆栈等等：
 
-![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2C6nE4Pu5SOFXsKiaXbDzjmxWvibHEHfptNjibvQnvVG9icdguqD2mPrdgA/0?wx_fmt=png)
+![](https://mmbiz.qpic.cn/mmbiz_png/XsgEbl9EdmnT9XgRSkatLYYmDVmo2pC2C6nE4Pu5SOFXsKiaXbDzjmxWvibHEHfptNjibvQnvVG9icdguqD2mPrdgA/0)
