@@ -96,3 +96,6 @@ React团队意识到「在不在React事件处理器中会导致不同的行为�
 
 ### 总结
 这是一个非常令人困惑的话题，因为React默认只会在事件处理器中进行批量渲染。这可能在未来的版本中做出改变。
+
+### 参考
+- https://stackoverflow.com/questions/48563650/does-react-keep-the-order-for-state-updates/48610973#48610973
