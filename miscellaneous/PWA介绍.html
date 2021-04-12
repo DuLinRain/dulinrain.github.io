@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PWA介绍</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+html::after {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    content: url(http://www.dulinrain.top/zhifu.png);
+}
+html, body {
+    font-family: Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+}
+h1:first-child {
+ 	border-bottom: 1px solid gray;
+    padding: 20px;
+    position: relative;
+    text-align: center;
+}
+h1:first-child:after {
+	content: 'by DuLinRain';
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: calc(100% - 20px);
+    font-size: 14px;
+    font-weight: normal;
+    font-family: sans-serif;
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+</head>
+<body>
+<h1 id="pwa-">PWA介绍</h1>
+<h3 id="-pwa-">一、 什么是PWA？</h3>
+<p>PWA并不是一门新的技术，也不是新的框架，也不是新的语言，PWA使用的只是大部分现代浏览器内置的一些技术来增强我们的web应用，具体而言，PWA可以使我们的web应用像原生App那样工作，这其中包括拥有<strong>启动图标、启动画面、隐藏地址栏、请求拦截、请求缓存、离线缓存、消息推送、自动同步</strong>等功能。 这些都能在一定程度上解决现有web应用的痛点，比如：</p>
+<ol>
+<li>启动图标。 我们的PWA可以像原生App那样拥有启动图标，这样我们不再需要手动的输入网址或点击链接跳转。</li><li>启动动画。 我们的PWA可以像原生App那样拥有启动画面，这样可以有更加友好的用户体验。</li><li>隐藏地址栏。 我们的PWA可以像原生App那样不再显示地址栏，这样可以有更加友好的用户体验。</li><li>请求拦截。 我们的PWA可以捕获所有的网络请求并对其做一些处理，这其中就包括结合缓存技术提供请求缓存和离线缓存等能力。</li><li>请求缓存。 我们的PWA不仅可以将任何静态资源进行缓存，而且可以将网络请求进行缓存，这通常可以带来更快的页面加载速度。</li><li>离线缓存。 我们的PWA可以利用缓存，在用户网络条件较差甚至离线的情况下为用户提供基本的服务。</li><li>消息推送。 我们的PWA可以像原生APP那样推送消息给用户。</li><li>自动同步。 我们的PWA可以用户离线情况下发送的场景在在线的时候进行提交。</li></ol>
+<p>事实上，如果你有浏览器插件开发相关的经验，你会发现PWA和浏览器插件有很多异曲同工之处。 所不同的是，插件所提供的能力通常只能在特定的浏览器运行时获取(比如，chrome.runtime.xxx)，而PWA则相当于浏览器把部分内置的能力开放出来，我们可以在普通JS中去调用。 </p>
+<h3 id="-pwa-">二、 PWA的主要特点</h3>
+<p>PWA主要有以下三个特点：<br>Fast（ 快速的 ）、Reliable （ 可靠的 ）、Engaging</p>
+<h3 id="-pwa-">三、 PWA的主要原理和代码结构</h3>
+<h4 id="3-1-pwa-">3.1 PWA的主要原理</h4>
+<p>PWA主要通过通过Service Worker提供了<strong>请求拦截、请求缓存、离线缓存、消息推送、自动同步</strong>等功能，使得其有更好的性能。通过配置manifest.json提供了<strong>启动图标、启动画面、隐藏地址栏</strong>等功能，是得其更友好的外观呈现。</p>
+<h5 id="3-1-1-service-worker">3.1.1  Service Worker</h5>
+<h6 id="3-1-1-1-service-worker-">3.1.1.1 Service Worker原理</h6>
+<p>Service Worker是PWA的核心，Service Worker在PWA中主要的应用场景是拦截请求，并依据请求的内容执行不同的行为，或者执行后台同步、消息推送等功能，因此它的角色如下：</p>
+<p><img src="https://i.imgur.com/eONRKgg.png" alt=""></p>
+<p>比如，在请求缓存的场景，当发出一个请求时，我们可以在Service Worker拦截，如果请求的内容在缓存中已经存在，则从缓存中读取，如果不存在缓存，则请求实际的服务器，所以，结合缓存后的Service Worker在整个网络中的角色如下图所示：</p>
+<p><img src="https://i.imgur.com/gcvWKpL.png" alt=""></p>
+<h6 id="3-1-1-2-service-worker-">3.1.1.2 Service Worker是什么？</h6>
+<p>那么Service Worker到底是个啥呢？ 其实它就是普普通通的JS文件，HTML5中的web workers。也是事件驱动的，可以监听脚本的install和activate，在浏览器中同一目标存在多个Service Worker实例的时候，会进入waiting状态(等待update)以确保只有一个处于activate状态的实例。PWA主要就是利用它来实现缓存，后台同步，消息推送等功能的。 但它又与我们常见的JS有些不同。具体如下：</p>
+<ul>
+<li>Service Worker是运行在web 应用幕后的一个脚本。</li><li>它不需要也没有能力操作DOM。</li><li>它独立于UI线程，运行在单独的线程中，因此不会阻塞或冻结UI。</li><li>它像一个中间人运行在web应用和Internet之间</li><li>它只能运行在HTTPS，但可以运行在<a href="http://localhost下便于开发">http://localhost下便于开发</a></li><li>它有生命周期的概念</li></ul>
+<h6 id="3-1-1-3-service-worker-">3.1.1.3 Service Worker的生命周期</h6>
+<p>没错，Service Worker是有生命周期的，它分为以下几个生命周期：</p>
+<ul>
+<li>Registration</li><li>Installation</li><li>Waiting</li><li>Activation</li><li>Updating</li></ul>
+<p><img src="https://i.imgur.com/EjUQaot.png" alt=""></p>
+<h5 id="registration">Registration</h5>
+<p>通常，在PWA中，我们需要在UI Script中注册Service Worker，如下：</p>
+<pre><code>if (&#39;serviceWorker&#39; in navigator) {
+    navigator.serviceWorker.register(&#39;./sw.js&#39;)//sw.js文件就是Service Worker脚本
+    .then((registration)=&gt;{
+        console.log(&#39;hello pwa&#39;, registration)
+    }).catch((error)=&gt;{
+        console.log(&#39;fail&#39;, error)
+    })
+} else {
+    console.log(&#39;your browser dont support&#39;)
+}
+</code></pre><h5 id="installation">Installation</h5>
+<p>我们可以在Service Worker脚本中监听<code>install</code>事件：</p>
+<pre><code>self.addEventListener(&#39;install&#39;, (event) =&gt; {
+    console.log(&#39;service worker installed&#39;, event);
+});
+</code></pre><h5 id="activation">Activation</h5>
+<p>我们可以在Service Worker脚本中监听<code>activate</code>事件：</p>
+<pre><code>self.addEventListener(&#39;activate&#39;, (event) =&gt; {
+    console.log(&#39;service worker activate&#39;, event)
+})
+</code></pre><p>我们可以从控制台看到相应的输出：</p>
+<p><img src="https://i.imgur.com/J9Y9EqX.png" alt=""></p>
+<p>以及Chrome调试工具中的状态：</p>
+<p><img src="https://i.imgur.com/etqB3v7.png" alt=""></p>
+<h5 id="waiting">Waiting</h5>
+<p>Waiting是怎么回事呢？当我们的PWA启动后，我们可以在Chrome调试工具中看到上文提到的状态，当我们改变一下Service Worker脚本，比如在最后增加一条console.log(&#39;hehe&#39;), 刷新一下浏览器，控制台我们将看到：</p>
+<p><img src="https://i.imgur.com/CpU6MUw.png" alt=""></p>
+<p>可以看到重新注册了Service Worker脚本，并且已安装，但是并没有activate。</p>
+<p>我们在Chrome调试工具中会看到：</p>
+<p><img src="https://i.imgur.com/oxAu3jR.png" alt=""></p>
+<p>点击<code>Update</code>也是一样的效果。</p>
+<p>现在我们发现多了一个编号为#429的Service Worker实例，这就是我们刚刚改动后的Service Worker实例。而之前版本的Service Worker实例还处于激活运行状态。</p>
+<p>为什么会出现这种现象呢？ 这是因为，浏览器不允许两个作用于同一个目标的Service Worker实例同时处于activate状态。当我们点击<code>skipWaiting</code>，就结束了#424这个Service Worker实例，并且激活了处于Waiting状态的编号为#429的这个Service Worker实例，现在#429的转态是activate。</p>
+<p><img src="https://i.imgur.com/tmNakMe.png" alt=""></p>
+<p>我们可以从控制台看到，这时候打印出了activate的日志：</p>
+<p><img src="https://i.imgur.com/rH27AVv.png" alt=""></p>
+<p>通常，我们在开发的时候需要频繁的改动Service Worker脚本，但不希望每次手动去点击，我们可以在监听到install事件后调用self.skipWaiting()来达到目的：</p>
+<pre><code>self.addEventListener(&#39;install&#39;, (event) =&gt; {
+    self.skipWaiting();
+})
+</code></pre><p>这样我们每次都会自动激活：</p>
+<p><img src="https://i.imgur.com/WYyfdUG.png" alt=""></p>
+<p><img src="https://i.imgur.com/QS4QZql.png" alt=""></p>
+<p>当然还有一种办法就是将调试工具中的Update on relaod勾选，这样我们每次更改Service Worker脚本后刷新页面就是运行的最新的Service Worker了：</p>
+<p><img src="https://i.imgur.com/sCB4BBN.png" alt=""></p>
+<h6 id="3-1-1-4-fetch-">3.1.1.4 监听fetch事件(请求拦截)</h6>
+<p>当然，Service Worker不仅能监听上文的那几个生命周期事件，其实它主要的用途是监听fetch事件，PWA的大部分功能都是监听网络请求来完成的。比如说下面这个，监听了所有请求，但原封不动的传递下去了：</p>
+<pre><code>self.addEventListener(&#39;fetch&#39;, (event) =&gt; {
+    event.respondWith(fetch(event.request));
+});
+</code></pre><p>再比如，下面这个，监听所有对.jpg图片的请求，转发到对/images/unicorn.jpg这个规定图片的请求</p>
+<pre><code>self.addEventListener(&#39;fetch&#39;, function(event) {
+    if (/\.jpg$/.test(event.request.url)) {
+        event.respondWith(fetch(&#39;/images/unicorn.jpg’));
+    }
+});
+</code></pre><p>在我们没有拦截fetch时，我们的网站对静态资源请求状况如下：</p>
+<p><img src="https://i.imgur.com/jRLUDzq.png" alt=""></p>
+<p>当我们拦截fetch后：</p>
+<pre><code>self.addEventListener(&#39;fetch&#39;, (event) =&gt; {
+    event.respondWith(fetch(event.request));
+});
+</code></pre><p>对静态资源的请求状态如下：</p>
+<p><img src="https://i.imgur.com/8mfS17N.png" alt=""></p>
+<p>可以看到，对资源的请求是经过了Service Worker这一个步骤的。</p>
+<h6 id="3-1-1-5-">3.1.1.5 预缓存</h6>
+<p>预缓存可以对我们整个页面的所有资源进行缓存，比如，我们可以在注册Service Worker的时候对某些资源缓存：</p>
+<pre><code>var cacheName = &#39;Hello word&#39;
+self.addEventListener(&#39;install&#39;, (event) =&gt; {
+    self.skipWaiting();
+    console.log(&#39;service worker installed!&#39;, event)
+    event.waitUntil(caches.open(cacheName).then((cache) =&gt; {
+        cache.addAll([
+            &#39;/js/test.js&#39;,
+            &#39;/img/1.png&#39;,
+            &#39;/css/main.css&#39;
+        ])
+    }))
+})
+</code></pre><p>作为对比我们先看看使用预缓存前的浏览器效果：</p>
+<p><img src="https://i.imgur.com/IJKYMUA.png" alt=""></p>
+<p>这时候，我们的Cache Storage里是空的。使用预缓存后：</p>
+<p><img src="https://i.imgur.com/flSpupu.png" alt=""></p>
+<p>可见，这些资源都缓存起来了。</p>
+<h6 id="3-1-1-6-">3.1.1.6 请求缓存</h6>
+<p>现在，我们可以将前面讲到的请求拦截和预缓存结合起来，实现在请求下面这几个资源的时候从缓存中读取：</p>
+<pre><code>&#39;/js/test.js&#39;,
+&#39;/img/1.png&#39;,
+&#39;/css/main.css&#39;
+</code></pre><p>我们的Service Worker代码如下：</p>
+<pre><code>var cacheName = &#39;Hello word&#39;
+self.addEventListener(&#39;install&#39;, (event) =&gt; {
+    self.skipWaiting();
+    console.log(&#39;service worker installed!&#39;, event)
+    event.waitUntil(caches.open(cacheName).then((cache) =&gt; {
+        cache.addAll([
+            &#39;/js/test.js&#39;,
+            &#39;/img/1.png&#39;,
+            &#39;/css/main.css&#39;
+        ])
+    }))
+})
+self.addEventListener(&#39;fetch&#39;, (event) =&gt; {
+    event.respondWith(
+        caches.match(event.request).then((response) =&gt; {//检查请求是否和当前缓存匹配
+            if (response) {
+                return response //缓存中有直接返回
+            }
+            return fetch(event.request)//缓存中无则正常发起请求
+        })
+    )
+})
+</code></pre><p>浏览器请求的效果如下：</p>
+<p><img src="https://i.imgur.com/XvNYpnK.png" alt=""></p>
+<p>对比之前<strong>请求拦截</strong>的结果，我们看到这里捕获到了请求，然后因为之前缓存过相应的文件，我们这里真的是把它拦截了，直接从缓存中吐的数据。</p>
+<p>但是上面的其实只能对<code>&#39;/js/test.js&#39;, &#39;/img/1.png&#39;, &#39;/css/main.css&#39;</code> 这三个静态资源的请求以缓存返回，对于其他的请求并不能吐缓存，因为缓存中根本没有。</p>
+<p>我们可以改造我们的fetch监听，是得对任意的请求都做缓存， 如下：</p>
+<pre><code>self.addEventListener(&#39;fetch&#39;, function(event) {
+    event.respondWith(
+        caches.match(event.request)
+        .then(function(response) {
+            if (response) {
+                return response;//缓存中有，直接从缓存中拿
+            }
+            var requestToCache = event.request.clone();//克隆request
+            return fetch(requestToCache).then(
+                function(response) {
+                    if(!response || response.status !== 200) {
+                        return response;//失败直接返回失败的结果
+                    }
+                    var responseToCache = response.clone();//成功则克隆response
+                    caches.open(cacheName)
+                    .then(function(cache) {
+                        cache.put(requestToCache, responseToCache);//把request和response都存入缓存
+                    });
+                    return response;//返回成功的结果
+                }
+            );
+        })
+    );
+});
+</code></pre><p>前段发起请求：</p>
+<pre><code>axios.get(&#39;http://localhost:3000/testapi?ID=12345&#39;)
+.then(function (response) {
+    console.log(response);
+})
+.catch(function (error) {
+    console.log(error);
+});
+</code></pre><p>后端代码：</p>
+<pre><code>app.get(&#39;/testapi&#39;, function (req, res) {
+    res.json({
+        name: &#39;pwa-test&#39;,
+        value: &#39;1&#39;
+    });
+});
+</code></pre><p>使用<strong>请求缓存</strong>前，请求是通过Service Worker拦截后转发的：</p>
+<p><img src="https://i.imgur.com/a0icp6D.png" alt=""></p>
+<p>使用<strong>请求缓存</strong>后，请求是通过Service Worker直接从缓存中取出来吐回来的：</p>
+<p><img src="https://i.imgur.com/nZ6eXoH.png" alt=""></p>
+<p>从Cache Storage中，我们也可以看到，该请求被缓存起来了：</p>
+<p><img src="https://i.imgur.com/njJAITH.png" alt=""></p>
+<p>请求缓存可以使得应用的响应变得更快，尤其是对耗时较长的接口更为明显。如果你对某个站点优化前后的性能做更好的比较，你可以使用这个工具<a href="https://www.webpagetest.org">https://www.webpagetest.org</a></p>
+<p>请求缓存可以对每一个URL做对应的缓存，比如我们将前端发起请求的参数改为：</p>
+<pre><code>axios.get(&#39;http://localhost:3000/testapi?ID=123456&#39;)
+.then(function (response) {
+    console.log(response);
+})
+.catch(function (error) {
+    console.log(error);
+});
+</code></pre><p>我们可以看到，由于这时候参数变了，这个新请求先前未缓存过，所以它还是通过Service Worker转发到API服务拿到真实的请求：</p>
+<p><img src="https://i.imgur.com/aGf1HS9.png" alt=""></p>
+<p>当请求完成后，这个新请求又被缓存起来了：</p>
+<p><img src="https://i.imgur.com/j01RkZt.png" alt=""></p>
+<p>我们再次发送这个请求的时候，就是直接从缓存中响应的了：</p>
+<p><img src="https://i.imgur.com/4Z1O7JK.png" alt=""></p>
+<p>然而，如果你不需要对某个请求做如此精细的缓存，你想对某个API的请求做同样的缓存，忽略参数的不同，你也可以在拦截请求的时候做如下配置：</p>
+<pre><code>self.addEventListener(&#39;fetch&#39;, function(event) {
+    event.respondWith(
+        caches.match(event.request, {
+            ignoreSearch: true //忽略所有参数
+        }).then(function(response) {
+            return response || fetch(event.request);
+        })
+    );
+});
+</code></pre><h6 id="3-1-1-7-">3.1.1.7 离线缓存</h6>
+<p>Service Worker的另一个功能是离线缓存，</p>
+<p>无缓存的情况下断开网络：</p>
+<p><img src="https://i.imgur.com/42Lsoks.png" alt=""></p>
+<p>打开网络，刷新页面，进行缓存：</p>
+<p><img src="https://i.imgur.com/WzIPska.png" alt=""></p>
+<p><img src="https://i.imgur.com/XP6Uatd.png" alt=""></p>
+<p>有缓存的情况下，断开网络,由于我们的资源、接口都进行过缓存，所以不会再看到无网络的页面了，所有的资源都从Service Worker中吐：</p>
+<p><img src="https://i.imgur.com/2kVhWG5.png" alt=""></p>
+<p>你也可以根据网络情况，在离线的时候返回一个自定义的offline.html页面。</p>
+<blockquote>
+<p>你可能注意到我们上面Network一栏的左边有一个黄色警告，这是因为我们勾选了调试工具中的Offline，但是Offline有时候并不能真实的模拟网络掉线，所以我们在上面测试离线缓存的例子中不仅勾选了Offline，同时还断开了WIFI。</p>
+</blockquote>
+<h6 id="3-1-1-8-">3.1.1.8 消息推送</h6>
+<h6 id="3-1-1-7-">3.1.1.7 自动同步</h6>
+<p>自动同步是PWA的一个重要功能，可以优化用户在离线状态下的体验。在离线状态下，他可以将用户提交的请求缓存起来，当用户再次连接上网络的时候，它可以自动的将用户的请求进行提交，这非常适用于在线文档编辑等等类似的产品。</p>
+<p><strong>无网络切换到有网络时的同步</strong></p>
+<p>使用自动同步，我们需要先注册同步事件，其代码如下：</p>
+<pre><code>document.querySelector(&#39;#SendMessage&#39;).addEventListener(&#39;click&#39;, () =&gt; {
+    registration.sync.register(&#39;send-message&#39;).then(() =&gt; {
+        idbKeyval.set(&#39;send-message&#39;, {
+            test: &#39;this is testmesage&#39;
+        })
+    }).catch((error)=&gt;{
+        console.log(&#39;fail&#39;, error)
+    })
+})
+</code></pre><p>注册时机可以自己决定，这里我们为了模拟场景，在页面上放置了一个按钮，点击这个按钮的时候，注册自动同步事件，并且将我们的数据(可能是你提交的某篇文章)存储在indexDB中(Service Worker中可以访问indexDB)，注册完之后，我们可以在Service Worker中监听<code>sync</code>事件：</p>
+<pre><code>self.addEventListener(&#39;sync&#39;, (event) =&gt; {
+    console.log(&#39;sync is doing&#39;, event)
+    if (event.tag === &#39;send-message&#39;) {
+        event.waitUntil(
+            idbKeyval.get(&#39;sendMessage&#39;).then(value =&gt;
+                fetch(&#39;http://localhost:3000/sendMessage&#39;, {
+                    method: &#39;POST&#39;,
+                    headers: new Headers({ &#39;content-type&#39;: &#39;application/json&#39; }),
+                    body: JSON.stringify(value)
+                }).then((res) =&gt; {
+                    console.log(res)
+                }).catch((e) =&gt; {
+                    console.log(e)
+                })
+            )
+        );
+        idbKeyval.del(&#39;sendMessage&#39;);
+    }
+});
+</code></pre><p>我们在Service Worker中监听<code>sync</code>事件，检查事件tag是不是我们注册的那个，然后当用户再次在线的时候，它会从indexDB中把数据取出来，向后台发接口送请求，我们的后台接口如下：</p>
+<pre><code>app.post(&#39;/sendMessage&#39;, function (req, res) {
+    res.send(&#39;I get the message&#39;)
+});
+</code></pre><p>下面我们来验证一下，初次加载页面后我们看到，并没有发送sendMessage请求，切换到离线状态，点击按钮，也没有发送：</p>
+<p><img src="https://i.imgur.com/T1g2c7H.png" alt=""></p>
+<p>再次连接网络，稍等一会儿我们发现，sync事件被触发，离线时提交的那个请求已经被提交：</p>
+<p><img src="https://i.imgur.com/NNq61TA.png" alt=""></p>
+<p><img src="https://i.imgur.com/RBZ4PCr.png" alt=""></p>
+<p><img src="https://i.imgur.com/So1UdH3.png" alt=""></p>
+<p>上面的例子讲到了用户处于离线状态的时候点击sendMessage按钮所发生的行为，那你可能会问，如果用户一直处于在线状态，点击按钮会怎样呢？</p>
+<p><strong>一直有网络时的同步</strong></p>
+<p>实际上，Service Worker的<code>sync</code>事件只要有网络就会触发，所以当用户一直处于在线状态时，点击sendMessage，同样是注册了send-message，而由于此时有网络，所以<code>sync</code>事件会立即被触发，所以也会正常的发送请求：</p>
+<p><img src="https://i.imgur.com/PUnkCCl.png" alt=""><br><img src="https://i.imgur.com/JWXgY6g.png" alt=""></p>
+<p><strong>自动同步策略</strong></p>
+<p>这个请求如果成功的话，Service Worker不会重复地去发送请求，但是如果失败的话，Service Worker会帮我们自动的去重试，这些重试都是Service Worker内部帮我们实现的，我们可以通过下图看看它的整个重试逻辑：</p>
+<p><img src="https://i.imgur.com/EchBjGB.png" alt=""></p>
+<p>比如，我们把后台API服务先关掉，然后可以看到控制台依次输出一些sync的信息：</p>
+<p><img src="https://i.imgur.com/pGSiQnh.png" alt=""></p>
+<p>从实际来看，失败的话，每次retry的间隔时间会越来越长。</p>
+<p><strong>更方便地调试自动同步</strong><br>前面在写自动同步的例子的时候，我们都需要自己写代码注册同步事件，但是，其实Chrome开发工具给我们提供了注册sync的工具，我们只需要写我们监听到async事件后的逻辑即可：</p>
+<p><img src="https://i.imgur.com/imyE8u6.png" alt=""></p>
+<p>输入的内容对应于event.tag。</p>
+<p><strong>后向兼容</strong><br>前面说讲的例子都是在浏览器支持自动同步的情况下可以正常使用，但是为了在浏览器不支持自动同步的时候不影响我们原有的逻辑，我们可以在代码中做一下兼容处理：</p>
+<pre><code>if (window.SyncManager) {
+    //上述方案
+} else {
+    //直接提交
+}
+</code></pre><h4 id="3-2-manifest-json">3.2 manifest.json</h4>
+<p>manifest.json文件使得PWA所标榜的Engaging特性部分成为可能，manifest.json文件提供了PWA的基本信息(比如，名字，作者，图标，描述等等)，使得用户可以将该web应用添加到设备的主屏幕上，自定义启动画面、主题颜色以及打开的URL。</p>
+<p>一个基本的manifest.json文件样例如下：</p>
+<pre><code>{
+    &quot;name&quot;: &quot;Hello Word PWA&quot;,
+    &quot;short_name&quot;: &quot;PWA&quot;,
+    &quot;start_url&quot;: &quot;/index.html&quot;,
+    &quot;orientation&quot;: &quot;any&quot;,
+    &quot;display&quot;: &quot;standalone&quot;,
+    &quot;theme_color&quot;: &quot;#333&quot;,
+    &quot;background_color&quot;: &quot;#999&quot;,
+    &quot;icons&quot;: [{
+        &quot;src&quot;: &quot;img/1.png&quot;,
+        &quot;sizes&quot;: &quot;144x144&quot;,
+        &quot;type&quot;: &quot;image/png&quot;
+    },{
+        &quot;src&quot;: &quot;img/1.png&quot;,
+        &quot;sizes&quot;: &quot;96x96&quot;,
+        &quot;type&quot;: &quot;image/png&quot;
+    }]
+}
+</code></pre><p>各个字段的含义如下：</p>
+<ul>
+<li>name-用作提示用户安装应用程序到主屏幕时显示的文本。</li><li>short_name-用作应用程序安装后在用户主屏幕上显示的文本。</li><li>start_url-确定用户从其设备的主屏幕打开Web应用程序时显示的第一页。</li><li>orientation-首选的显示方向：any, natural, landscape, landscape-primary, landscape-secondary, portrait, portrait-primary, 和 portrait-secondary。</li><li>display-根据您正在构建的Web应用程序的类型，您可能需要预先设置它的首次加载方式。 display字段表示开发人员希望他们的Web应用程序向用户显示的方式。 我们稍后会细说。</li><li>theme_color-通过使用theme_color字段，您可以为浏览器的地址栏着色以匹配您网站的主要颜色。</li><li>background_color-用于设置应用的背景色。</li><li>icons-图标字段确定将Web应用程序添加到设备主屏幕时要使用的图标，推荐使用144x144的png图标。</li></ul>
+<p>这其中，name和short_name的含义很明确，但是在chrome浏览器开发地时候，你会发现这两个过程使用的都是name：</p>
+<p><img src="https://i.imgur.com/HaFaQO1.gif" alt=""></p>
+<p>display表示用户在启动该PWA应用的时候展现的方式，可以取如下值：</p>
+<ul>
+<li>fullscreen-表示应用在启动的时候会占据整个屏幕空间。</li><li>standalone-表示应用程序在打开后，使其外观和感觉就像一个独立的原生应用程序。 在此模式下，浏览器将没有标准浏览器UI元素（如URL栏），但可能包含其他系统UI元素，如状态栏或系统后退按钮。</li><li>minimal-ui-这个和fullscreen类似，但是会有一些最基本的UI元素，比如后退、前进、刷新按钮等。</li><li>browser-这个会和在标准浏览器中打开一模一样的效果。</li></ul>
+<p>我们可以在Chrome浏览器开发工具中看到这个manifest.json文件的信息：</p>
+<p><img src="https://i.imgur.com/JcVCMSX.png" alt=""></p>
+<blockquote>
+<p>是不是和开发浏览器插件的manifest.json长得很像啊哈哈哈哈</p>
+</blockquote>
+<h3 id="-pwa-">四、PWA设计核心</h3>
+<h4 id="4-1-">4.1 缓存策略设计</h4>
+<h3 id="-pwa-">五、 PWA开发调试方法</h3>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
