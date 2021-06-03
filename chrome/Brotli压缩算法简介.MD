@@ -21,7 +21,7 @@ Brotli压缩算法是google提出的较新的压缩算法，用于在浏览器�
 
 ### 浏览器支持
 
-![](https://pic.rmb.bdstatic.com/bjh/news/8807c1d76051267a239303225c431d82.png)
+![brotli](https://pic.rmb.bdstatic.com/bjh/news/8807c1d76051267a239303225c431d82.png)
 
 ### CDN开启brotli方法：
 - Brotli压缩 - CDN - 阿里云
