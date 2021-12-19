@@ -62,5 +62,7 @@ JSON内容是模块的默认导出。因此通过 `import()` 返回的对象上�
 ![](https://github.com/DuLinRain/pictures/blob/master/esnext/import_assert.png?raw=true)
 
 
+### 参考
 
+- [原文：Import assertions](https://v8.dev/features/import-assertions)
 
