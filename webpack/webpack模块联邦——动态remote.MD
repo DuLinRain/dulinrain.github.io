@@ -223,6 +223,6 @@ webpack模块联邦的用法里，当使用导出的远程模块时，通常是�
 
 
 ### 参考
-- [Module Federation | webpack 中文文档](https://webpack.docschina.org/concepts/module-federation/)
+- [Module Federation](https://webpack.docschina.org/concepts/module-federation/)
 - [模块联邦之动态远程](https://h3manth.com/posts/dynamic-remotes-webpack-module-federation/)
 - [动态远程容器在线示例](https://codesandbox.io/s/dynamic-remotes-webpack-module-federation-o51ho?from-embed=&file=/home/app.jsx)
