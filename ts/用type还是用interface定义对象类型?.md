@@ -1,4 +1,4 @@
-
+# 用type还是用interface定义对象类型?
 
 type和interface都能定义对象，但是他们在语法和功能上有一些差别：
 - type和interface语法上是不一样的
